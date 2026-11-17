@@ -21,6 +21,7 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Keep the hashed entry-point config in the shell, avoiding stale external bootstrap caches. -->
+  <script>{{flutter_bootstrap_js}}</script>
 </body>
 </html>

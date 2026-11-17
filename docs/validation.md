@@ -100,3 +100,9 @@ The latest suite supersedes earlier historical counts: 60 Dart tests (including 
 Compatible dependency catalog reports were refreshed: direct versions remain current for the selected toolchain; material_color_utilities 0.13.0 and test_api 0.7.14 remain constrained by Flutter 3.50.0 despite newer catalog versions. No overrides or SDK changes were applied. Tests and release build do not run concurrently; only the isolated SDK/cache was used. Public CI, Pages inspection and package evidence are recorded after verification.
 
 Local Pages release build succeeded; the artifact gate verifies base `/ml-engine/`, 28 manifest assets, content-hashed entry point and bundled CanvasKit.
+
+## Random Forest public verification
+
+[Source CI and Pages 44195689312](https://github.com/kleberandrade/ml-engine/actions/runs/44195689312) succeeded for `edd52e0d270a8af581801419f3b644701575170a`, tagged v0.5.0. Pub.dev accepted 0.5.0 at 23:04:16 UTC; the 28,770-byte archive SHA-256 matches the API and all 22 core source files match locally. See [archive evidence](pub-v0.5.0.json). The package excludes app/docs/tool/GitHub workflow files. No credentials or new publishing permissions were added to GitHub.
+
+The real public browser exercised both forest tasks, count 15→1, depth 3→6, fitting/reset, PT/EN retained scores, Learn navigation and the executable regression preset, plus 390×844 controls/menu. With seed 42 / 15 trees / depth 3, classification validation accuracy was A=90.0%, B=76.7%; regression validation RMSE was A=0.550, B=0.487. These are observations on the shipped fixture, not evidence that forests always outperform one tree. Actual screenshots are under docs/images/pages-forest-*.jpg. A separately cached bootstrap initially kept old version labels; the follow-up uses Flutter’s official inline bootstrap and checks the inline application hash. The published core is unchanged by this delivery fix.

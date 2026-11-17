@@ -15,7 +15,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
-![Actual decision tree regression on GitHub Pages, comparing depth limits 3 and 1 with learned rules, leaves and validation RMSE](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-tree-regression-pt.jpg)
+![Actual Random Forest regression on GitHub Pages: 15 depth-3 trees versus one depth-3 reference tree, with controls, leaf counts and validation RMSE](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-forest-regression-pt.jpg)
 
 ## Included now
 

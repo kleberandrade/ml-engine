@@ -7,3 +7,5 @@
 - Numerical, sampling, failure recovery, leakage, controls, language/navigation and mobile tests.
 
 [Live laboratory](https://kleberandrade.github.io/ml-engine/) · [Dart package](https://pub.dev/packages/ml_engine/versions/0.5.0) · [Source](https://github.com/kleberandrade/ml-engine)
+
+Publication: [source CI/Pages 44195689312](https://github.com/kleberandrade/ml-engine/actions/runs/44195689312) succeeded for `edd52e0d270a8af581801419f3b644701575170a`, identified by this source tag. Pub.dev accepted 0.5.0; its 28,770-byte archive matches all 22 validated core sources. See [public archive metadata](pub-v0.5.0.json). Subsequent Pages cache/evidence changes do not alter the published core.

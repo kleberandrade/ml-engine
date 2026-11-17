@@ -1,0 +1,16 @@
+{
+  "version": "0.5.0",
+  "published": "2026-11-17T23:04:16.688068Z",
+  "archive_url": "https://pub.dev/api/archives/ml_engine-0.5.0.tar.gz",
+  "archive_sha256": "b0d5a7da38438e2154fc7d2a0f06b05325ff089577390a2054e0353bd37671a3",
+  "archive_bytes": 28770,
+  "archive_files": 54,
+  "matching_core_files": 22,
+  "source_commit": "edd52e0d270a8af581801419f3b644701575170a",
+  "excluded": [
+    "apps",
+    "docs",
+    "tool",
+    ".github"
+  ]
+}

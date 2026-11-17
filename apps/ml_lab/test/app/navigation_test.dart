@@ -29,9 +29,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
       c.pauseResume();
       final count = c.history.length;
-      await tester.tap(find.byKey(const ValueKey('locale-selector')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Português (BR)').last);
+      await tester.tap(find.byKey(const ValueKey('locale-pt-BR')));
       await tester.pumpAndSettle();
       expect(find.text('Treinar modelos'), findsOneWidget);
       expect(find.text('Retomar'), findsOneWidget);

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:ml_lab/app/app.dart';
 import 'package:ml_lab/app/l10n/app_strings.dart';
@@ -58,9 +59,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.textContaining('Linha 2:'), findsOneWidget);
       expect(find.text('150 linhas • dados sintéticos'), findsOneWidget);
-      await tester.tap(find.byKey(const ValueKey('locale-selector')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('English').last);
+      await tester.tap(find.byKey(const ValueKey('locale-en')));
       await tester.pumpAndSettle();
       expect(find.textContaining('Row 2:'), findsOneWidget);
       expect(
@@ -103,4 +102,29 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('circular flags are labeled, selected and keyboard operable', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(MlLab(browser: MemoryBrowser()));
+    await tester.pumpAndSettle();
+    expect(
+      find.byTooltip('English (United Kingdom) • selected'),
+      findsOneWidget,
+    );
+    expect(find.byTooltip('Portuguese (Brazil)'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Treinar modelos'), findsOneWidget);
+    expect(find.byTooltip('Português (Brasil) • selecionado'), findsOneWidget);
+    expect(
+      tester.getSize(find.byKey(const ValueKey('locale-pt-BR'))).shortestSide,
+      greaterThanOrEqualTo(48),
+    );
+  });
 }

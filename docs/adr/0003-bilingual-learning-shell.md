@@ -21,3 +21,5 @@ The experiment remains in memory while Learn is visible and continues training i
 ## Alternatives considered
 
 Recreating pages or controllers on each tab/locale would lose state. Saving complete datasets/models is unnecessary and would add privacy/lifetime complexity. A GitHub iframe would not deliver an integrated translated lesson. A new state-management or localization dependency is unnecessary for this bounded app.
+
+The language controls use locally drawn circular Brazil/United Kingdom flags, selected-state rings, localized tooltips/semantics, keyboard operation and 48-pixel touch targets. The original drawings are code-native and make no runtime image requests.

@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'branding/brand_mark.dart';
 import 'l10n/app_strings.dart';
+import 'language_switcher.dart';
 
 enum LabSection { laboratory, learn, examples }
 
@@ -35,33 +36,16 @@ class LabNavigation extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 1352),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final s = context.l10n, wide = constraints.maxWidth >= 1050;
-                final locale = Semantics(
-                  label: s.t('language'),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<AppLanguage>(
-                      key: const ValueKey('locale-selector'),
-                      menuWidth: 200,
-                      value: language,
-                      selectedItemBuilder: (context) => [
-                        Text(wide ? 'English' : 'EN'),
-                        Text(wide ? 'Português (BR)' : 'PT-BR'),
-                      ],
-                      items: const [
-                        DropdownMenuItem(
-                          value: AppLanguage.en,
-                          child: Text('English'),
-                        ),
-                        DropdownMenuItem(
-                          value: AppLanguage.ptBr,
-                          child: Text('Português (BR)'),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) onLanguage(value);
-                      },
-                    ),
-                  ),
+                final s = context.l10n,
+                    wide =
+                        constraints.maxWidth >=
+                        1050 *
+                            MediaQuery.textScalerOf(context)
+                                .scale(1)
+                                .clamp(1, 3);
+                final locale = LanguageSwitcher(
+                  language: language,
+                  onLanguage: onLanguage,
                 );
                 return Row(
                   children: [

@@ -4,8 +4,9 @@ enum AppLanguage { en, ptBr }
 
 extension AppLanguageCode on AppLanguage {
   String get code => this == AppLanguage.en ? 'en' : 'pt-BR';
-  Locale get locale =>
-      this == AppLanguage.en ? const Locale('en') : const Locale('pt', 'BR');
+  Locale get locale => this == AppLanguage.en
+      ? const Locale('en', 'GB')
+      : const Locale('pt', 'BR');
 }
 
 class AppStrings {
@@ -36,6 +37,10 @@ extension LocalizedContext on BuildContext {
 }
 
 const messages = <String, List<String>>{
+  'languageEnglish': ['English (United Kingdom)', 'Inglês (Reino Unido)'],
+  'languagePortuguese': ['Portuguese (Brazil)', 'Português (Brasil)'],
+  'selected': ['selected', 'selecionado'],
+
   "appTitle": [
     "ML Engine • Learning laboratory",
     "ML Engine • Laboratório de aprendizado",

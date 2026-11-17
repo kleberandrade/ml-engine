@@ -32,11 +32,11 @@ class _MlLabState extends State<MlLab> {
     } catch (_) {
       /* Optional browser storage. */
     }
-    browser.setDocumentLanguage(language.code);
+    browser.setDocumentLanguage(language.locale.toLanguageTag());
   }
 
   void setLanguage(AppLanguage value) {
-    browser.setDocumentLanguage(value.code);
+    browser.setDocumentLanguage(value.locale.toLanguageTag());
     setState(() => language = value);
     try {
       browser.writeLanguage(value.code);
@@ -57,7 +57,7 @@ class _MlLabState extends State<MlLab> {
     debugShowCheckedModeBanner: false,
     theme: buildLabTheme(),
     locale: language.locale,
-    supportedLocales: const [Locale('en'), Locale('pt', 'BR')],
+    supportedLocales: const [Locale('en', 'GB'), Locale('pt', 'BR')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: _LabShell(
       c: controller,

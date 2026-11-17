@@ -55,3 +55,7 @@ Visual evidence from the published site:
 - [CSV rejection](images/pages-csv-error.jpg)
 - [Mobile classification](images/pages-mobile-classification.jpg)
 - [Clustering](images/pages-clustering.jpg)
+
+### Circular language controls
+
+The subsequent UI follow-up replaces the dropdown with locally drawn circular Brazil and United Kingdom flags, clear selected rings/semantics, localized tooltips and 48-pixel focusable buttons. The ten affected UI tests passed sequentially, including keyboard selection, state/draft preservation and narrow-screen text scaling. Analysis and the Pages release build passed; the unchanged numerical core retains its verified 17 tests. The full app suite now contains 20 cases and is run by the publication workflow.

@@ -14,7 +14,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
-![Actual GitHub Pages laboratory showing fitted K-means centroids](docs/images/pages-clustering.jpg)
+![Actual GitHub Pages lab with original branding and circular language controls](docs/images/pages-bilingual-en.jpg)
 
 ## Included now
 

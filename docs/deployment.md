@@ -59,3 +59,22 @@ Visual evidence from the published site:
 ### Circular language controls
 
 The subsequent UI follow-up replaces the dropdown with locally drawn circular Brazil and United Kingdom flags, clear selected rings/semantics, localized tooltips and 48-pixel focusable buttons. The ten affected UI tests passed sequentially, including keyboard selection, state/draft preservation and narrow-screen text scaling. Analysis and the Pages release build passed; the unchanged numerical core retains its verified 17 tests. The full app suite now contains 20 cases and is run by the publication workflow.
+
+## Final bilingual/flag browser verification
+
+[Successful bilingual/flag build and deploy](https://github.com/kleberandrade/ml-engine/actions/runs/44179124350) published application commit `ea6197f86e1f2753cb4f79897f270331a8b39eb5`. The same public URL was opened in Chrome, not inferred from a successful HTTP response. The navbar rendered the original rising-seed mark and recognizable circular UK/Brazil drawings, with selected rings and localized accessible names.
+
+The real paused regression remained at **73 iterations** after selecting Portuguese, visiting Learn and returning to Laboratory; its CSV draft remained exactly `x1,x2,y` / `1,0,3` / `2,0,5`. The document language became `pt-BR`. Reloading retained Portuguese while starting a fresh experiment, as designed. A real Examples-page CSV preset opened 20 rows with a 12/4/4 split. A Learn-page experiment button opened the real seeded 150-row linear lab.
+
+At **390×844**, the compact logo, circular flags, menu and Portuguese educational text/formulas were readable with no layout overflow. The menu was used to open Learn; five objective/completion exercises and real source-reference links were present. Keyboard flag/menu behavior is covered by the Flutter tests; this browser pass used the native accessibility/pointer controls. The Documentation button actually opened `docs/design.md` on GitHub in a separate tab. The temporary viewport override was reset, the documentation tab was closed, and the working demo was retained. No warning/error console entries were captured in the final app session.
+
+The source now has **17 core tests and 20 Flutter tests**, both analyzers clean, an enforced architectural boundary check and a validated repository-path release artifact. The flag follow-up reran the ten affected UI cases sequentially plus analysis/build; the unchanged core evidence was reused locally and all tests were rerun by CI. Current core line coverage is **310/324 = 95.7%**. No pub.dev publication occurred.
+
+Fresh captures of the final published UI:
+
+- [English lab, logo and flags](images/pages-bilingual-en.jpg)
+- [Portuguese lab](images/pages-bilingual-lab-pt.jpg)
+- [State preserved after language/navigation](images/pages-bilingual-paused-pt.jpg)
+- [Learn in Portuguese](images/pages-learn-pt.jpg)
+- [Executable examples](images/pages-examples-pt.jpg)
+- [Mobile Portuguese Learn](images/pages-mobile-learn-pt.jpg)

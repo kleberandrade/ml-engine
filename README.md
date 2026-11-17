@@ -11,7 +11,7 @@
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
-**Version 0.3.0.** Pure Dart classical ML, including Ridge and KNN classification/regression with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
+**Version 0.4.0.** Pure Dart classical ML, including Ridge, KNN and decision trees with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
@@ -21,6 +21,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 - Multivariate linear/Ridge regression (unpenalized intercept, configurable L2) and binary logistic regression, intercepts, stable logistic loss and full-batch gradient descent with cost history.
 - KNN classification (finite numeric labels) and regression with uniform weights, Euclidean distance, configurable k and deterministic tie rules.
+- Decision tree classification (Gini) and regression (squared error), max depth, minimum leaf size, immutable fitted nodes and deterministic greedy splits.
 - Seeded K-means++ initialization and Lloyd updates, inertia, centroids and prediction.
 - StandardScaler (population variance), MinMaxScaler, and a fit/transform/predict pipeline.
 - Seeded train/validation/test splits, shuffled K-fold, stratified K-fold and leakage-safe cross validation through fresh pipeline factories.
@@ -69,13 +70,13 @@ final predictions = pipeline.predict([[4]]); // approximately [9]
 final transformed = pipeline.transform([[4]]); // train-fitted scaling
 ```
 
-The core is published as [`ml_engine 0.3.0`](https://pub.dev/packages/ml_engine/versions/0.3.0), including KNN. Install with:
+The core package is [`ml_engine`](https://pub.dev/packages/ml_engine). Version 0.4.0 adds decision trees; the publication record is in the release notes. Install the latest published version with:
 
 ```sh
 dart pub add ml_engine
 ```
 
-For version 0.3.0, declare `ml_engine: ^0.3.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
+For version 0.4.0, declare `ml_engine: ^0.4.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
 
 ```dart
 Pipeline create() => Pipeline(StandardScaler(), LinearRegression());
@@ -117,12 +118,30 @@ Both use Euclidean distance and equal weights. Classification takes the majority
 
 The exact brute-force implementation sorts neighbors in `O(n*d + n log n)` time and `O(n)` extra memory per query; it has no KD-tree, inverse-distance weights, calibrated probabilities or learned extrapolation trend. Fit has no epochs, learning rate or objective curve. Use train-only scaling and select k on validation data. The lab compares your k against k=1, supports k up to `min(15, trainingRows)`, shows A only on its classification grid, and displays sampled A/B regression slices at standardized x₂=0. Changing k clears the result until **Evaluate neighbors** is clicked again. The lab stays bounded to 500×2; prolonged or high-dimensional workloads need a worker/isolate.
 
+## Decision trees
+
+```dart
+final classifier = DecisionTreeClassifier(maxDepth: 3, minSamplesLeaf: 2);
+classifier.fit(xTrain, classLabels);
+final classes = classifier.predict(xValidation);
+final regressor = DecisionTreeRegressor(maxDepth: 3, minSamplesLeaf: 2);
+regressor.fit(xTrain, continuousTargets);
+print(regressor.root.threshold); // Immutable fitted rule, or null for a leaf.
+print(regressor.depth);          // Actual depth, which can be below the limit.
+```
+
+Numeric binary splits greedily reduce weighted Gini (classification) or within-node MSE (regression). Classification leaves use majority votes, choosing the smallest finite numeric label in a tie; regression leaves use means. Values `<= threshold` route left. Candidate thresholds are midpoints between adjacent distinct values, falling back to the lower value if rounding reaches the upper one. Equal gains within relative tolerance `1e-12` favor feature index, then threshold. Splits require an improvement greater than that tolerance; zero-gain XOR is deliberately not split. No global-optimality claim is made.
+
+Root depth is zero; `maxDepth: 0` makes a constant leaf. `minSamplesLeaf` bounds each child of a split; datasets smaller than it still yield a root leaf. Pure/unsplittable nodes stop early. Trees expose immutable `root` nodes with prediction, sample count, impurity, feature index, threshold and children, plus actual `depth` and `leafCount`. Fit installs a fully built tree atomically; rejected numerical fits retain the old root. Finite numeric features/targets only: no missing-value routing, categorical splits, pruning or probabilities.
+
+Trees need no feature scaling, but work with Pipeline/CV. The lab keeps its train-only scaler for shared plot axes. A compares your maximum depth (1–6) against B at depth 1, both with at least two training rows per leaf. It shows actual depth/leaves and A's first rule, direct fitting without fake optimizer controls, A-only classification regions and sampled regression steps at standardized x₂=0. More depth may overfit; select it on validation data. Fitting repeatedly sorts features per node and is synchronous; prediction is O(depth) per row. Large fits need an isolate/worker. Trees predict piecewise-constant leaves, not smooth extrapolation trends.
+
 ## Lab workflow
 
 The navbar opens **Laboratory**, **Learn** and **Examples**, plus the real project documentation/GitHub links. English and Brazilian Portuguese cover controls, feedback, chart descriptions, help and the educational content. Language changes preserve the experiment, curve and CSV draft; the language preference is stored only when browser storage is available. Learn explains the shipped algorithms and formulas, links its sources, opens real seeded/CSV presets and ends with five practical exercises. Opening a preset intentionally replaces the current experiment. The [original rising-seed logo](https://github.com/kleberandrade/ml-engine/blob/main/apps/ml_lab/web/brand-mark.svg) is also the favicon.
 
 
-Choose an experiment and seed. Iterative models use a rate (or cluster count) and iteration budget; KNN uses k and a direct evaluation. Evaluate A/B on the same 60/20/20 split and train-fitted standardization. In Ridge mode A is Ridge and B is linear, with identical initialization and learning rate; only A has L2 regularization. KNN compares k values; other regression/classification modes compare learning rates, and clustering compares seeds. Validation scores and a train-derived baseline support comparison; final test scores appear after completion. Labels are unused in clustering. Regression lines hold the second standardized feature at zero, so a CSV with two varying features is shown as a partial slice rather than a full 3D fit.
+Choose an experiment and seed. Iterative models use a rate (or cluster count) and iteration budget; KNN uses k and trees use max depth with direct evaluation. Evaluate A/B on the same 60/20/20 split and train-fitted standardization. In Ridge mode A is Ridge and B is linear, with identical initialization and learning rate; only A has L2 regularization. KNN compares k values and trees compare depth limits; other regression/classification modes compare learning rates, and clustering compares seeds. Validation scores and a train-derived baseline support comparison; final test scores appear after completion. Labels are unused in clustering. Regression lines hold the second standardized feature at zero, so a CSV with two varying features is shown as a partial slice rather than a full 3D fit.
 
 CSV uses the exact header `x1,x2,y`, followed by 10–500 finite numeric rows in the lab; no quoted fields, missing values or thousands separators. Binary classification requires y in {0,1}. The lab caps absolute magnitudes at 1,000,000. Bad imports preserve the current experiment. Fix the displayed row error and retry, or restore synthetic data. The core parser accepts 2–500 rows; the lab needs at least 10 to keep its partitions meaningful.
 
@@ -138,7 +157,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 - [Português: guia rápido](https://github.com/kleberandrade/ml-engine/blob/main/docs/quickstart.pt-BR.md)
 - [Action log](https://github.com/kleberandrade/ml-engine/blob/main/docs/work-log.md)
 - [GitHub metadata](https://github.com/kleberandrade/ml-engine/blob/main/docs/github-metadata.json)
-- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.3.0.md)
+- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.4.0.md)
 
 ## License and credits
 

@@ -132,17 +132,17 @@ void main() {
         ..start();
       final first = c.plot;
       expect(c.plot, same(first));
-      final samples = first.neighbors!;
+      final samples = first.samples!;
       expect(samples.a.length, experiment.isRegression ? 60 : 384);
       expect(() => samples.a[0] = 999, throwsUnsupportedError);
       expect(() => samples.rows[0][0] = 999, throwsUnsupportedError);
       final old = List<double>.of(samples.a);
       c.configure(neighbors: 1);
       expect(c.status, RunStatus.ready);
-      expect(c.plot.neighbors, isNull);
+      expect(c.plot.samples, isNull);
       c.start();
       expect(c.plot, isNot(same(first)));
-      expect(first.neighbors!.a, old);
+      expect(first.samples!.a, old);
       c.dispose();
     }
   });

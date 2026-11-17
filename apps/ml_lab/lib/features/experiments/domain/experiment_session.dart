@@ -11,8 +11,8 @@ class ExperimentSession {
   final ExperimentSettings settings;
   late final DataSplit split;
   late final Matrix scaled;
-  Estimator? _neighbors, _comparisonNeighbors;
-  bool get hasResults => _neighbors != null || history.isNotEmpty;
+  Estimator? _directModel, _comparisonDirectModel;
+  bool get hasResults => _directModel != null || history.isNotEmpty;
   GradientModel? _model, _comparison;
   KMeans? _kmeans, _comparisonKmeans;
 
@@ -50,17 +50,34 @@ class ExperimentSession {
   Matrix get centroidsB => _comparisonKmeans?.centroids ?? const [];
   List<int>? get clusterLabels => _kmeans?.predict(scaled);
 
+  DecisionTreeNode? treeRoot({bool alternate = false}) {
+    final model = alternate ? _comparisonDirectModel : _directModel;
+    return switch (model) {
+      DecisionTreeClassifier t => t.root,
+      DecisionTreeRegressor t => t.root,
+      _ => null,
+    };
+  }
+
   void start() {
     final train = split.train.map((i) => scaled[i]).toList();
     final targets = split.train.map((i) => data.y[i]).toList();
-    if (settings.experiment.isKnn) {
+    if (settings.experiment.isTree) {
+      Estimator create(int depth) => settings.experiment.isRegression
+          ? DecisionTreeRegressor(maxDepth: depth, minSamplesLeaf: 2)
+          : DecisionTreeClassifier(maxDepth: depth, minSamplesLeaf: 2);
+      final a = create(settings.maxDepth)..fit(train, targets);
+      final b = create(1)..fit(train, targets);
+      _directModel = a;
+      _comparisonDirectModel = b;
+    } else if (settings.experiment.isKnn) {
       Estimator create(int k) => settings.experiment.isRegression
           ? KNNRegressor(k: k)
           : KNNClassifier(k: k);
       final a = create(settings.neighbors)..fit(train, targets);
       final b = create(1)..fit(train, targets);
-      _neighbors = a;
-      _comparisonNeighbors = b;
+      _directModel = a;
+      _comparisonDirectModel = b;
     } else if (settings.experiment == Experiment.clustering) {
       if (train.map((row) => row.join(',')).toSet().length <
           settings.clusters) {
@@ -104,7 +121,7 @@ class ExperimentSession {
   }
 
   bool step() {
-    if (_neighbors != null) return false;
+    if (_directModel != null) return false;
     if (_model == null && _kmeans == null) {
       throw StateError('Start the session first.');
     }
@@ -115,8 +132,8 @@ class ExperimentSession {
 
   List<double> predict(Matrix rows, {bool alternate = false}) {
     final model = alternate
-        ? (_comparisonNeighbors ?? _comparison)
-        : (_neighbors ?? _model);
+        ? (_comparisonDirectModel ?? _comparison)
+        : (_directModel ?? _model);
     if (model == null) throw StateError('No fitted supervised model.');
     return model.predict(rows);
   }

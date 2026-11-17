@@ -92,6 +92,7 @@ class _LabShellState extends State<_LabShell> {
       epochs: 250,
       clusters: 3,
       neighbors: 5,
+      maxDepth: 3,
       learningRate: .08,
       regularization: 1,
     );

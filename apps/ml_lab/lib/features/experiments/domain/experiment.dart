@@ -4,12 +4,21 @@ enum Experiment {
   clustering,
   ridge,
   knnClassification,
-  knnRegression;
+  knnRegression,
+  treeClassification,
+  treeRegression;
 
   bool get isRegression =>
-      this == regression || this == ridge || this == knnRegression;
+      this == regression ||
+      this == ridge ||
+      this == knnRegression ||
+      this == treeRegression;
   bool get isClassification =>
-      this == classification || this == knnClassification;
+      this == classification ||
+      this == knnClassification ||
+      this == treeClassification;
+  bool get isTree => this == treeClassification || this == treeRegression;
+  bool get isDirect => isKnn || isTree;
   bool get isKnn => this == knnClassification || this == knnRegression;
 }
 
@@ -24,7 +33,7 @@ class ExperimentScore {
 /// Immutable, validated settings for a bounded teaching experiment.
 class ExperimentSettings {
   final Experiment experiment;
-  final int seed, epochs, clusters, neighbors;
+  final int seed, epochs, clusters, neighbors, maxDepth;
   final double learningRate, regularization;
   ExperimentSettings({
     this.experiment = Experiment.regression,
@@ -32,9 +41,13 @@ class ExperimentSettings {
     this.epochs = 250,
     this.clusters = 3,
     this.neighbors = 5,
+    this.maxDepth = 3,
     this.learningRate = .08,
     this.regularization = 1,
   }) {
+    if (maxDepth < 1 || maxDepth > 6) {
+      throw ArgumentError('Lab depth must be between 1 and 6.');
+    }
     if (neighbors < 1 || neighbors > 15) {
       throw ArgumentError('Lab neighbors must be between 1 and 15.');
     }
@@ -59,6 +72,7 @@ class ExperimentSettings {
     int? epochs,
     int? clusters,
     int? neighbors,
+    int? maxDepth,
     double? learningRate,
     double? regularization,
   }) => ExperimentSettings(
@@ -67,6 +81,7 @@ class ExperimentSettings {
     epochs: epochs ?? this.epochs,
     clusters: clusters ?? this.clusters,
     neighbors: neighbors ?? this.neighbors,
+    maxDepth: maxDepth ?? this.maxDepth,
     learningRate: learningRate ?? this.learningRate,
     regularization: regularization ?? this.regularization,
   );

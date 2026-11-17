@@ -61,6 +61,32 @@ const learningTopics = [
     preset: 'ridge',
   ),
   LearningTopic(
+    BilingualText('Decision tree classification', 'Árvore de classificação'),
+    BilingualText(
+      'Greedily choose an axis-aligned feature/threshold split that reduces weighted Gini impurity. Numeric values at or below the threshold go left. Each leaf predicts its majority label, choosing the smallest numeric label in a vote tie.',
+      'Escolha de forma gulosa a variável e o limiar que reduzam a impureza Gini ponderada. Valores numéricos iguais ou inferiores ao limiar seguem à esquerda. Cada folha prevê a maioria, escolhendo o menor rótulo numérico no empate.',
+    ),
+    'Gini = 1 − Σ p(class)²\nGain = I(parent) − nL/n I(left) − nR/n I(right)',
+    BilingualText(
+      'For x=[0,1,2,3] and y=[0,0,1,1], Gini drops from 0.5 to 0 at x≤1.5. Root depth is zero; depth 1 permits one split. The lab compares selected depth with depth 1, both with at least 2 training rows per leaf. Actual depth may be smaller. Equal gains prefer feature index then threshold; pure nodes, small leaves or no positive gain stop growth. Greedy search is not globally optimal and rejects zero-gain XOR splits.',
+      'Para x=[0,1,2,3] e y=[0,0,1,1], Gini cai de 0,5 para 0 em x≤1,5. A raiz tem profundidade zero; profundidade 1 permite uma divisão. O laboratório compara seu limite com 1, ambas com ao menos 2 linhas de treino por folha. A profundidade efetiva pode ser menor. Ganhos empatados preferem índice de variável e limiar; pureza, folhas pequenas ou ausência de ganho param o crescimento. A busca não é ótima globalmente e rejeita divisões XOR com ganho zero.',
+    ),
+    preset: 'tree-classification',
+  ),
+  LearningTopic(
+    BilingualText('Decision tree regression', 'Árvore de regressão'),
+    BilingualText(
+      'Choose splits by weighted squared-error reduction; predict the mean training target of the reached leaf. A depth limit and a minimum leaf size constrain complexity. More depth can memorize noise; use validation to choose the limit.',
+      'Escolha divisões pela redução ponderada do erro quadrático; preveja a média dos alvos de treino na folha alcançada. Profundidade e tamanho mínimo de folha limitam a complexidade. Mais profundidade pode memorizar ruído; escolha o limite pela validação.',
+    ),
+    'I(node) = mean((y − mean_node(y))²)\nŷ(x) = mean(y in reached leaf)',
+    BilingualText(
+      'For targets [0,2,10,12] at x=[0,1,2,3], split 1.5 yields means 1 and 11, reducing MSE from 26 to 1. Predictions are piecewise constant; plots sample 60 x₁ positions at x₂=0. No smooth extrapolation, pruning, missing-value routing or categorical splits are supplied. Scaling is unnecessary for ordering-based trees; the lab keeps its shared train-only scaler for consistent axes.',
+      'Para alvos [0,2,10,12] em x=[0,1,2,3], o limiar 1,5 gera médias 1 e 11, reduzindo MSE de 26 para 1. As previsões são constantes por região; o gráfico amostra 60 posições de x₁ em x₂=0. Não há extrapolação suave, poda, tratamento de ausentes ou divisões categóricas. A escala é desnecessária para árvores baseadas em ordem; o laboratório a mantém ajustada só no treino para eixos consistentes.',
+    ),
+    preset: 'tree-regression',
+  ),
+  LearningTopic(
     BilingualText('KNN classification', 'Classificação KNN'),
     BilingualText(
       'Store training rows and find the k closest to each query in Euclidean distance. Each row contributes one vote; predict the most frequent class. Features must be scaled using training statistics only.',
@@ -154,14 +180,17 @@ const learningExercises = [
     ),
   ),
   LearningExercise(
-    BilingualText('2. Observe convergence', '2. Observe a convergência'),
     BilingualText(
-      'Compare Ridge λ=0, 1 and 3 against linear on the same split and learning rate.',
-      'Compare Ridge com λ=0, 1 e 3 à linear na mesma divisão e taxa.',
+      '2. Control tree complexity',
+      '2. Controle a complexidade da árvore',
     ),
     BilingualText(
-      'Record validation RMSE and coefficient norms; verify identical curves at λ=0 and a frozen count while paused.',
-      'Registre RMSE de validação e normas dos coeficientes; confirme curvas idênticas em λ=0 e contagem parada durante a pausa.',
+      'Fit tree depths 1, 3 and 6 on the same training split, with at least 2 rows per leaf.',
+      'Ajuste árvores com profundidade 1, 3 e 6 na mesma divisão, com ao menos 2 linhas por folha.',
+    ),
+    BilingualText(
+      'Record actual depth, leaf counts and validation scores; choose a depth without inspecting the final test.',
+      'Registre profundidade efetiva, folhas e métricas de validação; escolha o limite sem consultar o teste final.',
     ),
   ),
   LearningExercise(

@@ -15,15 +15,20 @@ class ComparisonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.l10n;
+    final treeA = c.treeRoot(), treeB = c.treeRoot(alternate: true);
     final ridge = c.experiment == Experiment.ridge;
-    final labelA = c.experiment.isKnn
+    final labelA = c.experiment.isTree
+        ? s.t('depthShort', {'count': c.maxDepth})
+        : c.experiment.isKnn
         ? s.t('knnShort', {'count': c.neighbors})
         : ridge
         ? s.t('ridgeShort', {'value': s.number(c.regularization, 1)})
         : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed})
         : s.t('rateShort', {'value': s.number(c.learningRate, 2)});
-    final labelB = c.experiment.isKnn
+    final labelB = c.experiment.isTree
+        ? s.t('depthShort', {'count': 1})
+        : c.experiment.isKnn
         ? s.t('knnShort', {'count': 1})
         : ridge
         ? s.t('linearShort')
@@ -37,7 +42,7 @@ class ComparisonCard extends StatelessWidget {
           Text(s.t('fair'), style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
-            s.t('split', {
+            s.t(c.experiment.isDirect ? 'directSplit' : 'split', {
               'train': c.split.train.length,
               'validation': c.split.validation.length,
               'test': c.split.test.length,
@@ -55,6 +60,28 @@ class ComparisonCard extends StatelessWidget {
               ),
             ],
           ),
+          if (c.experiment.isTree && treeA != null && treeB != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              s.t('treeStats', {
+                'depthA': treeA.depth,
+                'leavesA': treeA.leafCount,
+                'depthB': treeB.depth,
+                'leavesB': treeB.leafCount,
+              }),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              treeA.isLeaf
+                  ? s.t('treeRootLeaf', {
+                      'value': s.number(treeA.prediction, 3),
+                    })
+                  : s.t('treeRootRule', {
+                      'feature': treeA.featureIndex! + 1,
+                      'value': s.number(treeA.threshold!, 3),
+                    }),
+            ),
+          ],
           if (ridge) ...[
             const SizedBox(height: 12),
             Text(
@@ -84,9 +111,11 @@ class ComparisonCard extends StatelessWidget {
               formatFailure(s, c.error!),
               style: const TextStyle(color: Color(0xFFB00020)),
             ),
-          if (c.experiment.isKnn) ...[
+          if (c.experiment.isDirect) ...[
             const SizedBox(height: 20),
-            Text(s.t('knnNoObjective')),
+            Text(
+              s.t(c.experiment.isTree ? 'treeNoObjective' : 'knnNoObjective'),
+            ),
           ] else ...[
             const SizedBox(height: 20),
             Text(

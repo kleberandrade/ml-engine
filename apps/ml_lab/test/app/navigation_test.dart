@@ -65,6 +65,8 @@ void main() {
       for (final (id, experiment) in [
         ('linear', Experiment.regression),
         ('ridge', Experiment.ridge),
+        ('tree-classification', Experiment.treeClassification),
+        ('tree-regression', Experiment.treeRegression),
         ('knn-classification', Experiment.knnClassification),
         ('knn-regression', Experiment.knnRegression),
         ('binary', Experiment.classification),

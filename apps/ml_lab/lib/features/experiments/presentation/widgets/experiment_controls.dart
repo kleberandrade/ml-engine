@@ -57,7 +57,8 @@ class _ExperimentControlsState extends State<ExperimentControls> {
                   },
           ),
           const SizedBox(height: 16),
-          if (!c.experiment.isKnn && c.experiment != Experiment.clustering) ...[
+          if (!c.experiment.isDirect &&
+              c.experiment != Experiment.clustering) ...[
             Text(s.t('rate', {'value': s.number(c.learningRate, 2)})),
             Slider(
               semanticFormatterCallback: (v) =>
@@ -114,6 +115,19 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               onChanged: (v) => c.configure(neighbors: v.round()),
             ),
             Text(s.t('knnControlHelp'), style: const TextStyle(fontSize: 13)),
+          ] else if (c.experiment.isTree) ...[
+            Text(s.t('maxDepth', {'count': c.maxDepth})),
+            Slider(
+              key: const ValueKey('tree-depth'),
+              semanticFormatterCallback: (v) =>
+                  s.t('maxDepth', {'count': v.round()}),
+              value: c.maxDepth.toDouble(),
+              min: 1,
+              max: 6,
+              divisions: 5,
+              onChanged: (v) => c.configure(maxDepth: v.round()),
+            ),
+            Text(s.t('treeControlHelp'), style: const TextStyle(fontSize: 13)),
           ] else ...[
             Text(s.t('budget', {'count': c.epochs})),
             Slider(
@@ -135,7 +149,13 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               onPressed: c.active ? null : c.start,
               icon: const Icon(Icons.play_arrow),
               label: Text(
-                s.t(c.experiment.isKnn ? 'evaluateNeighbors' : 'train'),
+                s.t(
+                  c.experiment.isTree
+                      ? 'evaluateTree'
+                      : c.experiment.isKnn
+                      ? 'evaluateNeighbors'
+                      : 'train',
+                ),
               ),
             ),
           ),
@@ -144,14 +164,14 @@ class _ExperimentControlsState extends State<ExperimentControls> {
             spacing: 6,
             runSpacing: 6,
             children: [
-              if (!c.experiment.isKnn)
+              if (!c.experiment.isDirect)
                 OutlinedButton(
                   onPressed: c.active ? c.pauseResume : null,
                   child: Text(
                     s.t(c.status == RunStatus.paused ? 'resume' : 'pause'),
                   ),
                 ),
-              if (!c.experiment.isKnn)
+              if (!c.experiment.isDirect)
                 OutlinedButton(
                   onPressed: c.active ? c.cancel : null,
                   child: Text(s.t('cancel')),

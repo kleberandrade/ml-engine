@@ -72,7 +72,7 @@ void main() {
       await tester.ensureVisible(run);
       await tester.tap(run);
       await tester.pumpAndSettle();
-      expect(c.plot.neighbors!.b, hasLength(60));
+      expect(c.plot.samples!.b, hasLength(60));
       final explanation = find.textContaining('KNN prevê a média simples');
       await tester.ensureVisible(explanation);
       await tester.pumpAndSettle();

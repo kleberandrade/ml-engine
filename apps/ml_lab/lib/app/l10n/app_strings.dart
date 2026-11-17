@@ -121,11 +121,11 @@ const messages = <String, List<String>>{
     'KNN stores training examples; it has no epochs, learning rate or optimization curve. Compare validation scores to choose k. Small k can follow noise; large k can oversmooth. The core uses exact Euclidean search with uniform weights.',
     'KNN armazena exemplos de treino; não tem épocas, taxa de aprendizado ou curva de otimização. Compare a validação para escolher k. Um k pequeno pode seguir ruído; um k grande pode suavizar demais. O núcleo usa busca euclidiana exata e pesos iguais.',
   ],
-  'knnRegions': [
+  'directRegions': [
     'Colored cells show model A only, on a sampled grid; compare A/B accuracy below.',
     'As células coloridas mostram apenas o modelo A em uma grade amostrada; compare a acurácia de A/B abaixo.',
   ],
-  'knnPlotAria': [
+  'directPlotAria': [
     'Data plot. {count} samples, {type}. No iterative training. Validation scores appear below.',
     'Gráfico de dados. {count} amostras, {type}. Sem treino iterativo. Métricas de validação abaixo.',
   ],
@@ -156,6 +156,78 @@ const messages = <String, List<String>>{
   'example-knn-regression-body': [
     '150 seeded samples with y ≈ 2 sin(x₁)+1. Compare local averages with k=5 versus k=1; no gradient iterations are needed.',
     '150 amostras reproduzíveis com y ≈ 2 sen(x₁)+1. Compare médias locais com k=5 e k=1; não há iterações de gradiente.',
+  ],
+  'chip-treeClassification': [
+    '07  Decision tree classifier',
+    '07  Árvore de classificação',
+  ],
+  'chip-treeRegression': [
+    '08  Decision tree regressor',
+    '08  Árvore de regressão',
+  ],
+  'plot-treeClassification': [
+    'Split the space with rules',
+    'Divida o espaço com regras',
+  ],
+  'plot-treeRegression': [
+    'Predict with leaf averages',
+    'Preveja com médias nas folhas',
+  ],
+  'type-treeClassification': [
+    'decision tree classification',
+    'classificação por árvore',
+  ],
+  'type-treeRegression': ['decision tree regression', 'regressão por árvore'],
+  'maxDepth': ['Maximum depth  {count}', 'Profundidade máxima  {count}'],
+  'depthShort': ['Tree depth ≤ {count}', 'Árvore com profundidade ≤ {count}'],
+  'evaluateTree': ['Fit and evaluate trees', 'Ajustar e avaliar árvores'],
+  'directSplit': [
+    'Train {train} / validation {validation} / test {test}. Same training rows, split and train-fitted scaler for A and B.',
+    'Treino {train} / validação {validation} / teste {test}. Mesmas linhas, divisão e escala ajustada no treino para A e B.',
+  ],
+  'treeControlHelp': [
+    'A uses your depth limit; B uses depth 1. Both require at least 2 training rows per leaf. After changing depth, fit again.',
+    'A usa seu limite de profundidade; B usa profundidade 1. Ambas exigem pelo menos 2 linhas de treino por folha. Após mudar a profundidade, ajuste novamente.',
+  ],
+  'treeStats': [
+    'Actual depth / leaves • A: {depthA} / {leavesA} • B: {depthB} / {leavesB}',
+    'Profundidade efetiva / folhas • A: {depthA} / {leavesA} • B: {depthB} / {leavesB}',
+  ],
+  'treeRootRule': [
+    'First rule of A: standardized x{feature} ≤ {value} goes left; otherwise right (rounded to 3 decimals).',
+    'Primeira regra de A: x{feature} padronizado ≤ {value} segue à esquerda; caso contrário, à direita (arredondado para 3 casas).',
+  ],
+  'treeRootLeaf': [
+    'A is a single leaf predicting {value}.',
+    'A é uma única folha com previsão {value}.',
+  ],
+  'treeNoObjective': [
+    'Trees fit greedy splits directly; there are no optimizer epochs, rate or cost curve. More depth can fit noise. Choose depth on validation data; reduced training error does not guarantee better test performance.',
+    'Árvores ajustam divisões gulosas diretamente; não há épocas, taxa ou curva de otimização. Maior profundidade pode ajustar ruído. Escolha pela validação; menor erro de treino não garante melhora no teste.',
+  ],
+  'explain-treeClassification': [
+    'Each node chooses the numeric feature/threshold with the largest weighted Gini decrease. Gini = 1 − sum(class fraction²). Route x ≤ threshold left; predict the majority class in its leaf, choosing the smallest numeric label on tied votes. Depth starts at zero. Tied gains prefer the lowest feature index, then threshold. Pure nodes, depth limits, small leaves or no positive gain stop growth. Greedy choices may miss globally useful splits, including zero-gain XOR.',
+    'Cada nó escolhe a variável numérica e o limiar com maior redução ponderada de Gini. Gini = 1 − soma(fração de classe²). Valores x ≤ limiar seguem à esquerda; a folha prevê a maioria, com menor rótulo numérico no empate. A profundidade começa em zero. Ganhos empatados preferem o menor índice de variável e limiar. Pureza, profundidade, folhas pequenas ou falta de ganho param o crescimento. A busca gulosa pode perder divisões úteis globalmente, inclusive XOR com ganho inicial zero.',
+  ],
+  'explain-treeRegression': [
+    'Choose splits that reduce weighted within-leaf squared error; each leaf predicts its training-target mean. Predictions are piecewise constant, not a smooth curve or learned extrapolation trend. The plot approximates leaf steps at 60 sampled x₁ values, holding standardized x₂=0. Trees do not require scaling; this lab keeps the shared train-fitted scale for consistent axes. Numeric finite data only; no pruning, missing-value routing or categorical splits.',
+    'Escolha divisões que reduzam o erro quadrático ponderado dentro das folhas; cada folha prevê a média dos alvos do treino. As previsões são constantes por região, sem curva suave ou tendência de extrapolação. O gráfico aproxima os degraus em 60 valores de x₁, fixando x₂ padronizado=0. Árvores não exigem escala; o laboratório mantém a mesma padronização ajustada no treino para os eixos. Apenas dados numéricos finitos; sem poda, tratamento de ausentes ou divisões categóricas.',
+  ],
+  'example-tree-classification': [
+    'A tree on a curved boundary',
+    'Uma árvore em fronteira curva',
+  ],
+  'example-tree-classification-body': [
+    'Compare a depth-3 classifier with a depth-1 tree on 150 seeded binary samples. Observe axis-aligned regions and validation accuracy.',
+    'Compare classificação com profundidade 3 e 1 em 150 amostras binárias reproduzíveis. Observe regiões alinhadas aos eixos e acurácia de validação.',
+  ],
+  'example-tree-regression': [
+    'A tree on a nonlinear signal',
+    'Uma árvore em um sinal não linear',
+  ],
+  'example-tree-regression-body': [
+    'Fit piecewise-constant means to y ≈ 2 sin(x₁)+1. Compare depth limits 3 and 1 with the same split and minimum leaf size.',
+    'Ajuste médias constantes por região a y ≈ 2 sen(x₁)+1. Compare limites 3 e 1 com a mesma divisão e tamanho mínimo de folha.',
   ],
   "footer": [
     "PURE DART CORE / REPRODUCIBLE SEEDS / TRAIN-ONLY PREPROCESSING",
@@ -317,8 +389,8 @@ const messages = <String, List<String>>{
   ],
   "learnTitle": ["Learn by observing the model", "Aprenda observando o modelo"],
   "learnSubtitle": [
-    "A guide to the algorithms actually implemented in ML Engine 0.3.0, based on the project tutorial and numerical conventions.",
-    "Um guia dos algoritmos realmente implementados no ML Engine 0.3.0, baseado no tutorial e nas convenções numéricas do projeto.",
+    "A guide to the algorithms actually implemented in ML Engine 0.4.0, based on the project tutorial and numerical conventions.",
+    "Um guia dos algoritmos realmente implementados no ML Engine 0.4.0, baseado no tutorial e nas convenções numéricas do projeto.",
   ],
   "foundations": ["Foundations before fitting", "Fundamentos antes do ajuste"],
   "openExample": ["Open this experiment", "Abrir este experimento"],
@@ -338,8 +410,8 @@ const messages = <String, List<String>>{
     "Cada exemplo abre o laboratório real com dados reproduzíveis e parâmetros explícitos. Abrir um exemplo substitui o experimento; trocar o idioma ou visitar Aprender preserva o estado.",
   ],
   "sourceVersion": [
-    "Source: project documentation • core 0.3.0 • Flutter 3.50.0",
-    "Fonte: documentação do projeto • núcleo 0.3.0 • Flutter 3.50.0",
+    "Source: project documentation • core 0.4.0 • Flutter 3.50.0",
+    "Fonte: documentação do projeto • núcleo 0.4.0 • Flutter 3.50.0",
   ],
   "tutorialLink": ["Tutorial and exercises", "Tutorial e exercícios"],
   "designLink": [

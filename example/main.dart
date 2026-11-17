@@ -71,6 +71,38 @@ void main() {
       [3],
     ]).single} (expected 5)',
   );
+  final tree = DecisionTreeClassifier(maxDepth: 1)
+    ..fit(
+      [
+        [0],
+        [1],
+        [2],
+        [3],
+      ],
+      [0, 0, 1, 1],
+    );
+  print(
+    'Tree split: x <= ${tree.root.threshold}; predictions ${tree.predict([
+      [1],
+      [2],
+    ])}',
+  );
+  final treeRegression = DecisionTreeRegressor(maxDepth: 1)
+    ..fit(
+      [
+        [0],
+        [1],
+        [2],
+        [3],
+      ],
+      [0, 2, 10, 12],
+    );
+  print(
+    'Tree leaf means: ${treeRegression.predict([
+      [.5],
+      [2.5],
+    ])} (expected [1,11])',
+  );
   final clusters = KMeans(k: 2, seed: 7)
     ..fit([
       [0, 0],

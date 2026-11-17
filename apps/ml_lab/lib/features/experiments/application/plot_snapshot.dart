@@ -14,7 +14,7 @@ class LinearSurface {
       intercept + coefficients[0] * x1 + coefficients[1] * x2;
 }
 
-/// Evaluated values only: painters never hold a mutable nearest-neighbor model.
+/// Evaluated values only: painters never hold a mutable direct-fit model.
 class PredictionSamples {
   final Matrix rows;
   final List<double> a, b;
@@ -33,7 +33,7 @@ class PredictionSamples {
 class PlotSnapshot {
   final Experiment experiment;
   final PlotBounds bounds;
-  final PredictionSamples? neighbors;
+  final PredictionSamples? samples;
   final Matrix scaled;
   final List<double> targets;
   final Set<int> train;
@@ -48,7 +48,7 @@ class PlotSnapshot {
       regression: regression,
     );
     PredictionSamples? samples;
-    if (session.settings.experiment.isKnn && session.hasResults) {
+    if (session.settings.experiment.isDirect && session.hasResults) {
       if (regression) {
         final rows = List.generate(
           60,
@@ -80,7 +80,7 @@ class PlotSnapshot {
     }
     return PlotSnapshot._(session, bounds, samples);
   }
-  PlotSnapshot._(ExperimentSession session, this.bounds, this.neighbors)
+  PlotSnapshot._(ExperimentSession session, this.bounds, this.samples)
     : experiment = session.settings.experiment,
       scaled = session.scaled,
       targets = session.data.y,

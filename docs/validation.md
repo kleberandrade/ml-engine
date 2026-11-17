@@ -83,3 +83,9 @@ New session/widget checks verify that held-out labels never vote, both tasks mat
 
 
 The [remote KNN CI/Pages run](https://github.com/kleberandrade/ml-engine/actions/runs/44187769406) passed on `05557d4`. Actual live bilingual classification/regression, slider/k=1 equality, retained results, mobile controls and Learn preset checks are recorded with captures in [deployment.md](deployment.md). Pub.dev accepted 0.3.0; its public archive hash and exact core-source match were checked. An independent hosted consumer installed the public package and produced class=1.0 and regression=5.0. Initial index propagation failures were resolved through an explicit official-client refresh/download before claiming successful consumption. No new coverage percentage is claimed.
+
+## Decision tree 0.4.0 validation
+
+The tree revision passes **49 Dart tests and 38 Flutter tests (87 total)**, both analyses and the architecture gate. Hand-derived fixtures check Gini 0.5→0 at threshold 1.5 and regression MSE 26→1 with leaf means 1/11. Other cases cover zero/deeper depth, recursive leaf bounds, pure/constant data, class/split ties, greedy zero-gain XOR behavior, owned/immutable fitted state, rejected refits, invalid inputs and extreme/adjacent-double thresholds. CLI results match the same analytical values.
+
+Session/widget tests verify training rows alone determine trees, exact depth-one comparison, no invented cost history/timer, bounded depths, binary CSV protection, cache invalidation/immutability, actual depth-slider interaction, translated root rules, retained results through locale/navigation and Portuguese 390×844 content at 150% text scale. Existing KNN/Ridge/linear/logistic/clustering behavior remains covered. No new coverage percentage is claimed. Build/publication/browser results are recorded separately after verification.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- Add `DecisionTreeClassifier` (weighted Gini) and `DecisionTreeRegressor` (squared error) with max depth, minimum leaf size, deterministic split/vote ties and immutable fitted nodes.
+- Preserve previous models on failed fits; handle rounded/extreme midpoints and expose root rules, actual depth and leaf counts.
+- Add PT/EN tree lab modes, depth controls, comparison with depth 1, sampled regions/steps and executable lessons/presets.
+- Reuse direct evaluation and cached immutable plot samples without artificial optimizer controls.
+- Add independent numerical, stopping, leakage, recovery, locale/navigation and mobile tests.
+
 ## 0.3.0
 
 - Add pure Dart `KNNClassifier` and `KNNRegressor` with Euclidean distance, uniform vote/mean, deterministic row/class ties, copied training data and validation.

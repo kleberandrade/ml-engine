@@ -39,7 +39,7 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       expect(c.status, RunStatus.complete);
       expect(c.score(c.split.test)!.value.isFinite, isTrue);
-      if (experiment.isKnn) {
+      if (experiment.isDirect) {
         expect(c.history, isEmpty);
       } else {
         expect(c.history.last, lessThanOrEqualTo(c.history.first));

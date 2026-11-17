@@ -91,3 +91,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 ## Nearest-neighbor evaluation
 
 [ADR 0006](adr/0006-knn-uniform-votes-and-direct-evaluation.md) adds two Estimator implementations that store copied training data and predict through uniform Euclidean neighbors. KNN completes directly in the lab and does not reuse the iterative timer/cost UI. PlotBounds keeps sampled predictions aligned with axes. PredictionSamples contains immutable numeric values cached by LabViewModel until the experiment changes; renderers never query a mutable KNN model. Model selection remains train/validation based, with k checked against the training partition.
+
+## Decision trees
+
+[ADR 0007](adr/0007-greedy-numeric-decision-trees.md) adds two greedy numeric estimators with an immutable fitted tree. Core fitting uses sorted feature candidates and prefix/suffix losses, with atomic state replacement. The lab shares the direct-fit session/cache path with KNN and renders only sampled numeric predictions. Tree summaries read immutable node metadata; painters hold no tree estimator. Maximum depth and minimum leaf size bound the teaching experiment, while validation scores guide model selection.

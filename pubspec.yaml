@@ -1,15 +1,15 @@
 name: ml_engine
-description: Pure Dart classical ML with linear, Ridge, logistic and KNN models, K-means, pipelines and evaluation.
+description: Pure Dart classical ML with regression, KNN, decision trees, K-means, pipelines and evaluation.
 homepage: https://kleberandrade.github.io/ml-engine/
 topics:
   - machine-learning
   - regression
   - clustering
   - data-science
-  - nearest-neighbors
+  - decision-trees
 repository: https://github.com/kleberandrade/ml-engine
 issue_tracker: https://github.com/kleberandrade/ml-engine/issues
-version: 0.3.0
+version: 0.4.0
 environment:
   sdk: '>=3.12.0 <4.0.0'
 dev_dependencies:

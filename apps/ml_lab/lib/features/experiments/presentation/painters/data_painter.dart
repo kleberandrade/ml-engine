@@ -32,8 +32,8 @@ class DataPainter extends CustomPainter {
       rect.bottom - (y - ymin) / (ymax - ymin) * rect.height,
     );
     if (c.experiment.isClassification &&
-        (c.modelA != null || c.neighbors != null)) {
-      final nx = c.neighbors?.columns ?? 30, ny = c.neighbors?.gridRows ?? 20;
+        (c.modelA != null || c.samples != null)) {
+      final nx = c.samples?.columns ?? 30, ny = c.samples?.gridRows ?? 20;
       final rows = [
         for (var j = 0; j < ny; j++)
           for (var i = 0; i < nx; i++)
@@ -43,7 +43,7 @@ class DataPainter extends CustomPainter {
             ],
       ];
       final decisions =
-          c.neighbors?.a ??
+          c.samples?.a ??
           rows
               .map((row) => c.modelA!.value(row[0], row[1]) >= 0 ? 1.0 : 0.0)
               .toList();
@@ -89,16 +89,15 @@ class DataPainter extends CustomPainter {
     }
     canvas.save();
     canvas.clipRect(rect);
-    if (c.experiment.isRegression &&
-        (c.modelA != null || c.neighbors != null)) {
+    if (c.experiment.isRegression && (c.modelA != null || c.samples != null)) {
       for (final alternate in [false, true]) {
         final rows =
-            c.neighbors?.rows ??
+            c.samples?.rows ??
             List.generate(60, (i) => [xmin + i / 59 * (xmax - xmin), 0.0]);
         final predictions =
-                (c.neighbors == null
+                (c.samples == null
                     ? null
-                    : (alternate ? c.neighbors!.b : c.neighbors!.a)) ??
+                    : (alternate ? c.samples!.b : c.samples!.a)) ??
                 rows
                     .map(
                       (row) => (alternate ? c.modelB : c.modelA)!.value(
@@ -113,6 +112,10 @@ class DataPainter extends CustomPainter {
           if (i == 0) {
             path.moveTo(at.dx, at.dy);
           } else {
+            if (c.experiment.isTree) {
+              final previous = point(rows[i - 1][0], predictions[i - 1]);
+              path.lineTo(at.dx, previous.dy);
+            }
             path.lineTo(at.dx, at.dy);
           }
         }

@@ -26,6 +26,16 @@ Classification accepts finite numeric class labels and chooses the most frequent
 
 Fit/scaling see training rows only. Each validation fold must fit a fresh pipeline and satisfy k<=fold.train.length. Small k can follow noise; large k may oversmooth. KNN stores examples instead of learning an extrapolation function. Select k using validation and leave the final test untouched.
 
+## Decision tree conventions
+
+`DecisionTreeClassifier(maxDepth: 5, minSamplesLeaf: 1)` and `DecisionTreeRegressor(...)` implement Estimator with finite numeric features and labels/targets. The classifier supports multiple numeric classes; lab metrics/plots remain binary. Root depth is zero; maxDepth is nonnegative and minSamplesLeaf positive. Small datasets can be a single root leaf even if smaller than minSamplesLeaf. Children of every accepted split satisfy the bound.
+
+At each node, sort every feature, consider adjacent distinct values and score prefix/suffix losses. Classification uses weighted Gini; regression uses weighted MSE via Welford moments instead of subtracting E[y²]−E[y]². Splits require impurity improvement greater than 1e-12 of the parent impurity. Gain ties within that tolerance keep the first feature index, then the lowest threshold. No zero-gain exploratory splits are performed: XOR with no useful first split remains a single majority leaf. Greedy growth is not globally optimal.
+
+Thresholds are `(low/2 + high/2)` to avoid sum overflow. If rounding reaches high, use low, preserving a nonempty partition. Prediction routes `<=` left; class leaves choose the smallest numeric label on a majority tie; regression leaves average training targets. Pure targets, constant/unsplittable features, depth limits or small partitions stop growth. Fit commits immutable nodes only after the full tree succeeds; nonfinite arithmetic throws and preserves the previous root. No input rows are retained by the fitted tree.
+
+The immutable root exposes prediction, sampleCount, impurity (Gini/MSE), featureIndex/threshold and children. Depth is actual edge depth; leafCount counts terminal nodes. Scale is not necessary for ordering-based trees, but preprocessing must still be fitted on training rows when used in a pipeline. Every CV fold builds fresh components. No missing/categorical handling, pruning, class probabilities or smooth extrapolation is provided. Fitting sorts per feature at each node; prediction costs O(depth) per sample.
+
 ## Add an estimator
 
 Implement `Estimator.fit(Matrix, List<double>)` and `Estimator.predict(Matrix)`. Validate the boundary, own any stored rows, reject prediction before fitting, and preserve the training feature count. Add an independent numerical fixture before implementing the algorithm. Plug it into `Pipeline` without importing Flutter. Models with iterative UI use should expose an explicit start/step state machine as GradientModel and KMeans do. Move genuinely large training work to an isolate/worker; do not call synchronous fit in a widget callback.

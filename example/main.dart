@@ -103,6 +103,33 @@ void main() {
       [2.5],
     ])} (expected [1,11])',
   );
+  final forest = RandomForestRegressor(nEstimators: 5, maxDepth: 0, seed: 42)
+    ..fit(
+      [
+        [0],
+        [1],
+        [2],
+      ],
+      [2, 4, 9],
+    );
+  final expectedMean =
+      forest.bootstrapIndices
+          .map(
+            (bag) =>
+                bag.map((i) => [2.0, 4.0, 9.0][i]).reduce((a, b) => a + b) /
+                bag.length,
+          )
+          .reduce((a, b) => a + b) /
+      forest.nEstimators;
+  final prediction = forest.predict([
+    [100],
+  ]).single;
+  if ((prediction - expectedMean).abs() > 1e-12) {
+    throw StateError('Bootstrap mean mismatch.');
+  }
+  print(
+    'Forest: ${forest.trees.length} stumps; mean $prediction (bootstrap mean $expectedMean)',
+  );
   final clusters = KMeans(k: 2, seed: 7)
     ..fit([
       [0, 0],

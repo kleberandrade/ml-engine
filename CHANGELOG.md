@@ -1,3 +1,11 @@
+## 0.5.0
+
+- Add RandomForestClassifier/Regressor: seeded n-row bootstrap, fresh per-node feature subsets, uniform hard votes / means, count/depth/leaf controls and immutable roots/bag indices/tree seeds.
+- Extend decision trees with opt-in maxFeatures/seed; defaults retain the all-feature behavior. Default forest maxFeatures is floor(sqrt(d)), at least one, for both tasks.
+- Keep refits atomic, including numerical failure after partially building a forest. Document strict subset stopping, tie rules and synchronous/memory limits.
+- Add PT/EN Flutter forest modes, count/depth sliders, comparison with a single full-training all-feature tree at equal depth, honest aggregate summaries and two-feature regression samples.
+- Add core numerical/sampling/recovery tests and session/widget checks for leakage, deterministic results, controls, cache invalidation, locale/navigation and mobile text scaling.
+
 # Changelog
 
 ## 0.4.0

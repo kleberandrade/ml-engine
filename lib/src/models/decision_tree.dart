@@ -37,10 +37,17 @@ final class DecisionTreeNode {
 /// label. Root depth is zero, so maxDepth=0 yields one constant leaf. Splits must
 /// improve impurity by more than 1e-12 of the parent's impurity. Equal gains within
 /// that tolerance favor the lowest feature index, then the lowest threshold.
+/// With maxFeatures=null (default), all features are considered. An explicit
+/// positive maxFeatures draws a fresh seeded subset at each eligible node; only
+/// that subset is searched, with no fallback if it cannot improve impurity.
 /// No missing values, categorical splits, pruning or probabilities are provided.
 class DecisionTreeClassifier extends _DecisionTree {
-  DecisionTreeClassifier({super.maxDepth = 5, super.minSamplesLeaf = 1})
-    : super(true);
+  DecisionTreeClassifier({
+    super.maxDepth = 5,
+    super.minSamplesLeaf = 1,
+    super.maxFeatures,
+    super.seed = 42,
+  }) : super(true);
 }
 
 /// Greedy binary regressor with weighted squared-error reduction and leaf means.
@@ -53,12 +60,17 @@ class DecisionTreeClassifier extends _DecisionTree {
 /// need a worker/isolate. Prediction takes O(depth) time per row. No optimization
 /// epochs or extrapolation trend are learned. Scaling is not required.
 class DecisionTreeRegressor extends _DecisionTree {
-  DecisionTreeRegressor({super.maxDepth = 5, super.minSamplesLeaf = 1})
-    : super(false);
+  DecisionTreeRegressor({
+    super.maxDepth = 5,
+    super.minSamplesLeaf = 1,
+    super.maxFeatures,
+    super.seed = 42,
+  }) : super(false);
 }
 
 abstract class _DecisionTree implements Estimator {
-  final int maxDepth, minSamplesLeaf;
+  final int maxDepth, minSamplesLeaf, seed;
+  final int? maxFeatures;
   final bool _classification;
   DecisionTreeNode? _root;
   int? _columns;
@@ -66,9 +78,15 @@ abstract class _DecisionTree implements Estimator {
     this._classification, {
     required this.maxDepth,
     required this.minSamplesLeaf,
+    required this.maxFeatures,
+    required this.seed,
   }) {
-    if (maxDepth < 0 || minSamplesLeaf < 1) {
-      throw ArgumentError('Require maxDepth >= 0 and minSamplesLeaf >= 1.');
+    if (maxDepth < 0 ||
+        minSamplesLeaf < 1 ||
+        (maxFeatures != null && maxFeatures! < 1)) {
+      throw ArgumentError(
+        'Require maxDepth >= 0, minSamplesLeaf >= 1 and positive maxFeatures.',
+      );
     }
   }
   DecisionTreeNode get root =>
@@ -79,7 +97,15 @@ abstract class _DecisionTree implements Estimator {
   @override
   void fit(Matrix x, List<double> y) {
     final data = Dataset(x, y);
-    final candidate = _build(data, List.generate(x.length, (i) => i), 0);
+    if (maxFeatures != null && maxFeatures! > data.x.first.length) {
+      throw ArgumentError('maxFeatures exceeds feature count.');
+    }
+    final candidate = _build(
+      data,
+      List.generate(x.length, (i) => i),
+      0,
+      Random(seed),
+    );
     _root = candidate;
     _columns = x.first.length;
   }
@@ -131,7 +157,12 @@ abstract class _DecisionTree implements Estimator {
     return result;
   }
 
-  DecisionTreeNode _build(Dataset data, List<int> rows, int level) {
+  DecisionTreeNode _build(
+    Dataset data,
+    List<int> rows,
+    int level,
+    Random random,
+  ) {
     final n = rows.length,
         prediction = _prediction(rows.map((i) => data.y[i]).toList());
     final impurity = _losses(rows, data.y).last / n;
@@ -142,7 +173,12 @@ abstract class _DecisionTree implements Estimator {
     final tolerance = impurity * 1e-12;
     int? feature;
     double? threshold;
-    for (var j = 0; j < data.x.first.length; j++) {
+    var features = List.generate(data.x.first.length, (i) => i);
+    if (maxFeatures != null && maxFeatures! < features.length) {
+      features.shuffle(random);
+      features = features.take(maxFeatures!).toList()..sort();
+    }
+    for (final j in features) {
       final sorted = List<int>.of(rows)
         ..sort((a, b) {
           final order = data.x[a][j].compareTo(data.x[b][j]);
@@ -171,8 +207,8 @@ abstract class _DecisionTree implements Estimator {
       impurity,
       feature,
       threshold,
-      _build(data, left, level + 1),
-      _build(data, right, level + 1),
+      _build(data, left, level + 1, random),
+      _build(data, right, level + 1, random),
     );
   }
 

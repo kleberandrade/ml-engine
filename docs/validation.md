@@ -92,3 +92,11 @@ Session/widget tests verify training rows alone determine trees, exact depth-one
 
 
 [Remote tree CI/Pages](https://github.com/kleberandrade/ml-engine/actions/runs/44191198810) passed on `5b2ec74`. Actual bilingual rules/metrics, retained state, depth-slider equivalence, mobile controls and executable Learn preset checks are recorded with fresh captures in [deployment.md](deployment.md). The public 0.4.0 archive matches the core and an isolated hosted consumer reproduced threshold=1.5, classes=[0,1], means=[1,11]. See [pub-v0.4.0.json](pub-v0.4.0.json). No new coverage or generalized performance percentage is claimed.
+
+## Random Forest 0.5.0 local verification (November 17, 2026)
+
+The latest suite supersedes earlier historical counts: 60 Dart tests (including 11 new forest cases) and 44 Flutter tests (including four forest session and two widget cases). Core/Flutter analyzers, architecture boundary gate and the executable CLI example pass. The forest CLI independently computes a mean of bootstrap means and recovers 4.533333333333333. Regression tests cover actual later-tree numerical failure preserving all previous roots/bags/seeds, not just invalid-input rejection. Lab tests cover train-only fitting, same-depth full-training reference, count-one non-equivalence, two varying regression inputs, seeded repeats, count/depth boundaries, immutable cache invalidation, binary CSV preservation, real sliders, locale/navigation state and 390×844 at 150% text. No coverage percentage is inferred from test count.
+
+Compatible dependency catalog reports were refreshed: direct versions remain current for the selected toolchain; material_color_utilities 0.13.0 and test_api 0.7.14 remain constrained by Flutter 3.50.0 despite newer catalog versions. No overrides or SDK changes were applied. Tests and release build do not run concurrently; only the isolated SDK/cache was used. Public CI, Pages inspection and package evidence are recorded after verification.
+
+Local Pages release build succeeded; the artifact gate verifies base `/ml-engine/`, 28 manifest assets, content-hashed entry point and bundled CanvasKit.

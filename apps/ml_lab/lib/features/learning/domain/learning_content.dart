@@ -87,6 +87,36 @@ const learningTopics = [
     preset: 'tree-regression',
   ),
   LearningTopic(
+    BilingualText(
+      "Random Forest classification",
+      "Classificação Random Forest",
+    ),
+    BilingualText(
+      "Each tree draws n training rows with replacement and a new random subset of features at every split. The forest votes on tree class predictions with equal weights; a tie chooses the smallest numeric label. This is not a probability estimate. The core accepts multiclass labels; the lab shows binary data. The default subset is floor(sqrt(features)), at least one. If selected features have no positive gain, that node stops without searching other features.",
+      "Cada árvore sorteia n linhas do treino com reposição e um novo subconjunto de variáveis em cada divisão. A floresta vota nas classes previstas pelas árvores com pesos iguais; o empate escolhe o menor rótulo numérico. Isso não estima probabilidades. O núcleo aceita múltiplas classes; o laboratório mostra dados binários. O padrão usa floor(sqrt(variáveis)), no mínimo uma. Sem ganho positivo nas variáveis sorteadas, o nó para sem buscar outras variáveis.",
+    ),
+    "ŷ = mode(h₁(x), …, hT(x))",
+    BilingualText(
+      "A uses bootstrap samples and one randomly chosen feature per split (two input features). B is one all-feature tree on the full training split at the same depth. Even one forest tree differs from B.",
+      "A usa amostras bootstrap e uma variável aleatória por divisão (duas variáveis de entrada). B é uma árvore com todas as variáveis e todo o treino na mesma profundidade. Mesmo uma árvore da floresta difere de B.",
+    ),
+    preset: "forest-classification",
+  ),
+  LearningTopic(
+    BilingualText("Random Forest regression", "Regressão Random Forest"),
+    BilingualText(
+      "Average the numeric predictions of independently randomized trees. Each leaf predicts its bootstrap-target mean. The default feature subset is floor(sqrt(features)) for regression too. The generated target depends on both inputs. The plot samples 60 x₁ positions with standardized x₂=0: it is a conditional slice, while points can have other x₂ values. Averaging may reduce variance, but cannot guarantee improved test error or extrapolate trends beyond leaf predictions. Seeded results repeat within the same SDK; no pruning or feature importance is supplied.",
+      "Calcule a média das previsões numéricas das árvores aleatórias. Cada folha prevê a média dos alvos bootstrap. A regressão também usa floor(sqrt(variáveis)) por padrão. O alvo gerado depende das duas entradas. O gráfico amostra 60 posições x₁ com x₂ padronizado=0: é um recorte condicional; os pontos podem ter outros x₂. A média pode reduzir variância, mas não garante menor erro de teste nem extrapola tendências além das folhas. A semente repete resultados no mesmo SDK; não há poda ou importância de variáveis.",
+    ),
+    "ŷ = Σₜ hₜ(x) / T",
+    BilingualText(
+      "A uses bootstrap samples and one randomly chosen feature per split (two input features). B is one all-feature tree on the full training split at the same depth. Even one forest tree differs from B.",
+      "A usa amostras bootstrap e uma variável aleatória por divisão (duas variáveis de entrada). B é uma árvore com todas as variáveis e todo o treino na mesma profundidade. Mesmo uma árvore da floresta difere de B.",
+    ),
+    preset: "forest-regression",
+  ),
+
+  LearningTopic(
     BilingualText('KNN classification', 'Classificação KNN'),
     BilingualText(
       'Store training rows and find the k closest to each query in Euclidean distance. Each row contributes one vote; predict the most frequent class. Features must be scaled using training statistics only.',
@@ -181,12 +211,12 @@ const learningExercises = [
   ),
   LearningExercise(
     BilingualText(
-      '2. Control tree complexity',
-      '2. Controle a complexidade da árvore',
+      '2. Control forest complexity',
+      '2. Controle a complexidade da floresta',
     ),
     BilingualText(
-      'Fit tree depths 1, 3 and 6 on the same training split, with at least 2 rows per leaf.',
-      'Ajuste árvores com profundidade 1, 3 e 6 na mesma divisão, com ao menos 2 linhas por folha.',
+      'Compare 1, 15 and 25 forest trees at depths 1, 3 and 6 on the same split. Keep the single-tree baseline at the selected depth; choose by validation.',
+      'Compare 1, 15 e 25 árvores nas profundidades 1, 3 e 6 na mesma divisão. Mantenha a árvore de comparação na profundidade selecionada; escolha pela validação.',
     ),
     BilingualText(
       'Record actual depth, leaf counts and validation scores; choose a depth without inspecting the final test.',

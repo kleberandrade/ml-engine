@@ -6,19 +6,25 @@ enum Experiment {
   knnClassification,
   knnRegression,
   treeClassification,
-  treeRegression;
+  treeRegression,
+  forestClassification,
+  forestRegression;
 
   bool get isRegression =>
       this == regression ||
       this == ridge ||
       this == knnRegression ||
-      this == treeRegression;
+      this == treeRegression ||
+      this == forestRegression;
   bool get isClassification =>
       this == classification ||
       this == knnClassification ||
-      this == treeClassification;
+      this == treeClassification ||
+      this == forestClassification;
   bool get isTree => this == treeClassification || this == treeRegression;
-  bool get isDirect => isKnn || isTree;
+  bool get isForest => this == forestClassification || this == forestRegression;
+  bool get isTreeBased => isTree || isForest;
+  bool get isDirect => isKnn || isTreeBased;
   bool get isKnn => this == knnClassification || this == knnRegression;
 }
 
@@ -33,7 +39,7 @@ class ExperimentScore {
 /// Immutable, validated settings for a bounded teaching experiment.
 class ExperimentSettings {
   final Experiment experiment;
-  final int seed, epochs, clusters, neighbors, maxDepth;
+  final int seed, epochs, clusters, neighbors, maxDepth, nEstimators;
   final double learningRate, regularization;
   ExperimentSettings({
     this.experiment = Experiment.regression,
@@ -42,9 +48,13 @@ class ExperimentSettings {
     this.clusters = 3,
     this.neighbors = 5,
     this.maxDepth = 3,
+    this.nEstimators = 15,
     this.learningRate = .08,
     this.regularization = 1,
   }) {
+    if (nEstimators < 1 || nEstimators > 25) {
+      throw ArgumentError("Lab trees must be between 1 and 25.");
+    }
     if (maxDepth < 1 || maxDepth > 6) {
       throw ArgumentError('Lab depth must be between 1 and 6.');
     }
@@ -73,6 +83,7 @@ class ExperimentSettings {
     int? clusters,
     int? neighbors,
     int? maxDepth,
+    int? nEstimators,
     double? learningRate,
     double? regularization,
   }) => ExperimentSettings(
@@ -82,7 +93,20 @@ class ExperimentSettings {
     clusters: clusters ?? this.clusters,
     neighbors: neighbors ?? this.neighbors,
     maxDepth: maxDepth ?? this.maxDepth,
+    nEstimators: nEstimators ?? this.nEstimators,
     learningRate: learningRate ?? this.learningRate,
     regularization: regularization ?? this.regularization,
+  );
+}
+
+/// Read-only aggregate metadata; a forest has no single root rule.
+class ForestSummary {
+  final int trees, depth, leaves, featuresPerSplit, samplesPerTree;
+  const ForestSummary(
+    this.trees,
+    this.depth,
+    this.leaves,
+    this.featuresPerSplit,
+    this.samplesPerTree,
   );
 }

@@ -37,6 +37,73 @@ extension LocalizedContext on BuildContext {
 }
 
 const messages = <String, List<String>>{
+  "chip-forestClassification": [
+    "09  Random Forest classifier",
+    "09  Random Forest classificação",
+  ],
+  "chip-forestRegression": [
+    "10  Random Forest regressor",
+    "10  Random Forest regressão",
+  ],
+  "plot-forestClassification": [
+    "Combine randomized trees",
+    "Combine árvores aleatórias",
+  ],
+  "plot-forestRegression": [
+    "Average many leaf predictions",
+    "Combine as previsões das folhas",
+  ],
+  "type-forestClassification": [
+    "Random Forest classification",
+    "classificação Random Forest",
+  ],
+  "type-forestRegression": [
+    "Random Forest regression",
+    "regressão Random Forest",
+  ],
+  "forestTrees": ["Number of trees: {count}", "Número de árvores: {count}"],
+  "forestShort": [
+    "Forest: {count} trees · depth ≤ {depth}",
+    "Floresta: {count} árvores · profundidade ≤ {depth}",
+  ],
+  "evaluateForest": ["Fit and evaluate forest", "Ajustar e avaliar floresta"],
+  "forestControlHelp": [
+    "A uses bootstrap samples and one randomly chosen feature per split (two input features). B is one all-feature tree on the full training split at the same depth. Even one forest tree differs from B.",
+    "A usa amostras bootstrap e uma variável aleatória por divisão (duas variáveis de entrada). B é uma árvore com todas as variáveis e todo o treino na mesma profundidade. Mesmo uma árvore da floresta difere de B.",
+  ],
+  "forestStats": [
+    "A: {count} trees, actual maximum depth {depth}, {leaves} total leaves; {features} feature per split, {samples} draws per tree. B: depth {depthB}, {leavesB} leaves.",
+    "A: {count} árvores, profundidade máxima efetiva {depth}, {leaves} folhas no total; {features} variável por divisão, {samples} sorteios por árvore. B: profundidade {depthB}, {leavesB} folhas.",
+  ],
+  "forestNoObjective": [
+    "The forest fits directly, without optimizer epochs or a cost curve. More trees can stabilize predictions but increase work; depth controls each tree’s complexity. Neither guarantees a better validation score. Select settings on validation; no out-of-bag estimate is computed.",
+    "A floresta é ajustada diretamente, sem épocas de otimização ou curva de custo. Mais árvores podem estabilizar previsões e aumentam o trabalho; a profundidade controla a complexidade de cada árvore. Nenhuma garante melhor validação. Escolha pela validação; não há estimativa out-of-bag.",
+  ],
+  "explain-forestClassification": [
+    "Each tree draws n training rows with replacement and a new random subset of features at every split. The forest votes on tree class predictions with equal weights; a tie chooses the smallest numeric label. This is not a probability estimate. The core accepts multiclass labels; the lab shows binary data. The default subset is floor(sqrt(features)), at least one. If selected features have no positive gain, that node stops without searching other features.",
+    "Cada árvore sorteia n linhas do treino com reposição e um novo subconjunto de variáveis em cada divisão. A floresta vota nas classes previstas pelas árvores com pesos iguais; o empate escolhe o menor rótulo numérico. Isso não estima probabilidades. O núcleo aceita múltiplas classes; o laboratório mostra dados binários. O padrão usa floor(sqrt(variáveis)), no mínimo uma. Sem ganho positivo nas variáveis sorteadas, o nó para sem buscar outras variáveis.",
+  ],
+  "explain-forestRegression": [
+    "Average the numeric predictions of independently randomized trees. Each leaf predicts its bootstrap-target mean. The default feature subset is floor(sqrt(features)) for regression too. The generated target depends on both inputs. The plot samples 60 x₁ positions with standardized x₂=0: it is a conditional slice, while points can have other x₂ values. Averaging may reduce variance, but cannot guarantee improved test error or extrapolate trends beyond leaf predictions. Seeded results repeat within the same SDK; no pruning or feature importance is supplied.",
+    "Calcule a média das previsões numéricas das árvores aleatórias. Cada folha prevê a média dos alvos bootstrap. A regressão também usa floor(sqrt(variáveis)) por padrão. O alvo gerado depende das duas entradas. O gráfico amostra 60 posições x₁ com x₂ padronizado=0: é um recorte condicional; os pontos podem ter outros x₂. A média pode reduzir variância, mas não garante menor erro de teste nem extrapola tendências além das folhas. A semente repete resultados no mesmo SDK; não há poda ou importância de variáveis.",
+  ],
+  "example-forest-classification": [
+    "A forest on a curved boundary",
+    "Uma floresta em uma fronteira curva",
+  ],
+  "example-forest-classification-body": [
+    "Compare 15 randomized depth-3 trees with one depth-3 tree on the same train-only scaled split. Change the count and depth; evaluate held-out accuracy.",
+    "Compare 15 árvores aleatórias de profundidade 3 com uma árvore de profundidade 3 na mesma divisão com escala ajustada no treino. Altere quantidade e profundidade; avalie a acurácia reservada.",
+  ],
+  "example-forest-regression": [
+    "A forest on a two-feature signal",
+    "Uma floresta em um sinal com duas variáveis",
+  ],
+  "example-forest-regression-body": [
+    "Average 15 randomized trees for a noisy sinusoidal target with a second-feature contribution. Compare validation RMSE with a single tree.",
+    "Combine 15 árvores aleatórias para um alvo senoidal com ruído e contribuição da segunda variável. Compare o RMSE de validação com uma árvore única.",
+  ],
+
   'languageEnglish': ['English (United Kingdom)', 'Inglês (Reino Unido)'],
   'languagePortuguese': ['Portuguese (Brazil)', 'Português (Brasil)'],
   'selected': ['selected', 'selecionado'],

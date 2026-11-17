@@ -11,7 +11,7 @@
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
-**Version 0.4.0.** Pure Dart classical ML, including Ridge, KNN and decision trees with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
+**Version 0.5.0.** Pure Dart classical ML, including Ridge, KNN, decision trees and Random Forest with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
@@ -22,6 +22,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 - Multivariate linear/Ridge regression (unpenalized intercept, configurable L2) and binary logistic regression, intercepts, stable logistic loss and full-batch gradient descent with cost history.
 - KNN classification (finite numeric labels) and regression with uniform weights, Euclidean distance, configurable k and deterministic tie rules.
 - Decision tree classification (Gini) and regression (squared error), max depth, minimum leaf size, immutable fitted nodes and deterministic greedy splits.
+- Random Forest classification (hard votes) and regression (mean), seeded bootstrap, per-node feature subsets, tree-count/depth controls and immutable fitted metadata.
 - Seeded K-means++ initialization and Lloyd updates, inertia, centroids and prediction.
 - StandardScaler (population variance), MinMaxScaler, and a fit/transform/predict pipeline.
 - Seeded train/validation/test splits, shuffled K-fold, stratified K-fold and leakage-safe cross validation through fresh pipeline factories.
@@ -56,6 +57,19 @@ The GitHub Pages workflow builds with `--base-href /ml-engine/ --no-web-resource
 
 Open http://127.0.0.1:8769 in a browser. The verified build targets JavaScript with CanvasKit, not Wasm. `--no-wasm-dry-run` skips an optional compatibility probe; no Wasm compatibility claim is made. The lab is Web-only in this delivery; no Android/iOS/desktop build has been checked.
 
+## Random Forest
+
+```dart
+final forest = RandomForestRegressor(
+  nEstimators: 25, maxDepth: 4, minSamplesLeaf: 2, seed: 42,
+);
+forest.fit(xTrain, yTrain);
+final predictions = forest.predict(xValidation);
+// Use RandomForestClassifier for finite numeric class labels.
+```
+
+Every tree bootstraps n training rows with replacement and samples fresh features per split. The default feature count is `max(1, floor(sqrt(d)))` for **both** tasks; set `maxFeatures` explicitly to change it. Classification uses equal hard votes (smallest label wins a tie), regression averages tree predictions. These conventions may differ from other libraries. The lab bounds trees to 1–25 and depth to 1–6, comparing a forest against an all-feature, unbootstrapped tree at the **same depth**. One forest tree still differs from that reference. Inspect immutable roots, bootstrap indices and seeds; no OOB estimate, feature importance or probability API is implied. See [sampling and architecture](https://github.com/kleberandrade/ml-engine/blob/main/docs/adr/0008-seeded-bootstrap-random-forests.md).
+
 ## Use the core
 
 ```dart
@@ -70,13 +84,13 @@ final predictions = pipeline.predict([[4]]); // approximately [9]
 final transformed = pipeline.transform([[4]]); // train-fitted scaling
 ```
 
-The core is published as [`ml_engine 0.4.0`](https://pub.dev/packages/ml_engine/versions/0.4.0), including decision trees. Install with:
+The core is published as [`ml_engine 0.5.0`](https://pub.dev/packages/ml_engine/versions/0.5.0), including Random Forest. Install with:
 
 ```sh
 dart pub add ml_engine
 ```
 
-For version 0.4.0, declare `ml_engine: ^0.4.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
+For version 0.5.0, declare `ml_engine: ^0.5.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
 
 ```dart
 Pipeline create() => Pipeline(StandardScaler(), LinearRegression());
@@ -157,7 +171,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 - [Português: guia rápido](https://github.com/kleberandrade/ml-engine/blob/main/docs/quickstart.pt-BR.md)
 - [Action log](https://github.com/kleberandrade/ml-engine/blob/main/docs/work-log.md)
 - [GitHub metadata](https://github.com/kleberandrade/ml-engine/blob/main/docs/github-metadata.json)
-- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.4.0.md)
+- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.5.0.md)
 
 ## License and credits
 

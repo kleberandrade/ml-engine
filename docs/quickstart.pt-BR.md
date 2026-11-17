@@ -10,7 +10,7 @@ A padronização aprende somente no treino. Use validação para escolher parâm
 
 CSV: cabeçalho exato `x1,x2,y`, 10–500 linhas numéricas, sem valores ausentes, NaN ou infinito. Na classificação, y precisa ser 0 ou 1. No agrupamento, y é ignorado. Há mensagens de erro sem descartar o conjunto atual.
 
-O núcleo está publicado como [ml_engine 0.4.0 no pub.dev](https://pub.dev/packages/ml_engine/versions/0.4.0). Instale com `dart pub add ml_engine`. O código está público em [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine), com CI e documentação. Florestas, Gradient Boosting, PCA, importância por permutação e SHAP pertencem ao roadmap; não são recursos implementados.
+O núcleo está publicado como [ml_engine 0.5.0 no pub.dev](https://pub.dev/packages/ml_engine/versions/0.5.0). Instale com `dart pub add ml_engine`. O código está público em [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine), com CI e documentação. Gradient Boosting, PCA, importância por permutação e SHAP pertencem ao roadmap; não são recursos implementados.
 
 A navbar oferece Laboratório, Aprender e Exemplos, além da documentação e do GitHub. O seletor EN/PT-BR traduz controles, mensagens, ajuda e conteúdo educativo; a troca preserva o experimento, a curva e o rascunho CSV. Só a preferência de idioma fica armazenada no navegador, quando permitido. A área Aprender contém fórmulas explicadas e cinco exercícios; os exemplos abrem os algoritmos e dados realmente implementados. Abrir um exemplo substitui o experimento atual.
 
@@ -42,4 +42,15 @@ final arvore = DecisionTreeRegressor(maxDepth: 3, minSamplesLeaf: 2);
 arvore.fit(xTreino, yTreino);
 final previsoes = arvore.predict(xValidacao);
 print(arvore.root.threshold); // Regra imutável; null se for uma folha.
+```
+
+Na versão **0.5.0**, Random Forest oferece classificação por votos das árvores (empate pelo menor rótulo) e regressão pela média. Cada árvore sorteia n linhas com reposição e novas variáveis por divisão. O padrão é `max(1, floor(sqrt(d)))` para ambas as tarefas. Escolha 1–25 árvores e profundidade 1–6; A usa a floresta e B uma árvore com todas as variáveis e todo o treino na mesma profundidade. Uma árvore na floresta ainda é aleatória e não equivale a B. Não há épocas ou curva de otimização. O resumo mostra contagem, profundidade efetiva máxima e folhas totais, sem inventar uma regra única para a floresta.
+
+O exemplo de regressão depende das duas variáveis. Os degraus mostram 60 amostras em x₂ padronizado=0; os pontos observados podem ter outros x₂. Mais árvores podem estabilizar previsões e custam mais trabalho; profundidade controla cada árvore. Escolha na validação, sem garantia de melhora no teste. Uma variável sorteada sem ganho positivo pode interromper um nó; não há busca adicional. Não são fornecidos OOB, importância, poda, categorias ou probabilidades. A semente reproduz no mesmo SDK.
+
+```dart
+final floresta = RandomForestRegressor(nEstimators: 15, maxDepth: 3, seed: 42);
+floresta.fit(xTreino, yTreino);
+final previsoes = floresta.predict(xValidacao);
+// RandomForestClassifier usa a mesma configuração para classes numéricas.
 ```

@@ -1,8 +1,8 @@
 # Roadmap (not implemented)
 
-This first delivery includes linear/Ridge/logistic regression, uniform KNN and decision tree classification/regression, K-means++, preprocessing, evaluation and the Flutter teaching lab. The following are future directions, not existing APIs or promised release dates.
+This first delivery includes linear/Ridge/logistic regression, uniform KNN, decision tree and Random Forest classification/regression, K-means++, preprocessing, evaluation and the Flutter teaching lab. The following are future directions, not existing APIs or promised release dates.
 
-1. **Ensembles after validated trees:** build Random Forest and then an original Gradient Boosting implementation, reusing the tree boundary with deterministic sampling/feature subsets, explicit stopping/regularization rules, independent fixtures and overfitting demonstrations. These ensembles are not included in 0.4.0.
+1. **Boosting after validated forests:** build an original Gradient Boosting implementation, reusing the tree boundary with deterministic sampling/feature subsets, explicit stopping/regularization rules, independent fixtures and overfitting demonstrations. Random Forest ships in 0.5.0; Gradient Boosting remains unimplemented.
 2. PCA, feature selection and permutation importance, evaluated inside the training fold. Permutation importance measures score degradation under shuffling; correlated features complicate its interpretation.
 3. Optional integrations with external backends only after versioning, licensing, portability and numerical compatibility are verified.
 4. SHAP explanations as a separate research/integration effort. SHAP means Shapley-value-based feature attribution under specified assumptions; it is not a synonym for permutation importance, tree split gain or coefficients. No SHAP implementation is included.
@@ -16,3 +16,5 @@ Technical references: [Ridge and its L2 objective](https://scikit-learn.org/stab
 Optional KNN distance weighting and accelerated neighbor indexes remain future work; version 0.3.0 deliberately provides uniform exact search.
 
 Tree pruning, missing/categorical handling and calibrated probabilities remain separate future features; 0.4.0 provides bounded-depth greedy numeric trees.
+
+Random Forest OOB evaluation, feature importance, probability aggregation and workers remain future work. Version 0.5.0 provides uniform hard voting / averaging, seeded bootstrap and per-node random feature subsets.

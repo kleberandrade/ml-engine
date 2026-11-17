@@ -25,6 +25,8 @@ class LabViewModel extends ChangeNotifier {
   Experiment get experiment => _settings.experiment;
   int get seed => _settings.seed;
   int get epochs => _settings.epochs;
+  int get nEstimators => _settings.nEstimators;
+  ForestSummary? get forestSummary => _session.forestSummary;
   int get maxDepth => _settings.maxDepth;
   DecisionTreeNode? treeRoot({bool alternate = false}) =>
       _session.treeRoot(alternate: alternate);
@@ -56,6 +58,7 @@ class LabViewModel extends ChangeNotifier {
     int? clusters,
     int? neighbors,
     int? maxDepth,
+    int? nEstimators,
     double? learningRate,
     double? regularization,
   }) {
@@ -68,6 +71,7 @@ class LabViewModel extends ChangeNotifier {
       clusters: clusters,
       neighbors: neighbors,
       maxDepth: maxDepth,
+      nEstimators: nEstimators,
       learningRate: learningRate,
       regularization: regularization,
     );

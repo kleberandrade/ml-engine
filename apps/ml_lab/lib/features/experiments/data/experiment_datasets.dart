@@ -17,12 +17,16 @@ Dataset generateDataset(ExperimentSettings settings) {
         b * .3 + [-1, -1, 2][c],
       ]);
       y.add(c.toDouble());
+    } else if (settings.experiment == Experiment.forestRegression) {
+      x.add([a, b]);
+      y.add(2 * sin(a) + .3 * b + 1 + (random.nextDouble() - .5) * .8);
     } else if ((settings.experiment == Experiment.knnRegression ||
         settings.experiment == Experiment.treeRegression)) {
       x.add([a, 0]);
       y.add(2 * sin(a) + 1 + (random.nextDouble() - .5) * .8);
     } else if ((settings.experiment == Experiment.knnClassification ||
-        settings.experiment == Experiment.treeClassification)) {
+        settings.experiment == Experiment.treeClassification ||
+        settings.experiment == Experiment.forestClassification)) {
       x.add([a, b]);
       y.add(a * a + b * b + (random.nextDouble() - .5) * .8 < 4 ? 1 : 0);
     } else {

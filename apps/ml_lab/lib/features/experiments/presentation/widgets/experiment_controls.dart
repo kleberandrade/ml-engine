@@ -102,6 +102,19 @@ class _ExperimentControlsState extends State<ExperimentControls> {
             Text(s.t('ridgeControlHelp'), style: const TextStyle(fontSize: 13)),
             const SizedBox(height: 12),
           ],
+          if (c.experiment.isForest) ...[
+            Text(s.t('forestTrees', {'count': c.nEstimators})),
+            Slider(
+              key: const ValueKey('forest-trees'),
+              value: c.nEstimators.toDouble(),
+              min: 1,
+              max: 25,
+              divisions: 24,
+              semanticFormatterCallback: (v) =>
+                  s.t('forestTrees', {'count': v.round()}),
+              onChanged: (v) => c.configure(nEstimators: v.round()),
+            ),
+          ],
           if (c.experiment.isKnn) ...[
             Text(s.t('neighbors', {'count': c.neighbors})),
             Slider(
@@ -115,7 +128,7 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               onChanged: (v) => c.configure(neighbors: v.round()),
             ),
             Text(s.t('knnControlHelp'), style: const TextStyle(fontSize: 13)),
-          ] else if (c.experiment.isTree) ...[
+          ] else if (c.experiment.isTreeBased) ...[
             Text(s.t('maxDepth', {'count': c.maxDepth})),
             Slider(
               key: const ValueKey('tree-depth'),
@@ -127,7 +140,12 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               divisions: 5,
               onChanged: (v) => c.configure(maxDepth: v.round()),
             ),
-            Text(s.t('treeControlHelp'), style: const TextStyle(fontSize: 13)),
+            Text(
+              s.t(
+                c.experiment.isForest ? 'forestControlHelp' : 'treeControlHelp',
+              ),
+              style: const TextStyle(fontSize: 13),
+            ),
           ] else ...[
             Text(s.t('budget', {'count': c.epochs})),
             Slider(
@@ -150,7 +168,9 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               icon: const Icon(Icons.play_arrow),
               label: Text(
                 s.t(
-                  c.experiment.isTree
+                  c.experiment.isForest
+                      ? 'evaluateForest'
+                      : c.experiment.isTree
                       ? 'evaluateTree'
                       : c.experiment.isKnn
                       ? 'evaluateNeighbors'

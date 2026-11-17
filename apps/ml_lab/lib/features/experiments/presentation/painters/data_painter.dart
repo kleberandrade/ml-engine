@@ -112,7 +112,7 @@ class DataPainter extends CustomPainter {
           if (i == 0) {
             path.moveTo(at.dx, at.dy);
           } else {
-            if (c.experiment.isTree) {
+            if (c.experiment.isTreeBased) {
               final previous = point(rows[i - 1][0], predictions[i - 1]);
               path.lineTo(at.dx, previous.dy);
             }

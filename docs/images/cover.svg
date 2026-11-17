@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="ML Engine conceptual cover: linear and Ridge lines, KNN neighborhood, decision-tree branches, binary boundary and cluster centers">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="ML Engine conceptual cover: linear and Ridge lines, KNN neighborhood, Random Forest branches, binary boundary and cluster centers">
 <rect width="1200" height="630" fill="#f4f6f3"/>
 <text x="72" y="100" fill="#006b62" font-family="sans-serif" font-size="22" letter-spacing="5">ML / ENGINE</text>
 <text x="72" y="202" fill="#172b36" font-family="sans-serif" font-size="62" font-weight="bold">Make learning visible.</text>
@@ -14,5 +14,6 @@
 <g fill="#6356a0"><circle cx="840" cy="410" r="7"/><circle cx="855" cy="385" r="7"/><circle cx="875" cy="420" r="7"/></g><g fill="#006b62"><circle cx="1010" cy="375" r="7"/><circle cx="1040" cy="392" r="7"/><circle cx="1035" cy="350" r="7"/></g><g fill="#8d451f"><circle cx="945" cy="460" r="7"/><circle cx="970" cy="480" r="7"/><circle cx="930" cy="480" r="7"/></g>
 <g stroke="#172b36" stroke-width="3"><path d="M848 402h20m-10-10v20M1015 372h20m-10-10v20M938 473h20m-10-10v20"/></g>
 <path d="M1078 438v10m0 0l-30 26m30-26l30 26" stroke="#172b36" stroke-width="3" fill="none"/><g fill="#006b62"><circle cx="1078" cy="438" r="6"/><circle cx="1048" cy="474" r="6"/><circle cx="1108" cy="474" r="6"/></g>
-<text x="72" y="580" fill="#4d626a" font-family="sans-serif" font-size="16">LINEAR + RIDGE + KNN + TREES / CLASSIFICATION / CLUSTERING · Conceptual vector illustration</text>
+<path d="M1005 455v8l-14 14m14-14l14 14M1095 390v8l-14 14m14-14l14 14" stroke="#6356a0" stroke-width="3" fill="none"/>
+<text x="72" y="580" fill="#4d626a" font-family="sans-serif" font-size="16">LINEAR + RIDGE + KNN + FORESTS / CLASSIFICATION / CLUSTERING · Conceptual vector illustration</text>
 </svg>

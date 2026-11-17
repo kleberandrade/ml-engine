@@ -17,7 +17,9 @@ class ComparisonCard extends StatelessWidget {
     final s = context.l10n;
     final treeA = c.treeRoot(), treeB = c.treeRoot(alternate: true);
     final ridge = c.experiment == Experiment.ridge;
-    final labelA = c.experiment.isTree
+    final labelA = c.experiment.isForest
+        ? s.t("forestShort", {"count": c.nEstimators, "depth": c.maxDepth})
+        : c.experiment.isTree
         ? s.t('depthShort', {'count': c.maxDepth})
         : c.experiment.isKnn
         ? s.t('knnShort', {'count': c.neighbors})
@@ -26,7 +28,9 @@ class ComparisonCard extends StatelessWidget {
         : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed})
         : s.t('rateShort', {'value': s.number(c.learningRate, 2)});
-    final labelB = c.experiment.isTree
+    final labelB = c.experiment.isForest
+        ? s.t("depthShort", {"count": c.maxDepth})
+        : c.experiment.isTree
         ? s.t('depthShort', {'count': 1})
         : c.experiment.isKnn
         ? s.t('knnShort', {'count': 1})
@@ -60,6 +64,20 @@ class ComparisonCard extends StatelessWidget {
               ),
             ],
           ),
+          if (c.forestSummary case final f?) ...[
+            const SizedBox(height: 12),
+            Text(
+              s.t('forestStats', {
+                'count': f.trees,
+                'depth': f.depth,
+                'leaves': f.leaves,
+                'features': f.featuresPerSplit,
+                'samples': f.samplesPerTree,
+                'depthB': treeB!.depth,
+                'leavesB': treeB.leafCount,
+              }),
+            ),
+          ],
           if (c.experiment.isTree && treeA != null && treeB != null) ...[
             const SizedBox(height: 12),
             Text(
@@ -114,7 +132,13 @@ class ComparisonCard extends StatelessWidget {
           if (c.experiment.isDirect) ...[
             const SizedBox(height: 20),
             Text(
-              s.t(c.experiment.isTree ? 'treeNoObjective' : 'knnNoObjective'),
+              s.t(
+                c.experiment.isForest
+                    ? 'forestNoObjective'
+                    : c.experiment.isTree
+                    ? 'treeNoObjective'
+                    : 'knnNoObjective',
+              ),
             ),
           ] else ...[
             const SizedBox(height: 20),

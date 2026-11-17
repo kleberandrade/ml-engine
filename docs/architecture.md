@@ -95,3 +95,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 ## Decision trees
 
 [ADR 0007](adr/0007-greedy-numeric-decision-trees.md) adds two greedy numeric estimators with an immutable fitted tree. Core fitting uses sorted feature candidates and prefix/suffix losses, with atomic state replacement. The lab shares the direct-fit session/cache path with KNN and renders only sampled numeric predictions. Tree summaries read immutable node metadata; painters hold no tree estimator. Maximum depth and minimum leaf size bound the teaching experiment, while validation scores guide model selection.
+
+## Random Forest extension (0.5.0)
+
+Random Forest composes existing numeric trees and adds no package/runtime dependency. Optional tree feature subsampling retains the default all-feature behavior. Complete forests commit atomically, exposing immutable nodes and sampling metadata. The lab reuses the direct-fit session/snapshot/cache path and returns a domain ForestSummary of counts; painters never inspect models. A forest is compared with an all-feature full-training tree at equal depth. See [ADR 0008](adr/0008-seeded-bootstrap-random-forests.md). More trees increase synchronous work; bounded lab controls do not constitute a device-wide frame-time guarantee.

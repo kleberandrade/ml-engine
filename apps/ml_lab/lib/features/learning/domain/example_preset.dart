@@ -10,6 +10,8 @@ class ExamplePreset {
 const examplePresets = [
   ExamplePreset('linear', Experiment.regression),
   ExamplePreset('ridge', Experiment.ridge),
+  ExamplePreset('forest-classification', Experiment.forestClassification),
+  ExamplePreset('forest-regression', Experiment.forestRegression),
   ExamplePreset('tree-classification', Experiment.treeClassification),
   ExamplePreset('tree-regression', Experiment.treeRegression),
   ExamplePreset('knn-classification', Experiment.knnClassification),

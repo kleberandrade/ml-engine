@@ -59,10 +59,60 @@ class ExperimentSession {
     };
   }
 
+  ForestSummary? get forestSummary {
+    final model = _directModel;
+    if (model is RandomForestClassifier) {
+      return ForestSummary(
+        model.trees.length,
+        model.depth,
+        model.leafCount,
+        model.featuresPerSplit,
+        model.bootstrapIndices.first.length,
+      );
+    }
+    if (model is RandomForestRegressor) {
+      return ForestSummary(
+        model.trees.length,
+        model.depth,
+        model.leafCount,
+        model.featuresPerSplit,
+        model.bootstrapIndices.first.length,
+      );
+    }
+    return null;
+  }
+
   void start() {
     final train = split.train.map((i) => scaled[i]).toList();
     final targets = split.train.map((i) => data.y[i]).toList();
-    if (settings.experiment.isTree) {
+    if (settings.experiment.isForest) {
+      final Estimator a = settings.experiment.isRegression
+          ? RandomForestRegressor(
+              nEstimators: settings.nEstimators,
+              maxDepth: settings.maxDepth,
+              minSamplesLeaf: 2,
+              seed: settings.seed,
+            )
+          : RandomForestClassifier(
+              nEstimators: settings.nEstimators,
+              maxDepth: settings.maxDepth,
+              minSamplesLeaf: 2,
+              seed: settings.seed,
+            );
+      final Estimator b = settings.experiment.isRegression
+          ? DecisionTreeRegressor(
+              maxDepth: settings.maxDepth,
+              minSamplesLeaf: 2,
+            )
+          : DecisionTreeClassifier(
+              maxDepth: settings.maxDepth,
+              minSamplesLeaf: 2,
+            );
+      a.fit(train, targets);
+      b.fit(train, targets);
+      _directModel = a;
+      _comparisonDirectModel = b;
+    } else if (settings.experiment.isTree) {
       Estimator create(int depth) => settings.experiment.isRegression
           ? DecisionTreeRegressor(maxDepth: depth, minSamplesLeaf: 2)
           : DecisionTreeClassifier(maxDepth: depth, minSamplesLeaf: 2);

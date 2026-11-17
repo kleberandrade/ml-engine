@@ -1,10 +1,11 @@
 {
   "name": "ml-engine",
   "owner": "kleberandrade",
-  "description": "Pure Dart classical ML: linear, Ridge, logistic and KNN models, K-means++, leakage-safe pipelines and a bilingual Flutter learning lab.",
+  "description": "Pure Dart classical ML: linear, Ridge, logistic, KNN and decision trees, K-means++, pipelines and a bilingual Flutter learning lab.",
   "topics": [
     "dart",
     "data-science",
+    "decision-trees",
     "education",
     "flutter",
     "kmeans",

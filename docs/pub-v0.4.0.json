@@ -1,0 +1,11 @@
+{
+  "name": "ml_engine",
+  "version": "0.4.0",
+  "published": "2026-11-17T22:35:45.458309Z",
+  "archive_url": "https://pub.dev/api/archives/ml_engine-0.4.0.tar.gz",
+  "archive_sha256": "3d5468a1c196319c9ad451d3616783198fd153f326fdbb07a9424b56a3f73b54",
+  "archive_bytes": 24692,
+  "archive_files": 52,
+  "core_source_matches_git": true,
+  "consumer_check": "Independent hosted dependency 0.4.0: DecisionTreeClassifier(maxDepth:1) recovered threshold 1.5 and classes [0,1]; DecisionTreeRegressor(maxDepth:1) returned leaf means [1,11]. Official pub cache add, pub get and execution succeeded with a fresh isolated cache after initial version-index propagation."
+}

@@ -15,7 +15,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
-![Actual KNN regression on GitHub Pages, comparing k=5 and k=1 with a shared training split and validation RMSE](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-knn-regression-pt.jpg)
+![Actual decision tree regression on GitHub Pages, comparing depth limits 3 and 1 with learned rules, leaves and validation RMSE](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-tree-regression-pt.jpg)
 
 ## Included now
 
@@ -70,7 +70,7 @@ final predictions = pipeline.predict([[4]]); // approximately [9]
 final transformed = pipeline.transform([[4]]); // train-fitted scaling
 ```
 
-The core package is [`ml_engine`](https://pub.dev/packages/ml_engine). Version 0.4.0 adds decision trees; the publication record is in the release notes. Install the latest published version with:
+The core is published as [`ml_engine 0.4.0`](https://pub.dev/packages/ml_engine/versions/0.4.0), including decision trees. Install with:
 
 ```sh
 dart pub add ml_engine

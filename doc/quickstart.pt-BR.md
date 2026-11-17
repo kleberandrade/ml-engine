@@ -8,4 +8,4 @@ A padronização aprende somente no treino. Use validação para escolher parâm
 
 CSV: cabeçalho exato `x1,x2,y`, 10–500 linhas numéricas, sem valores ausentes, NaN ou infinito. Na classificação, y precisa ser 0 ou 1. No agrupamento, y é ignorado. Há mensagens de erro sem descartar o conjunto atual.
 
-O pacote ainda não foi publicado no pub.dev. O repositório GitHub também não foi criado nesta entrega. Ridge, KNN, árvores, florestas, Gradient Boosting, PCA, importância por permutação e SHAP pertencem ao roadmap; não são recursos implementados.
+O pacote ainda não foi publicado no pub.dev. O código está público em [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine), com CI e documentação. Ridge, KNN, árvores, florestas, Gradient Boosting, PCA, importância por permutação e SHAP pertencem ao roadmap; não são recursos implementados.

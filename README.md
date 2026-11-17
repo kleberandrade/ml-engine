@@ -1,14 +1,16 @@
 # ML Engine
 
-![Dart](https://img.shields.io/badge/Dart-3.14.0-0175C2)
-![Flutter lab](https://img.shields.io/badge/Flutter_lab-3.50.0-02569B)
-![License](https://img.shields.io/badge/license-MIT-green)
+[![CI](https://github.com/kleberandrade/ml-engine/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/kleberandrade/ml-engine/actions/workflows/verify.yml)
+[![GitHub release](https://img.shields.io/github/v/release/kleberandrade/ml-engine)](https://github.com/kleberandrade/ml-engine/releases/latest)
+[![Dart](https://img.shields.io/badge/Dart-3.14.0-0175C2)](https://dart.dev/)
+[![Flutter lab](https://img.shields.io/badge/Flutter_lab-3.50.0-02569B)](https://flutter.dev/)
+[![License](https://img.shields.io/github/license/kleberandrade/ml-engine)](LICENSE)
 
 ![Conceptual vector cover showing regression, classification and clustering](doc/images/cover.svg)
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
-**Local preview version 0.1.0.** No pub.dev package, GitHub repository or hosted demo has been published. `ml_engine` is a provisional package identity; public catalog requests returned HTTP 404 on November 17, 2026, which is not a reservation. Badges above describe the validated local toolchain and license, not remote CI or publication status.
+**Version 0.1.0.** Source is public at [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine). The Dart package has not been published to pub.dev, and no hosted demo is claimed. `ml_engine` remains a provisional pub.dev identity; the public catalog returned HTTP 404 on November 17, 2026, which is not a reservation.
 
 ![Actual Flutter Web regression lab after 250 iterations](doc/images/regression-desktop.jpg)
 
@@ -88,7 +90,8 @@ CSV uses the exact header `x1,x2,y`, followed by 10–500 finite numeric rows in
 - [Roadmap](doc/roadmap.md)
 - [Português: guia rápido](doc/quickstart.pt-BR.md)
 - [Action log](doc/work-log.md)
-- [Prepared GitHub metadata](doc/github-metadata.json)
+- [GitHub metadata](doc/github-metadata.json)
+- [Release notes](doc/release-v0.1.0.md)
 
 ## License and credits
 

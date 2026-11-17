@@ -20,8 +20,14 @@
 
 ## Available-tool limits
 
-The requested crapper, dryer and mutator tools were not available in the installed tool inventory. No CRAP score, duplication score or mutation-testing success is claimed. Behavioral fixtures, analyzer checks, line coverage and direct UI inspection were used, with their distinct limits recorded. GitHub Actions is prepared, not remotely executed.
+The requested crapper, dryer and mutator tools were not available in the installed tool inventory. No CRAP score, duplication score or mutation-testing success is claimed. Behavioral fixtures, analyzer checks, line coverage and direct UI inspection were used, with their distinct limits recorded. At the initial local handoff, GitHub Actions was prepared but not remotely executed. The authorized publication follow-up below records the later remote execution.
 
-## Remaining external step
+## Authorized GitHub publication follow-up
 
-Obtain authorization specific to creating `kleberandrade/ml-engine`, including the desired visibility, then create the remote, apply doc/github-metadata.json, push main, and verify remote CI before adding any status badge. Do not publish to pub.dev as part of that step. Source remains fully usable locally.
+1. Received explicit authorization to create public `kleberandrade/ml-engine`, apply prepared metadata, push main, verify CI and add badges/tags. The prohibition on pub.dev publication remains in force.
+2. Created the public repository using the existing authenticated GitHub credential without exposing or storing it. Applied the prepared description and all eight topics; verified the owner, public visibility and main default branch.
+3. Added the origin remote and pushed the existing local history. The first remote run failed formatting because the Flutter package was not resolved before the cross-package format check.
+4. Reproduced the failure in a clean archive, then resolved the lab package and observed the same check pass with zero source-format changes. Committed the workflow setup-order fix as `037c521`, preserving every validation gate.
+5. Verified successful [remote run 44170406586](https://github.com/kleberandrade/ml-engine/actions/runs/44170406586): format, both analyzers, both test suites, CLI examples and release Flutter Web build.
+6. Added linked CI/release/toolchain/license badges, repository and issue URLs, public-source documentation, and v0.1.0 source-release notes. Prepared the annotated version tag for the publication commit; the GitHub release and workflow pages provide the final external audit trail.
+7. Kept pub.dev disabled and made no hosted-demo or native/Wasm support claim. Changes are limited to this repository; no shared Flutter SDK was modified.

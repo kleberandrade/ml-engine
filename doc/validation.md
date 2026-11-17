@@ -31,7 +31,11 @@ Tests derive regression predictions and multivariate orthogonal coefficients alg
 
 ## Publication status
 
-No GitHub remote, hosted demo, pub.dev upload or Medium publication was created. Public package and repository endpoint requests returned HTTP 404 on November 17, 2026; this only established that neither endpoint existed then. The prepared description and eight topics are in [github-metadata.json](github-metadata.json). Creating the new remote and choosing its visibility still requires authorization specific to this new repository; authorization for older projects was not inherited. CI uses the current documented actions/checkout@v6 and subosito/flutter-action@v2 setup (see [upstream workflow examples](https://github.com/subosito/flutter-action)). CI is prepared but has not run on GitHub. No remote CI badge is shown.
+The user explicitly authorized public repository creation and main-branch push on November 17, 2026. [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine) is now public with the prepared description and eight topics. No hosted demo, pub.dev upload or Medium publication was created; `publish_to: none` remains in both manifests.
+
+The first remote run exposed a clean-checkout setup bug: formatting the lab before resolving its package configuration changed formatter behavior. This was reproduced locally in an archive without `.dart_tool`, then corrected by resolving both packages before checking formatting. No formatting gate was removed. [CI run 44170406586](https://github.com/kleberandrade/ml-engine/actions/runs/44170406586) passed on commit `037c521`: format checks, both analyzers, Dart and Flutter tests, CLI examples and release Web build. The main-branch CI badge links to subsequent runs, including the publication documentation commit. GitHub release notes are in [release-v0.1.0.md](release-v0.1.0.md); no pub.dev release is part of this publication.
+
+Public endpoint requests initially returned 404 for the package and repository names. The repository has since been created with explicit authorization; the package lookup does not reserve a pub.dev name. CI uses actions/checkout@v6 and subosito/flutter-action@v2 (see [upstream examples](https://github.com/subosito/flutter-action)).
 
 ## Visual evidence
 

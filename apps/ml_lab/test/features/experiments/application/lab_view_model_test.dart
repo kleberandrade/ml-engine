@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ml_lab/features/experiments/domain/lab_failure.dart';
 import 'package:ml_lab/features/experiments/application/lab_view_model.dart';
 import 'package:ml_lab/features/experiments/domain/experiment.dart';
 
@@ -85,7 +86,7 @@ void main() {
       c.importCsv('x1,x2,y\n${List.generate(20, (_) => '1,1,0').join('\n')}');
       c.start();
       expect(c.status, RunStatus.failed);
-      expect(c.error, contains('distinct points'));
+      expect(c.error, isA<LabTrainingException>());
       expect(c.plot.centroidsA, isEmpty);
       c.generate();
       c.start();

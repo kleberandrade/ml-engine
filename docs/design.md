@@ -27,3 +27,5 @@ Implement `Transformer` for new preprocessing. `Pipeline.transform` returns the 
 ## Boundaries
 
 `lib/` imports only Dart SDK libraries. `apps/ml_lab/` consumes the core via a path dependency. Its view model owns experiment lifetime and timers; the pure Dart experiment session owns fitting/evaluation, and painters render immutable snapshots. See [architecture.md](architecture.md) for the feature layout and enforced dependency direction. Persistence, file pickers, network datasets and native platform integration are not needed for the first usable version.
+
+CSV parsing throws FormatException-compatible `CsvFormatException` values with a `CsvError` code and optional one-based `row`. Consumers can translate errors from metadata instead of parsing English error text. The lab maps these to its own typed data failures; numerical/training code has no localization or Flutter dependency.

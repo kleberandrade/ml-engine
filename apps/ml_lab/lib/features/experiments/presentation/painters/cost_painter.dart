@@ -1,20 +1,19 @@
 import 'dart:math';
 
+import '../../../../app/l10n/app_strings.dart';
+
 import 'package:flutter/widgets.dart';
 
 import 'plot_style.dart';
 
 class CostPainter extends CustomPainter {
   final List<double> a, b;
-  CostPainter(this.a, this.b);
+  final AppStrings strings;
+  CostPainter(this.a, this.b, this.strings);
   @override
   void paint(Canvas canvas, Size size) {
     if (a.isEmpty) {
-      paintPlotText(
-        canvas,
-        'Train models to trace their learning curves.',
-        const Offset(10, 40),
-      );
+      paintPlotText(canvas, strings.t('costEmpty'), const Offset(10, 40));
       return;
     }
     final maxValue = max(1e-12, [...a, ...b].reduce(max)),
@@ -25,7 +24,13 @@ class CostPainter extends CustomPainter {
       max(1, size.width - 60),
       size.height - 30,
     );
-    paintPlotText(canvas, maxValue.toStringAsPrecision(3), const Offset(0, 4));
+    paintPlotText(
+      canvas,
+      strings.language == AppLanguage.ptBr
+          ? maxValue.toStringAsPrecision(3).replaceAll('.', ',')
+          : maxValue.toStringAsPrecision(3),
+      const Offset(0, 4),
+    );
     paintPlotText(canvas, '0', Offset(22, rect.bottom - 5));
     for (var i = 0; i < 3; i++) {
       final y = rect.top + i / 2 * rect.height;
@@ -57,7 +62,7 @@ class CostPainter extends CustomPainter {
     paintPlotText(canvas, '1', Offset(rect.left, rect.bottom + 4));
     paintPlotText(
       canvas,
-      '${max(a.length, b.length)} iterations',
+      strings.t('iterations', {'count': max(a.length, b.length)}),
       Offset(max(rect.left, rect.right - 90), rect.bottom + 4),
     );
   }

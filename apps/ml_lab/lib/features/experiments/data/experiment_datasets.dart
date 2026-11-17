@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ml_engine/ml_engine.dart';
 
 import '../domain/experiment.dart';
+import '../domain/lab_failure.dart';
 
 Dataset generateDataset(ExperimentSettings settings) {
   final random = Random(settings.seed);
@@ -29,19 +30,27 @@ Dataset generateDataset(ExperimentSettings settings) {
 }
 
 Dataset parseLabCsv(String value, Experiment experiment) {
-  final parsed = parseCsv(value);
-  if (parsed.x.length < 10) {
-    throw const FormatException(
-      'Lab needs at least 10 rows for three nonempty partitions.',
+  final Dataset parsed;
+  try {
+    parsed = parseCsv(value);
+  } on CsvFormatException catch (error) {
+    throw LabDataException(
+      error.code == CsvError.invalidRow
+          ? LabDataError.numericRow
+          : LabDataError.structure,
+      row: error.row,
     );
+  }
+  if (parsed.x.length < 10) {
+    throw const LabDataException(LabDataError.tooFewRows);
   }
   if (experiment == Experiment.classification &&
       parsed.y.any((v) => v != 0 && v != 1)) {
-    throw const FormatException('Classification requires labels 0 or 1.');
+    throw const LabDataException(LabDataError.binaryLabels);
   }
   if (parsed.x.any((r) => r.any((v) => v.abs() > 1e6)) ||
       parsed.y.any((v) => v.abs() > 1e6)) {
-    throw const FormatException('Lab magnitudes must be <= 1,000,000.');
+    throw const LabDataException(LabDataError.magnitude);
   }
   return parsed;
 }

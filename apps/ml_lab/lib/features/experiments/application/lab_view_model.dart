@@ -15,7 +15,7 @@ class LabViewModel extends ChangeNotifier {
   ExperimentSettings _settings = ExperimentSettings();
   late ExperimentSession _session;
   RunStatus _status = RunStatus.ready;
-  String? _error;
+  Object? _error;
   bool _imported = false;
   Timer? _timer;
   LabViewModel() {
@@ -27,7 +27,7 @@ class LabViewModel extends ChangeNotifier {
   int get clusters => _settings.clusters;
   double get learningRate => _settings.learningRate;
   RunStatus get status => _status;
-  String? get error => _error;
+  Object? get error => _error;
   bool get imported => _imported;
   Dataset get data => _session.data;
   DataSplit get split => _session.split;
@@ -98,7 +98,7 @@ class LabViewModel extends ChangeNotifier {
       _schedule();
     } catch (error) {
       _status = RunStatus.failed;
-      _error = '$error';
+      _error = error;
     }
     notifyListeners();
   }
@@ -118,7 +118,7 @@ class LabViewModel extends ChangeNotifier {
     } catch (error) {
       _timer?.cancel();
       _status = RunStatus.failed;
-      _error = '$error';
+      _error = error;
     }
     notifyListeners();
   }

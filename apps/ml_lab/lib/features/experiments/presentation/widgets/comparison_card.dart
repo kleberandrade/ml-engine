@@ -1,82 +1,98 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../app/l10n/app_strings.dart';
 import '../../../../app/theme.dart';
 import '../../application/lab_view_model.dart';
 import '../../domain/experiment.dart';
-import 'lab_panel.dart';
 import '../painters/cost_painter.dart';
 import '../formatters/score_formatter.dart';
+import '../formatters/failure_formatter.dart';
+import 'lab_panel.dart';
 
 class ComparisonCard extends StatelessWidget {
   final LabViewModel c;
   const ComparisonCard({super.key, required this.c});
   @override
-  Widget build(BuildContext context) => LabPanel(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Same data. Fair comparison.',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Train ${c.split.train.length} / validation ${c.split.validation.length} / test ${c.split.test.length}. Same split, scaler and budget for A and B.',
-        ),
-        const SizedBox(height: 14),
-        Wrap(
-          spacing: 32,
-          runSpacing: 16,
-          children: [
-            _score(
-              'A  ${c.experiment == Experiment.clustering ? 'seed ${c.seed}' : 'rate ${c.learningRate.toStringAsFixed(2)}'}',
-              formatScore(c.score(c.split.validation)),
-            ),
-            _score(
-              'B  ${c.experiment == Experiment.clustering ? 'seed ${c.seed + 1}' : 'rate ${(c.learningRate / 4).toStringAsFixed(3)}'}',
-              formatScore(c.score(c.split.validation, alternate: true)),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
-        Text(formatBaseline(c.baseline), style: const TextStyle(fontSize: 13)),
-        if (c.status == RunStatus.complete) ...[
-          const Divider(height: 24),
+  Widget build(BuildContext context) {
+    final s = context.l10n;
+    final labelA = c.experiment == Experiment.clustering
+        ? s.t('seedShort', {'value': c.seed})
+        : s.t('rateShort', {'value': s.number(c.learningRate, 2)});
+    final labelB = c.experiment == Experiment.clustering
+        ? s.t('seedShort', {'value': c.seed + 1})
+        : s.t('rateShort', {'value': s.number(c.learningRate / 4, 3)});
+    return LabPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(s.t('fair'), style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
           Text(
-            'Final test • A: ${formatScore(c.score(c.split.test))}  /  B: ${formatScore(c.score(c.split.test, alternate: true))}',
+            s.t('split', {
+              'train': c.split.train.length,
+              'validation': c.split.validation.length,
+              'test': c.split.test.length,
+            }),
           ),
-          const Text(
-            'Use validation to choose settings. Repeatedly inspecting test results turns test data into validation data.',
-            style: TextStyle(fontSize: 12),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 32,
+            runSpacing: 16,
+            children: [
+              _score('A  $labelA', formatScore(s, c.score(c.split.validation))),
+              _score(
+                'B  $labelB',
+                formatScore(s, c.score(c.split.validation, alternate: true)),
+              ),
+            ],
           ),
-        ],
-        if (c.error != null)
-          Text(c.error!, style: const TextStyle(color: Color(0xFFB00020))),
-        const SizedBox(height: 20),
-        Text(
-          'Training objective  •  ${c.history.length} iterations',
-          style: const TextStyle(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 8),
-        Semantics(
-          label:
-              'Training cost curve. ${c.history.isEmpty ? 'No training yet' : 'A latest cost ${c.history.last.toStringAsFixed(4)}'}. Lower is better.',
-          image: true,
-          child: SizedBox(
-            height: 120,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: CostPainter(c.history, c.comparisonHistory),
+          const SizedBox(height: 14),
+          Text(
+            formatBaseline(s, c.baseline),
+            style: const TextStyle(fontSize: 13),
+          ),
+          if (c.status == RunStatus.complete) ...[
+            const Divider(height: 24),
+            Text(
+              s.t('finalTest', {
+                'a': formatScore(s, c.score(c.split.test)),
+                'b': formatScore(s, c.score(c.split.test, alternate: true)),
+              }),
+            ),
+            Text(s.t('testWarning'), style: const TextStyle(fontSize: 12)),
+          ],
+          if (c.error != null)
+            Text(
+              formatFailure(s, c.error!),
+              style: const TextStyle(color: Color(0xFFB00020)),
+            ),
+          const SizedBox(height: 20),
+          Text(
+            s.t('objective', {'count': c.history.length}),
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          Semantics(
+            label: s.t('costAria', {
+              'cost': c.history.isEmpty
+                  ? s.t('noTraining')
+                  : s.t('latestCost', {'value': s.number(c.history.last, 4)}),
+            }),
+            image: true,
+            child: SizedBox(
+              height: 120,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: CostPainter(c.history, c.comparisonHistory, s),
+              ),
             ),
           ),
-        ),
-        const Text(
-          'A: teal • B: brown. Linear: MSE/2; logistic: binary cross entropy; K-means: train inertia.',
-          style: TextStyle(fontSize: 12),
-        ),
-      ],
-    ),
-  );
+          Text(s.t('objectiveLegend'), style: const TextStyle(fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
   Widget _score(String label, String value) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [

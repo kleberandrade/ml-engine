@@ -14,7 +14,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
-![Actual Flutter Web regression lab after 250 iterations](docs/images/regression-desktop.jpg)
+![Actual GitHub Pages laboratory showing fitted K-means centroids](docs/images/pages-clustering.jpg)
 
 ## Included now
 
@@ -24,7 +24,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 - Seeded train/validation/test splits, shuffled K-fold, stratified K-fold and leakage-safe cross validation through fresh pipeline factories.
 - MSE, RMSE, MAE, R², binary accuracy, precision, recall, F1 and confusion counts.
 - Finite-value and shape checks, unfitted-state errors, constant-feature handling and explicit degenerate-case policies.
-- A responsive Flutter lab: synthetic data, strict numeric CSV, scatter plots, fitted lines, probability regions and decision boundaries, centroids, cost curves, fair A/B runs and pause/resume/cancel/restart controls.
+- A responsive EN/PT-BR Flutter lab with an original vector identity, state-preserving navigation, an integrated Learn guide and executable examples: synthetic data, strict numeric CSV, scatter plots, fitted lines, probability regions and decision boundaries, centroids, cost curves, fair A/B runs and pause/resume/cancel/restart controls.
 
 ## Run
 
@@ -81,6 +81,9 @@ Never fit a scaler before splitting the full dataset. `crossValidate` calls the 
 For interactive training, call `start(x, y)` and then `step()` between event-loop yields; `fit` is synchronous and intended for small datasets or an isolate. The Flutter lab does one iteration per 16 ms timer tick on at most 500 rows with two features. It cancels timers on restart, import, experiment changes and disposal. This bounded policy is not a performance guarantee for arbitrary machines or high-dimensional data.
 
 ## Lab workflow
+
+The navbar opens **Laboratory**, **Learn** and **Examples**, plus the real project documentation/GitHub links. English and Brazilian Portuguese cover controls, feedback, chart descriptions, help and the educational content. Language changes preserve the experiment, curve and CSV draft; the language preference is stored only when browser storage is available. Learn explains the shipped algorithms and formulas, links its sources, opens real seeded/CSV presets and ends with five practical exercises. Opening a preset intentionally replaces the current experiment. The [original rising-seed logo](apps/ml_lab/web/brand-mark.svg) is also the favicon.
+
 
 Choose an experiment, seed, rate (or cluster count), and iteration budget. Train A/B on the same 60/20/20 split and train-fitted standardization. B uses one quarter of A's learning rate, or the next seed for clustering. Validation scores and a train-derived baseline support comparison; final test scores appear after completion. Labels are unused in clustering. Regression lines hold the second standardized feature at zero, so a CSV with two varying features is shown as a partial slice rather than a full 3D fit.
 

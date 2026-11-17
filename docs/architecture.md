@@ -22,13 +22,15 @@ ml-engine/
   example/main.dart              executable Dart examples
   apps/ml_lab/
     lib/main.dart                entry point only
-    lib/app/                     app composition and visual theme
+    lib/app/                     app composition, original branding, EN/PT-BR strings and browser adapters
     lib/features/experiments/
       data/                      synthetic generation and lab CSV policy
       domain/                    settings, typed scores and pure Dart training session
       application/               view model, timer lifetime and immutable plot snapshots
       presentation/              page, widgets, formatters and painters
+    lib/features/learning/       bilingual topics, real executable presets and exercises
     test/features/experiments/    domain, application and presentation tests
+    test/app/                    navigation, localization, keyboard and state-preservation tests
     web/                         Web shell and manifest
   docs/                          guides, decisions, evidence and screenshots
   tool/                          benchmarks and architecture validation
@@ -68,3 +70,9 @@ See [ADR 0001](adr/0001-separate-core-and-lab.md) and [ADR 0002](adr/0002-deploy
 Long or high-dimensional training still needs an isolate/worker. The 500-row lab limit and event-loop yielding are scoped to this teaching UI. The ML algorithms and public facade remain independent of Flutter, browser hosting and Pages permissions.
 
 References: [Flutter architecture guide](https://docs.flutter.dev/app-architecture/guide), [Flutter Web deployment](https://docs.flutter.dev/deployment/web), [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+
+## Bilingual navigation and learning
+
+The app shell owns one LabViewModel for its lifetime and retains Laboratory/Learn/Examples pages in an IndexedStack. Locale selection rebuilds localized views without replacing the experiment or its CSV editor. The app's browser adapter persists only `ml-engine.language` when localStorage is available and synchronizes the document language for accessibility. Blocked storage falls back to session behavior; CSV data and models are not persisted or transmitted. Material UI localization delegates translate framework controls as well as project strings.
+
+The learning feature adapts the actual `docs/design.md` and `docs/tutorial.md` into EN/PT-BR content, formulas, four real model/data presets and exactly five exercises. It does not embed a GitHub iframe or present roadmap algorithms as implemented. See [ADR 0003](adr/0003-bilingual-learning-shell.md).

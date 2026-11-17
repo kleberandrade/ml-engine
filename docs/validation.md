@@ -47,3 +47,11 @@ Screenshots are actual Chrome captures of the release build. The SVG cover is an
 - [Mobile setup](images/mobile-setup.jpg)
 - [Mobile results](images/mobile-results.jpg)
 - [Clustering](images/clustering-desktop.jpg)
+
+## Architecture and Pages follow-up
+
+The active layout is documented in [architecture.md](architecture.md) and the live demo in [deployment.md](deployment.md). Core source and tests now follow responsibility-based folders while preserving the public export facade. The Flutter app is in `apps/ml_lab`, with pure sessions, typed scores, timer commands and immutable chart inputs separated from widgets. Both analyzers and the architecture gate pass. That initial restructuring stage had 16 core tests and 13 Flutter tests after the responsive-draft regression fix. The new Pages workflow deploys only its successfully tested artifact. See the deployment record for public HTTP/browser checks and captures, distinct from the original local evidence above.
+
+## Bilingual navigation and learning validation
+
+The expanded version has **17 passing core tests** and **19 passing Flutter tests**, clean analyses and a successful repository-path release build. Current core line coverage is **310/324 = 95.7%** after adding locale-neutral CSV error metadata. The app tests cover a paused experiment and draft surviving locale/Learn navigation, all four real presets, stored language, keyboard menu navigation, translated row errors, translation placeholder contracts, exactly five bilingual exercises, and Portuguese learning/navigation at actual 150% text scale on 390×844. Browser adapters are injected in VM tests; live storage, SVG branding and Web navigation are verified on the actual deployment as recorded in deployment.md.

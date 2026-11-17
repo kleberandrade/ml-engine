@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add original vector branding, responsive navigation, EN/PT-BR controls/feedback/help, remembered language and an integrated project-based Learn guide.
+- Add four executable presets, interpreted formulas and exactly five bilingual exercises while preserving experiments across navigation/locale changes.
+
 - Publish the Flutter lab to GitHub Pages from a validated, repository-path build.
 - Organize the core by responsibility and the Flutter app under `apps/ml_lab` by feature/layer; preserve the public Dart facade.
 - Separate pure experiment sessions, immutable chart snapshots, timer commands, UI widgets and score formatting.

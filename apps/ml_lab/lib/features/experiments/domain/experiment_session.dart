@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ml_engine/ml_engine.dart';
 
 import 'experiment.dart';
+import 'lab_failure.dart';
 
 /// Pure Dart experiment state. The view model is its sole training writer.
 class ExperimentSession {
@@ -38,6 +39,10 @@ class ExperimentSession {
     final train = split.train.map((i) => scaled[i]).toList();
     final targets = split.train.map((i) => data.y[i]).toList();
     if (settings.experiment == Experiment.clustering) {
+      if (train.map((row) => row.join(',')).toSet().length <
+          settings.clusters) {
+        throw LabTrainingException();
+      }
       final a = KMeans(
         k: settings.clusters,
         seed: settings.seed,

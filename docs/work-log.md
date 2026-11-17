@@ -45,3 +45,12 @@ The requested crapper, dryer and mutator tools were not available in the install
 9. Publication/browser verification and fresh screenshots are recorded in deployment.md after the first successful Pages deployment.
 
 10. Actual Pages/mobile inspection caught a responsive-layout regression: reparenting the controls from Row to Column discarded an unsubmitted CSV draft. Reproduced the empty-editor failure with a widget test, preserved the controls' state with a page-owned GlobalKey, and verified the test passed. The key is limited to the stateful editor; training remains owned by the view model.
+
+## Bilingual navigation and learning expansion
+
+1. Received the user's explicit expanded request for a responsive navbar, original logo, EN/PT-BR, integrated project-based learning and publication after validation. Kept this work scoped to ml-engine.
+2. Added a shell that owns one experiment view model across navigation and locale changes. Project strings and Material UI controls are localized; structured CSV failure metadata enables translated row feedback without parsing English messages.
+3. Added an original rising-seed vector mark in Flutter and SVG, with compact wordmark, favicon and localized accessible label. Removed unused generated Flutter logo icons.
+4. Adapted the real numerical guide/tutorial into bilingual foundations, formulas with interpretations, algorithm explanations, source links and exactly five exercises. Four presets open the shipped linear, binary logistic, K-means++ and CSV demonstrations; no roadmap algorithm is shown as ready.
+5. Added conditional browser adapters for a namespaced language preference, document language and real external source links; blocked storage retains session behavior and no CSV/model data is saved. There is no new runtime package or cross-engine dependency.
+6. Wrote and executed tests for navigation/locale preservation, real presets, keyboard menu use, translation contracts, row-error language changes and Portuguese mobile learning at 150% text scale. The current suite has 17 core and 19 Flutter tests; build/deployment/browser evidence is recorded separately after publication.

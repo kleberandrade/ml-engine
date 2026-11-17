@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../../../../app/l10n/app_strings.dart';
+
 import 'package:flutter/widgets.dart';
 
 import '../../application/plot_snapshot.dart';
@@ -8,7 +10,8 @@ import 'plot_style.dart';
 
 class DataPainter extends CustomPainter {
   final PlotSnapshot c;
-  DataPainter(this.c);
+  final AppStrings strings;
+  DataPainter(this.c, this.strings);
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTWH(
@@ -78,12 +81,12 @@ class DataPainter extends CustomPainter {
       );
       paintPlotText(
         canvas,
-        (xmin + i / 4 * (xmax - xmin)).toStringAsFixed(1),
+        strings.number(xmin + i / 4 * (xmax - xmin), 1),
         Offset(gx - 10, rect.bottom + 10),
       );
       paintPlotText(
         canvas,
-        (ymax - i / 4 * (ymax - ymin)).toStringAsFixed(1),
+        strings.number(ymax - i / 4 * (ymax - ymin), 1),
         Offset(0, gy - 6),
       );
     }

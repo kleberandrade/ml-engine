@@ -48,7 +48,7 @@ def main():
         target = (directory / entry['url']).resolve()
         if not target.is_relative_to(directory) or not target.is_file() or target.stat().st_size != entry['size']:
             raise ValueError(f"Missing or incorrect build asset: {entry['url']}")
-    required = ['flutter_bootstrap.js', entrypoint[1], 'manifest.json', 'canvaskit/canvaskit.js', 'canvaskit/canvaskit.wasm']
+    required = ['flutter_bootstrap.js', entrypoint[1], 'manifest.json', 'brand-mark.svg', 'canvaskit/canvaskit.js', 'canvaskit/canvaskit.wasm']
     if not all((directory / path).is_file() for path in required):
         raise ValueError('Missing required runtime assets')
     if args.url:

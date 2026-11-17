@@ -20,4 +20,13 @@ void main() {
     expect(() => parseCsv('x,y\n1,2'), throwsFormatException);
     expect(() => parseCsv('x1,x2,y\nNaN,2,0'), throwsFormatException);
   });
+  test('CSV failures expose language-neutral row metadata', () {
+    try {
+      parseCsv('x1,x2,y\nNaN,0,1\n2,0,3');
+      fail('Invalid rows must fail.');
+    } on CsvFormatException catch (e) {
+      expect(e.code, CsvError.invalidRow);
+      expect(e.row, 2);
+    }
+  });
 }

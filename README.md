@@ -1,6 +1,7 @@
 # ML Engine
 
 [![CI](https://github.com/kleberandrade/ml-engine/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/kleberandrade/ml-engine/actions/workflows/verify.yml)
+[![pub.dev](https://img.shields.io/pub/v/ml_engine.svg)](https://pub.dev/packages/ml_engine)
 [![GitHub release](https://img.shields.io/github/v/release/kleberandrade/ml-engine)](https://github.com/kleberandrade/ml-engine/releases/latest)
 [![Dart](https://img.shields.io/badge/Dart-3.14.0-0175C2)](https://dart.dev/)
 [![Flutter lab](https://img.shields.io/badge/Flutter_lab-3.50.0-02569B)](https://flutter.dev/)
@@ -14,7 +15,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
-![Actual GitHub Pages lab with original branding and circular language controls](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-bilingual-en.jpg)
+![Actual Ridge versus linear comparison on GitHub Pages, with lambda control, coefficient norms and validation scores](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-ridge-pt.jpg)
 
 ## Included now
 
@@ -67,7 +68,13 @@ final predictions = pipeline.predict([[4]]); // approximately [9]
 final transformed = pipeline.transform([[4]]); // train-fitted scaling
 ```
 
-The core package is prepared for pub.dev as `ml_engine` version 0.2.0. Once published, install with `dart pub add ml_engine`. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. Publication status is recorded in the release notes.
+The core is published as [`ml_engine 0.2.0`](https://pub.dev/packages/ml_engine/versions/0.2.0):
+
+```sh
+dart pub add ml_engine
+```
+
+Or declare `ml_engine: ^0.2.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
 
 ```dart
 Pipeline create() => Pipeline(StandardScaler(), LinearRegression());

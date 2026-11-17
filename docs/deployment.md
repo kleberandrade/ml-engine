@@ -78,3 +78,19 @@ Fresh captures of the final published UI:
 - [Learn in Portuguese](images/pages-learn-pt.jpg)
 - [Executable examples](images/pages-examples-pt.jpg)
 - [Mobile Portuguese Learn](images/pages-mobile-learn-pt.jpg)
+
+
+## Ridge 0.2.0 publication
+
+[CI/Pages run 44184785601](https://github.com/kleberandrade/ml-engine/actions/runs/44184785601) passed for application commit `423fd82247fe324fae884d0260cb95916b6dfd5c`, including all 57 tests, package dry run, both analyses and the release artifact. Actual public browser checks on November 17, 2026 confirmed:
+
+- The Ridge/linear mode, lambda slider, coefficient norms and objective-comparison caveat appear in both languages. Pausing at 71 iterations and switching PT→EN→PT kept the count at 71 and the same metrics.
+- At lambda=1 after 250 iterations on seed 42, validation RMSE A/B was 1.370/0.478 and coefficient norm A/B was 1.453/2.234. Test RMSE was 1.159/0.432. These are observations on one synthetic fixture; shrinkage does not guarantee improved test error.
+- Dragging lambda to zero and retraining gave validation RMSE 0.478 for both, coefficient norm 2.234 for both, and final test RMSE 0.432 for both, with overlapping curves. Exact equality is also asserted in numerical/session tests.
+- Learn shows the Ridge formula, unpenalized intercept, mean-loss convention, five exercises and a working Ridge preset. Opening that preset restored lambda=1 and the ready state.
+- At 390×844, Portuguese regularization controls and help fit the viewport. The temporary viewport override was reset. Captured app console warnings/errors were empty.
+- The public shell and six runtime asset URLs returned successfully after deployment. The artifact contains 28 manifest entries.
+
+Fresh actual captures: [English comparison](images/pages-ridge-en.jpg), [Portuguese lambda=1](images/pages-ridge-pt.jpg), [lambda=0](images/pages-ridge-zero.jpg), [mobile controls](images/pages-ridge-mobile.jpg).
+
+The Dart core was also published to [pub.dev 0.2.0](https://pub.dev/packages/ml_engine/versions/0.2.0) with explicit user authorization. The public archive hash/core sources were verified and a separate hosted-dependency project executed an independently known Ridge fixture. See [publication metadata](pub-v0.2.0.json). The Flutter app remains non-publishable to pub.dev. Later evidence/README commits use the same application code and receive their own CI run.

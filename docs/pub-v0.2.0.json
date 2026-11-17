@@ -1,0 +1,11 @@
+{
+  "name": "ml_engine",
+  "version": "0.2.0",
+  "published": "2026-11-17T21:57:29.423135Z",
+  "archive_url": "https://pub.dev/api/archives/ml_engine-0.2.0.tar.gz",
+  "archive_sha256": "5929a63c38416db42f9bcf5335b1ef0b6e7a3747cd5fca1bd3eb1a367d3ae86b",
+  "archive_bytes": 17085,
+  "archive_files": 48,
+  "core_source_matches_git": true,
+  "consumer_check": "Hosted dependency in a separate project; Ridge lambda=1 produced w=0.4999999999999997, b=0 on centered x/y = [-1,1]."
+}

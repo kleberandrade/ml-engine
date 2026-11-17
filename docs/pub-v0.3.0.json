@@ -1,0 +1,11 @@
+{
+  "name": "ml_engine",
+  "version": "0.3.0",
+  "published": "2026-11-17T22:14:47.864811Z",
+  "archive_url": "https://pub.dev/api/archives/ml_engine-0.3.0.tar.gz",
+  "archive_sha256": "6415b0b672cff322d4a17c14cd4492845e3d50460e0a37c769f7c0e64ea2c68f",
+  "archive_bytes": 20181,
+  "archive_files": 50,
+  "core_source_matches_git": true,
+  "consumer_check": "Independent hosted dependency 0.3.0: KNNClassifier(k=3) returned 1.0; KNNRegressor(k=2) returned 5.0 from hand-selected neighbors. The official pub client refreshed/downloaded the explicit version after initial index propagation delay; pub get and execution then succeeded."
+}

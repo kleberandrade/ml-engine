@@ -94,3 +94,17 @@ Fresh captures of the final published UI:
 Fresh actual captures: [English comparison](images/pages-ridge-en.jpg), [Portuguese lambda=1](images/pages-ridge-pt.jpg), [lambda=0](images/pages-ridge-zero.jpg), [mobile controls](images/pages-ridge-mobile.jpg).
 
 The Dart core was also published to [pub.dev 0.2.0](https://pub.dev/packages/ml_engine/versions/0.2.0) with explicit user authorization. The public archive hash/core sources were verified and a separate hosted-dependency project executed an independently known Ridge fixture. See [publication metadata](pub-v0.2.0.json). The Flutter app remains non-publishable to pub.dev. Later evidence/README commits use the same application code and receive their own CI run.
+
+
+## KNN 0.3.0 publication
+
+[CI and Pages run 44187769406](https://github.com/kleberandrade/ml-engine/actions/runs/44187769406) succeeded for source `05557d489860fae8cae46444bae7a94415a6b230`, with 39 core tests, 32 Flutter tests, package validation, analyses and the release build. Actual public Chrome checks on November 17, 2026 confirmed:
+
+- Classification KNN at seed 42 and k=5 versus k=1 produced validation accuracy A/B 86.7%/83.3% and final test 90.0%/86.7%. The curved background shows A only. Results survived PT→EN and a Learn/Laboratory round trip.
+- Regression KNN at k=5 versus 1 produced validation RMSE 0.253/0.314 and final test 0.272/0.352. Curves show local predictions for the nonlinear fixture. Dragging k to 1 cleared the old result; reevaluation gave identical validation RMSE 0.314 and test RMSE 0.352 for A/B.
+- KNN uses direct evaluation: no learning-rate, epochs, pause or optimizer curve is shown. Both languages include the voting/mean, distance/class tie, duplicate-row, scaling and validation explanations.
+- At 390×844, Portuguese k controls/help and the mobile Learn menu fit correctly. The real Learn regression preset opened 150 rows at k=5 in ready state and evaluated successfully. The viewport override was reset; captured app console warnings/errors were empty.
+
+These metric values are observations for one synthetic split, not a general guarantee that k=5 is optimal. Fresh actual screenshots: [classification PT](images/pages-knn-classification-pt.jpg), [classification EN](images/pages-knn-classification-en.jpg), [regression PT](images/pages-knn-regression-pt.jpg), [k=1](images/pages-knn-k1.jpg), [mobile controls](images/pages-knn-mobile.jpg).
+
+The root Dart package was published as [ml_engine 0.3.0](https://pub.dev/packages/ml_engine/versions/0.3.0). The API, archive SHA-256 and matching core sources were verified. A separate hosted-dependency project executed both KNN classes and obtained class 1 and regression 5. Its initial version resolution saw a stale index; after refreshing/downloading the explicit version with the official pub client, pub get and execution succeeded. See [publication metadata](pub-v0.3.0.json). The Flutter application stays excluded from pub.dev; later documentation/evidence commits retain the same application code and receive their own CI runs.

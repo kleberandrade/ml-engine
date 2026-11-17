@@ -9,4 +9,4 @@
 
 [Live laboratory](https://kleberandrade.github.io/ml-engine/) · [Dart package](https://pub.dev/packages/ml_engine/versions/0.3.0) · [Source](https://github.com/kleberandrade/ml-engine)
 
-Publication is performed after CI validation; the public version API and the GitHub workflow provide the final delivery record. The Flutter application is not included in the pub.dev archive.
+Publication verified on November 17, 2026: [CI and Pages run 44187769406](https://github.com/kleberandrade/ml-engine/actions/runs/44187769406) succeeded for source commit `05557d489860fae8cae46444bae7a94415a6b230`. Pub.dev accepted version 0.3.0; its 20,181-byte public archive matches the validated core. An independent hosted-dependency consumer returned class 1 and regression value 5 for hand-selected examples. See [public archive metadata](pub-v0.3.0.json). The source tag identifies the code used for that package; later evidence/README commits do not republish it. The Flutter application is not included in the pub.dev archive.

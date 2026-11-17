@@ -48,6 +48,19 @@ const learningTopics = [
     preset: 'linear',
   ),
   LearningTopic(
+    BilingualText('Ridge and L2 regularization', 'Ridge e regularização L2'),
+    BilingualText(
+      'Ridge adds a squared-weight penalty to the mean linear loss. The intercept is excluded. Both models use the same training split, scaler, rate and iterations; only Ridge has the penalty. Scaling changes what a unit coefficient means, so fit it on training rows only.',
+      'Ridge adiciona uma penalização quadrática dos pesos à perda linear média. O intercepto fica de fora. Os modelos usam a mesma divisão, escala, taxa e iterações; só Ridge tem a penalização. A escala muda o significado de um coeficiente unitário e deve ser ajustada apenas no treino.',
+    ),
+    'J = mean((ŷ − y)²)/2 + λ||w||²/2\n∂J/∂w = Xᵀ(ŷ − y)/n + λw; ∂J/∂b = mean(ŷ − y)',
+    BilingualText(
+      'λ=0 is exactly linear regression. On centered x=−1,+1 and y=−1,+1, λ=1 gives w=0.5 and b=0. Larger λ trades fit for smaller coefficient norm, not guaranteed accuracy. Select it by validation; objective heights differ because Ridge includes a penalty. This mean-loss convention corresponds to alpha=n*lambda in a sum-loss definition.',
+      'λ=0 é exatamente regressão linear. Com x=−1,+1 e y=−1,+1 centrados, λ=1 resulta em w=0,5 e b=0. Um λ maior troca ajuste por menor norma dos coeficientes, sem garantir acurácia. Escolha pela validação; a altura dos custos difere porque Ridge inclui a penalização. Esta perda média corresponde a alpha=n*lambda na definição por soma.',
+    ),
+    preset: 'ridge',
+  ),
+  LearningTopic(
     BilingualText('Binary logistic regression', 'Regressão logística binária'),
     BilingualText(
       'A linear score becomes the probability of class 1 through a stable sigmoid. This implementation supports binary labels 0 and 1 and uses the 0.5 decision threshold.',
@@ -117,12 +130,12 @@ const learningExercises = [
   LearningExercise(
     BilingualText('2. Observe convergence', '2. Observe a convergência'),
     BilingualText(
-      'Compare two rates on the same regression seed and split.',
-      'Compare duas taxas com a mesma semente e divisão de regressão.',
+      'Compare Ridge λ=0, 1 and 3 against linear on the same split and learning rate.',
+      'Compare Ridge com λ=0, 1 e 3 à linear na mesma divisão e taxa.',
     ),
     BilingualText(
-      'Record both validation RMSE values and verify the iteration count freezes while paused.',
-      'Registre os dois RMSE de validação e confirme que a contagem para durante a pausa.',
+      'Record validation RMSE and coefficient norms; verify identical curves at λ=0 and a frozen count while paused.',
+      'Registre RMSE de validação e normas dos coeficientes; confirme curvas idênticas em λ=0 e contagem parada durante a pausa.',
     ),
   ),
   LearningExercise(

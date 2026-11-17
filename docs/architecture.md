@@ -82,3 +82,8 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 ## Numerical failure recovery
 
 [ADR 0004](adr/0004-reject-partial-training-state.md) defines failure behavior at the public core boundary. Scalers, K-means initialization and individual optimizer updates commit only validated candidate state. An exception leaves the previous statistics/iteration intact. This is atomicity per operation, not rollback of a complete multi-iteration `fit`. A failed Pipeline fit invalidates composition-level prediction and transformation until a successful fit, because arbitrary child implementations cannot be rolled back. Avoid mutating pipeline components independently.
+
+
+## Ridge and package delivery
+
+[ADR 0005](adr/0005-ridge-mean-loss-and-equal-budget-lab.md) adds Ridge as another GradientModel specialization, not another training framework. The experiment feature configures equal-rate Ridge/linear runs and exposes immutable coefficient norms. Presentation retains all language/number formatting. The publishable archive contains the Dart core, examples, tests and package metadata; the Flutter app stays in the repository/Pages artifact. CI validates both deliverables and never uploads a package itself.

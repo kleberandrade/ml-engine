@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
+
+- Add `RidgeRegression(lambda: ...)`, mean-loss L2 regularization, an unpenalized intercept and exact lambda-zero equivalence with linear regression.
+- Add Ridge/linear lab comparisons, correlated-feature data, regularization controls, coefficient norms and EN/PT-BR learning content/presets.
+- Add independent numerical fixtures and Ridge session/widget tests; prepare a core-only pub.dev archive.
+
 
 - Preserve valid scaler/model state when numerical refits or individual training updates fail.
 - Block pipeline transformation/prediction after a failed fit until recovery, preventing mixed preprocessing/model state.

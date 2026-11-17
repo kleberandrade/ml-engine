@@ -82,6 +82,25 @@ class _ExperimentControlsState extends State<ExperimentControls> {
                   : (v) => c.configure(clusters: v.round()),
             ),
           ],
+          if (c.experiment == Experiment.ridge) ...[
+            Text(
+              s.t('regularization', {'value': s.number(c.regularization, 1)}),
+            ),
+            Slider(
+              key: const ValueKey('ridge-regularization'),
+              semanticFormatterCallback: (v) =>
+                  s.t('regularization', {'value': s.number(v, 1)}),
+              value: c.regularization,
+              min: 0,
+              max: 3,
+              divisions: 30,
+              onChanged: c.active
+                  ? null
+                  : (v) => c.configure(regularization: v),
+            ),
+            Text(s.t('ridgeControlHelp'), style: const TextStyle(fontSize: 13)),
+            const SizedBox(height: 12),
+          ],
           Text(s.t('budget', {'count': c.epochs})),
           Slider(
             semanticFormatterCallback: (v) =>

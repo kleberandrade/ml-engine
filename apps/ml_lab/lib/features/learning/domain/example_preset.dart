@@ -9,6 +9,7 @@ class ExamplePreset {
 
 const examplePresets = [
   ExamplePreset('linear', Experiment.regression),
+  ExamplePreset('ridge', Experiment.ridge),
   ExamplePreset('binary', Experiment.classification),
   ExamplePreset('clusters', Experiment.clustering),
   ExamplePreset('csv', Experiment.regression, csv: true),

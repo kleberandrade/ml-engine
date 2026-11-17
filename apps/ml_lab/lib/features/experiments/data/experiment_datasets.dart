@@ -18,9 +18,14 @@ Dataset generateDataset(ExperimentSettings settings) {
       ]);
       y.add(c.toDouble());
     } else {
-      x.add([a, settings.experiment == Experiment.regression ? 0 : b]);
+      x.add([
+        a,
+        settings.experiment == Experiment.ridge
+            ? a + .15 * b
+            : (settings.experiment.isRegression ? 0 : b),
+      ]);
       y.add(
-        settings.experiment == Experiment.regression
+        settings.experiment.isRegression
             ? 2 * a + 1 + (random.nextDouble() - .5) * 1.4
             : (a + b + (random.nextDouble() - .5) * 1.2 > 0 ? 1 : 0),
       );

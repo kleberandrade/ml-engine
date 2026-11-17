@@ -22,6 +22,11 @@ void main() {
   print(
     '5-fold MSE: ${crossValidate(x, y, kFold(x.length, seed: 42), create, meanSquaredError)}',
   );
+  final ridge = Pipeline(StandardScaler(), RidgeRegression(lambda: 1))
+    ..fit(rows(split.train), targets(split.train));
+  print(
+    'Ridge validation RMSE: ${rootMeanSquaredError(targets(split.validation), ridge.predict(rows(split.validation)))}',
+  );
   final logistic = Pipeline(StandardScaler(), LogisticRegression())
     ..fit(
       [

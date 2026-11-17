@@ -10,6 +10,7 @@ export 'src/model_selection/cross_validation.dart';
 export 'src/models/estimator.dart';
 export 'src/models/gradient_model.dart';
 export 'src/models/linear_regression.dart';
+export 'src/models/ridge_regression.dart';
 export 'src/models/logistic_regression.dart';
 export 'src/models/k_means.dart';
 export 'src/preprocessing/transformer.dart';

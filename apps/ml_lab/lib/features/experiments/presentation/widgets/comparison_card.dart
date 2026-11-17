@@ -15,10 +15,15 @@ class ComparisonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.l10n;
-    final labelA = c.experiment == Experiment.clustering
+    final ridge = c.experiment == Experiment.ridge;
+    final labelA = ridge
+        ? s.t('ridgeShort', {'value': s.number(c.regularization, 1)})
+        : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed})
         : s.t('rateShort', {'value': s.number(c.learningRate, 2)});
-    final labelB = c.experiment == Experiment.clustering
+    final labelB = ridge
+        ? s.t('linearShort')
+        : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed + 1})
         : s.t('rateShort', {'value': s.number(c.learningRate / 4, 3)});
     return LabPanel(
@@ -46,6 +51,15 @@ class ComparisonCard extends StatelessWidget {
               ),
             ],
           ),
+          if (ridge) ...[
+            const SizedBox(height: 12),
+            Text(
+              s.t('coefficientNorm', {
+                'a': s.number(c.coefficientNorm(), 3),
+                'b': s.number(c.coefficientNorm(alternate: true), 3),
+              }),
+            ),
+          ],
           const SizedBox(height: 14),
           Text(
             formatBaseline(s, c.baseline),
@@ -87,7 +101,10 @@ class ComparisonCard extends StatelessWidget {
               ),
             ),
           ),
-          Text(s.t('objectiveLegend'), style: const TextStyle(fontSize: 12)),
+          Text(
+            s.t(ridge ? 'ridgeObjectiveLegend' : 'objectiveLegend'),
+            style: const TextStyle(fontSize: 12),
+          ),
         ],
       ),
     );

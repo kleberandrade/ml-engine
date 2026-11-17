@@ -64,6 +64,7 @@ void main() {
       expect(find.text('Treinar modelos'), findsOneWidget);
       for (final (id, experiment) in [
         ('linear', Experiment.regression),
+        ('ridge', Experiment.ridge),
         ('binary', Experiment.classification),
         ('clusters', Experiment.clustering),
         ('csv', Experiment.regression),

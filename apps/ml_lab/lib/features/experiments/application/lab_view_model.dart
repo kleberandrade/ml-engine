@@ -25,6 +25,9 @@ class LabViewModel extends ChangeNotifier {
   int get seed => _settings.seed;
   int get epochs => _settings.epochs;
   int get clusters => _settings.clusters;
+  double get regularization => _settings.regularization;
+  double coefficientNorm({bool alternate = false}) =>
+      _session.coefficientNorm(alternate: alternate);
   double get learningRate => _settings.learningRate;
   RunStatus get status => _status;
   Object? get error => _error;
@@ -44,6 +47,7 @@ class LabViewModel extends ChangeNotifier {
     int? epochs,
     int? clusters,
     double? learningRate,
+    double? regularization,
   }) {
     if (active) {
       throw StateError('Stop the active run before changing settings.');
@@ -53,6 +57,7 @@ class LabViewModel extends ChangeNotifier {
       epochs: epochs,
       clusters: clusters,
       learningRate: learningRate,
+      regularization: regularization,
     );
     final data = seed == null ? _session.data : generateDataset(next);
     final session = ExperimentSession(data, next);

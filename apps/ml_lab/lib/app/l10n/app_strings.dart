@@ -68,6 +68,39 @@ const messages = <String, List<String>>{
     "02  Classificação logística",
   ],
   "chip-clustering": ["03  K-means++", "03  K-means++"],
+  'chip-ridge': ['04  Ridge vs linear', '04  Ridge × linear'],
+  'plot-ridge': [
+    'See regularization shrink coefficients',
+    'Veja a regularização reduzir coeficientes',
+  ],
+  'type-ridge': ['Ridge regression', 'regressão Ridge'],
+  'regularization': ['Regularization λ  {value}', 'Regularização λ  {value}'],
+  'ridgeControlHelp': [
+    'λ=0 matches linear regression. Larger λ shrinks weights; the intercept is not penalized. Both models use the same learning rate.',
+    'λ=0 equivale à regressão linear. Um λ maior reduz os pesos; o intercepto não é penalizado. Os modelos usam a mesma taxa de aprendizado.',
+  ],
+  'ridgeShort': ['Ridge λ={value}', 'Ridge λ={value}'],
+  'linearShort': ['Linear λ=0', 'Linear λ=0'],
+  'coefficientNorm': [
+    'Coefficient norm ||w||₂ • A: {a} / B: {b}',
+    'Norma dos coeficientes ||w||₂ • A: {a} / B: {b}',
+  ],
+  'ridgeObjectiveLegend': [
+    'A: teal, MSE/2 + λ||w||²/2. B: brown, MSE/2. Costs have different objectives; compare validation RMSE, not curve heights.',
+    'A: verde, MSE/2 + λ||w||²/2. B: marrom, MSE/2. Os objetivos são diferentes; compare o RMSE de validação, não a altura das curvas.',
+  ],
+  'explain-ridge': [
+    'Ridge minimizes mean squared error / 2 + λ||w||²/2. The intercept is not penalized. Correlated features make coefficient estimates sensitive; L2 shrinks their norm but can increase bias. A uses Ridge, B linear, with identical split, scaler, initialization, rate and budget. Choose λ on validation data. Better test performance is not guaranteed. The plotted line fixes x₂ at its training mean.',
+    'Ridge minimiza erro quadrático médio / 2 + λ||w||²/2. O intercepto não é penalizado. Variáveis correlacionadas tornam os coeficientes sensíveis; L2 reduz sua norma, mas pode aumentar o viés. A usa Ridge e B linear, com a mesma divisão, escala, inicialização, taxa e limite. Escolha λ pela validação. Não há garantia de melhora no teste. A reta fixa x₂ na média do treino.',
+  ],
+  'example-ridge': [
+    'Ridge on correlated features',
+    'Ridge com variáveis correlacionadas',
+  ],
+  'example-ridge-body': [
+    '150 seeded samples, correlated x₁/x₂ and y ≈ 2x₁+1. Compare Ridge λ=1 with linear at the same rate 0.08 and 250 iterations. Move λ to zero to recover identical curves.',
+    '150 amostras reproduzíveis, x₁/x₂ correlacionados e y ≈ 2x₁+1. Compare Ridge λ=1 com linear à mesma taxa 0,08 e 250 iterações. Leve λ a zero para obter curvas idênticas.',
+  ],
   "footer": [
     "PURE DART CORE / REPRODUCIBLE SEEDS / TRAIN-ONLY PREPROCESSING",
     "NÚCLEO DART PURO / SEMENTES REPRODUZÍVEIS / PRÉ-PROCESSAMENTO SÓ NO TREINO",
@@ -228,8 +261,8 @@ const messages = <String, List<String>>{
   ],
   "learnTitle": ["Learn by observing the model", "Aprenda observando o modelo"],
   "learnSubtitle": [
-    "A guide to the algorithms actually implemented in ML Engine 0.1.0, based on the project tutorial and numerical conventions.",
-    "Um guia dos algoritmos realmente implementados no ML Engine 0.1.0, baseado no tutorial e nas convenções numéricas do projeto.",
+    "A guide to the algorithms actually implemented in ML Engine 0.2.0, based on the project tutorial and numerical conventions.",
+    "Um guia dos algoritmos realmente implementados no ML Engine 0.2.0, baseado no tutorial e nas convenções numéricas do projeto.",
   ],
   "foundations": ["Foundations before fitting", "Fundamentos antes do ajuste"],
   "openExample": ["Open this experiment", "Abrir este experimento"],
@@ -249,8 +282,8 @@ const messages = <String, List<String>>{
     "Cada exemplo abre o laboratório real com dados reproduzíveis e parâmetros explícitos. Abrir um exemplo substitui o experimento; trocar o idioma ou visitar Aprender preserva o estado.",
   ],
   "sourceVersion": [
-    "Source: project documentation • core 0.1.0 • Flutter 3.50.0",
-    "Fonte: documentação do projeto • núcleo 0.1.0 • Flutter 3.50.0",
+    "Source: project documentation • core 0.2.0 • Flutter 3.50.0",
+    "Fonte: documentação do projeto • núcleo 0.2.0 • Flutter 3.50.0",
   ],
   "tutorialLink": ["Tutorial and exercises", "Tutorial e exercícios"],
   "designLink": [

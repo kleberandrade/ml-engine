@@ -4,6 +4,7 @@ import 'estimator.dart';
 
 abstract class GradientModel implements Estimator {
   final double learningRate;
+  final double l2Penalty;
   final int iterations;
   final bool logistic;
   Matrix? _x;
@@ -15,10 +16,18 @@ abstract class GradientModel implements Estimator {
   List<double> get coefficients => List.unmodifiable(_weights);
   double get intercept => _bias;
   GradientModel({
+    this.l2Penalty = 0,
     required this.logistic,
     required this.learningRate,
     required this.iterations,
   }) {
+    if (!l2Penalty.isFinite || l2Penalty < 0) {
+      throw ArgumentError.value(
+        l2Penalty,
+        'l2Penalty',
+        'Must be finite and nonnegative.',
+      );
+    }
     if (!learningRate.isFinite || learningRate <= 0 || iterations < 1) {
       throw ArgumentError(
         'Positive finite learning rate and iterations required.',
@@ -73,7 +82,11 @@ abstract class GradientModel implements Estimator {
     }
     final weights = List.generate(
       gradient.length,
-      (j) => _weights[j] - learningRate * gradient[j] / x.length,
+      (j) => l2Penalty == 0
+          ? _weights[j] - learningRate * gradient[j] / x.length
+          : _weights[j] -
+                learningRate *
+                    (gradient[j] / x.length + l2Penalty * _weights[j]),
     );
     final bias = _bias - learningRate * biasGradient / x.length;
     var cost = 0.0;
@@ -85,6 +98,9 @@ abstract class GradientModel implements Estimator {
           : pow(z - _y[i], 2) / 2;
     }
     cost /= x.length;
+    if (l2Penalty > 0) {
+      cost += l2Penalty * weights.fold(0.0, (sum, w) => sum + w * w) / 2;
+    }
     if (!cost.isFinite) {
       throw StateError('Training diverged. Lower learning rate.');
     }

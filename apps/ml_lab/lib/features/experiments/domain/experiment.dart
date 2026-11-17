@@ -1,4 +1,11 @@
-enum Experiment { regression, classification, clustering }
+enum Experiment {
+  regression,
+  classification,
+  clustering,
+  ridge;
+
+  bool get isRegression => this == regression || this == ridge;
+}
 
 enum ScoreMetric { rmse, accuracy, meanSquaredDistance }
 
@@ -12,14 +19,18 @@ class ExperimentScore {
 class ExperimentSettings {
   final Experiment experiment;
   final int seed, epochs, clusters;
-  final double learningRate;
+  final double learningRate, regularization;
   ExperimentSettings({
     this.experiment = Experiment.regression,
     this.seed = 42,
     this.epochs = 250,
     this.clusters = 3,
     this.learningRate = .08,
+    this.regularization = 1,
   }) {
+    if (!regularization.isFinite || regularization < 0 || regularization > 3) {
+      throw ArgumentError('Lab regularization must be between 0 and 3.');
+    }
     if (!learningRate.isFinite ||
         learningRate < .01 ||
         learningRate > .3 ||
@@ -38,11 +49,13 @@ class ExperimentSettings {
     int? epochs,
     int? clusters,
     double? learningRate,
+    double? regularization,
   }) => ExperimentSettings(
     experiment: experiment ?? this.experiment,
     seed: seed ?? this.seed,
     epochs: epochs ?? this.epochs,
     clusters: clusters ?? this.clusters,
     learningRate: learningRate ?? this.learningRate,
+    regularization: regularization ?? this.regularization,
   );
 }

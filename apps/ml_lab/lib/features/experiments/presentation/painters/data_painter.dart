@@ -20,7 +20,7 @@ class DataPainter extends CustomPainter {
       max(1, size.width - 60),
       size.height - 42,
     );
-    final ys = c.experiment == Experiment.regression
+    final ys = c.experiment.isRegression
         ? c.targets
         : c.scaled.map((r) => r[1]).toList();
     final xs = c.scaled.map((r) => r[0]).toList();
@@ -92,7 +92,7 @@ class DataPainter extends CustomPainter {
     }
     canvas.save();
     canvas.clipRect(rect);
-    if (c.experiment == Experiment.regression && c.modelA != null) {
+    if (c.experiment.isRegression && c.modelA != null) {
       for (final alternate in [false, true]) {
         final rows = List.generate(
           60,

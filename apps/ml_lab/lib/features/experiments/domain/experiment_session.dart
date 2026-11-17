@@ -31,6 +31,12 @@ class ExperimentSession {
   List<double> get coefficientsB => _comparison?.coefficients ?? const [];
   double get interceptA => _model?.intercept ?? 0;
   double get interceptB => _comparison?.intercept ?? 0;
+  double coefficientNorm({bool alternate = false}) => sqrt(
+    (alternate ? coefficientsB : coefficientsA).fold(
+      0.0,
+      (sum, w) => sum + w * w,
+    ),
+  );
   Matrix get centroidsA => _kmeans?.centroids ?? const [];
   Matrix get centroidsB => _comparisonKmeans?.centroids ?? const [];
   List<int>? get clusterLabels => _kmeans?.predict(scaled);
@@ -56,12 +62,27 @@ class ExperimentSession {
       _kmeans = a;
       _comparisonKmeans = b;
     } else {
-      GradientModel create(double rate) =>
-          settings.experiment == Experiment.regression
-          ? LinearRegression(learningRate: rate, iterations: settings.epochs)
-          : LogisticRegression(learningRate: rate, iterations: settings.epochs);
-      _model = create(settings.learningRate)..start(train, targets);
-      _comparison = create(settings.learningRate / 4)..start(train, targets);
+      if (settings.experiment == Experiment.ridge) {
+        // Only regularization differs: same train rows, initialization, rate and budget.
+        _model = RidgeRegression(
+          lambda: settings.regularization,
+          learningRate: settings.learningRate,
+          iterations: settings.epochs,
+        )..start(train, targets);
+        _comparison = LinearRegression(
+          learningRate: settings.learningRate,
+          iterations: settings.epochs,
+        )..start(train, targets);
+      } else {
+        GradientModel create(double rate) => settings.experiment.isRegression
+            ? LinearRegression(learningRate: rate, iterations: settings.epochs)
+            : LogisticRegression(
+                learningRate: rate,
+                iterations: settings.epochs,
+              );
+        _model = create(settings.learningRate)..start(train, targets);
+        _comparison = create(settings.learningRate / 4)..start(train, targets);
+      }
     }
   }
 
@@ -96,7 +117,7 @@ class ExperimentSession {
       return ExperimentScore(ScoreMetric.meanSquaredDistance, total / x.length);
     }
     final predictions = predict(x, alternate: alternate);
-    return settings.experiment == Experiment.regression
+    return settings.experiment.isRegression
         ? ExperimentScore(
             ScoreMetric.rmse,
             rootMeanSquaredError(y, predictions),
@@ -114,11 +135,9 @@ class ExperimentSession {
     final y = split.validation.map((i) => data.y[i]).toList();
     final predictions = List.filled(
       y.length,
-      settings.experiment == Experiment.regression
-          ? mean
-          : (mean >= .5 ? 1.0 : 0.0),
+      settings.experiment.isRegression ? mean : (mean >= .5 ? 1.0 : 0.0),
     );
-    return settings.experiment == Experiment.regression
+    return settings.experiment.isRegression
         ? ExperimentScore(
             ScoreMetric.rmse,
             rootMeanSquaredError(y, predictions),

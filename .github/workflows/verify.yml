@@ -22,6 +22,8 @@ jobs:
       - run: dart run tool/check_architecture.dart
       - run: dart analyze
       - run: dart test
+      - name: Validate publishable Dart package
+        run: dart pub publish --dry-run
       - run: dart run example/main.dart
       - run: flutter analyze
         working-directory: apps/ml_lab

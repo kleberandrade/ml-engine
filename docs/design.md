@@ -8,7 +8,7 @@ A row is one sample; a column is one feature. A target is a finite real value (r
 
 Matrices are nonempty rectangular `List<List<double>>` values. Targets match row count. Public fitting and prediction boundaries reject NaN and infinity, and prediction rejects the wrong feature count. Dataset rows, model parameter getters, centroid getters and cost histories cannot be mutated through returned collections. No training state is shared between runs.
 
-Gradient descent starts at zero coefficients and intercept, includes the intercept gradient, and uses full-batch average gradients. Linear cost is MSE/2. Binary logistic cost uses `max(z,0) - z*y + log(1+exp(-abs(z)))`; probabilities use a sign-stable sigmoid; class threshold is >=0.5. Costs are recorded AFTER each update, without a synthetic initial sample. `step()` returns false after the requested budget. Overflow causes an explicit error rather than clipping a diverged model silently. There is no regularization or automatic learning-rate tuning.
+Gradient descent starts at zero coefficients and intercept, includes the intercept gradient, and uses full-batch average gradients. Linear cost is MSE/2. Binary logistic cost uses `max(z,0) - z*y + log(1+exp(-abs(z)))`; probabilities use a sign-stable sigmoid; class threshold is >=0.5. Costs are recorded AFTER each update, without a synthetic initial sample. `step()` returns false after the requested budget. Overflow causes an explicit error rather than clipping a diverged model silently. RidgeRegression adds `lambda*sum(w²)/2` to MSE/2 and `lambda*w` to the weight gradient. Lambda is finite and nonnegative, the intercept is unpenalized and lambda=0 uses precisely the linear updates. This mean-loss convention is invariant to row duplication; a sum-loss implementation uses alpha=n*lambda. Cost history includes the penalty after each update. Large rates/lambda may diverge; no automatic learning-rate tuning or matrix solver is supplied.
 
 StandardScaler uses population variance (ddof=0). Zero standard deviation or zero MinMax range becomes scale 1; training constants map to zero, while a new value outside the constant training value maps to its difference. MinMax transforms can fall outside [0,1] on held-out data. Extreme finite magnitudes may overflow floating-point arithmetic and are rejected during scaling/training; arbitrary precision is not supported.
 
@@ -16,7 +16,7 @@ K-means++ samples the first center uniformly, then samples unchosen locations pr
 
 Splits floor train and validation counts and assign the remainder to test; empty partitions are rejected. K-fold distributes shuffled indices round-robin. Stratified K-fold shuffles each class and carries the bucket offset across groups; every class must have at least k samples. These random splits assume independent rows: chronological, grouped or subject-correlated data needs a different splitting strategy. No implicit time-series validity is claimed.
 
-R² returns 1 for perfect predictions on constant targets and 0 otherwise. Undefined binary precision/recall/F1 denominators return 0. Binary confusion counts are exposed as truePositive, trueNegative, falsePositive, falseNegative. Multiclass metrics and probability calibration are outside v0.1.0.
+R² returns 1 for perfect predictions on constant targets and 0 otherwise. Undefined binary precision/recall/F1 denominators return 0. Binary confusion counts are exposed as truePositive, trueNegative, falsePositive, falseNegative. Multiclass metrics and probability calibration are outside v0.2.0.
 
 ## Add an estimator
 

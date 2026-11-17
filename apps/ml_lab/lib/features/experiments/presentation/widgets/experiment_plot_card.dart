@@ -50,11 +50,7 @@ class ExperimentPlotCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            s.t(
-              c.experiment == Experiment.regression
-                  ? 'axisRegression'
-                  : 'axisFeatures',
-            ),
+            s.t(c.experiment.isRegression ? 'axisRegression' : 'axisFeatures'),
           ),
           const SizedBox(height: 12),
           Semantics(

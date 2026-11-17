@@ -87,7 +87,13 @@ class _LabShellState extends State<_LabShell> {
   LabSection section = LabSection.laboratory;
   void openPreset(ExamplePreset preset) {
     widget.c.select(preset.experiment);
-    widget.c.configure(seed: 42, epochs: 250, clusters: 3, learningRate: .08);
+    widget.c.configure(
+      seed: 42,
+      epochs: 250,
+      clusters: 3,
+      learningRate: .08,
+      regularization: 1,
+    );
     if (preset.csv) widget.c.importCsv(linearCsvFixture());
     setState(() => section = LabSection.laboratory);
   }

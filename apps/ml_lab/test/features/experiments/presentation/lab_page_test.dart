@@ -59,4 +59,20 @@ void main() {
     await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
     handle.dispose();
   });
+  testWidgets('CSV drafts survive a responsive layout change', (tester) async {
+    tester.view.physicalSize = const Size(1440, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const MlLab());
+    const draft = 'x1,x2,y\n1,0,3\n2,0,5';
+    await tester.enterText(find.byType(TextField), draft);
+    tester.view.physicalSize = const Size(390, 844);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      draft,
+    );
+    expect(tester.takeException(), isNull);
+  });
 }

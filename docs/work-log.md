@@ -43,3 +43,5 @@ The requested crapper, dryer and mutator tools were not available in the install
 7. Enabled HTTPS workflow-based GitHub Pages using the existing authenticated GitHub connection. Extended Verify so only a successful main run uploads and deploys the tested artifact, with Pages/OIDC write permissions restricted to deployment. PRs/tags cannot publish the site.
 8. Updated the README and Portuguese guide with the demo URL and new layout. Retained exactly five tutorial exercises, the MIT license, existing v0.1.0 tag and both `publish_to: none` safeguards. Dependency limits remain documented; no pub.dev action was performed.
 9. Publication/browser verification and fresh screenshots are recorded in deployment.md after the first successful Pages deployment.
+
+10. Actual Pages/mobile inspection caught a responsive-layout regression: reparenting the controls from Row to Column discarded an unsubmitted CSV draft. Reproduced the empty-editor failure with a widget test, preserved the controls' state with a page-owned GlobalKey, and verified the test passed. The key is limited to the stateful editor; training remains owned by the view model.

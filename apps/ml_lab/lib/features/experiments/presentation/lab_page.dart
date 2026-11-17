@@ -14,6 +14,8 @@ class LabPage extends StatefulWidget {
 
 class _LabPageState extends State<LabPage> {
   final c = LabViewModel();
+  // Preserve the CSV editor when the adaptive layout reparents its controls.
+  final _controlsKey = GlobalKey(debugLabel: 'experiment-controls');
   @override
   void dispose() {
     c.dispose();
@@ -88,7 +90,10 @@ class _LabPageState extends State<LabPage> {
                     const SizedBox(height: 24),
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final controls = ExperimentControls(c: c);
+                        final controls = ExperimentControls(
+                          key: _controlsKey,
+                          c: c,
+                        );
                         final workspace = ExperimentWorkspace(c: c);
                         return constraints.maxWidth >= 900
                             ? Row(

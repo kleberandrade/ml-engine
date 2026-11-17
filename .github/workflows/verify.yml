@@ -13,12 +13,12 @@ jobs:
           channel: stable
           cache: true
       - run: dart pub get
+      - run: flutter pub get
+        working-directory: lab
       - run: dart format --output=none --set-exit-if-changed lib test example tool lab/lib lab/test
       - run: dart analyze
       - run: dart test
       - run: dart run example/main.dart
-      - run: flutter pub get
-        working-directory: lab
       - run: flutter analyze
         working-directory: lab
       - run: flutter test

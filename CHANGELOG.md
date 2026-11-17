@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Add pure Dart `KNNClassifier` and `KNNRegressor` with Euclidean distance, uniform vote/mean, deterministic row/class ties, copied training data and validation.
+- Add binary KNN classification and continuous-target regression lab modes, k controls, equal-data comparisons with k=1, sampled plots and EN/PT-BR lessons/presets.
+- Show direct evaluation rather than artificial optimizer controls/history; cache immutable KNN plot samples outside painters.
+- Add numerical, leakage, cache, error-recovery, navigation, localization and mobile tests.
+
 ## 0.2.0
 
 - Add `RidgeRegression(lambda: ...)`, mean-loss L2 regularization, an unpenalized intercept and exact lambda-zero equivalence with linear regression.

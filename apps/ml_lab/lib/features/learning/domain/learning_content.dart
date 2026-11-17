@@ -61,6 +61,32 @@ const learningTopics = [
     preset: 'ridge',
   ),
   LearningTopic(
+    BilingualText('KNN classification', 'Classificação KNN'),
+    BilingualText(
+      'Store training rows and find the k closest to each query in Euclidean distance. Each row contributes one vote; predict the most frequent class. Features must be scaled using training statistics only.',
+      'Armazene o treino e encontre as k linhas mais próximas de cada consulta pela distância euclidiana. Cada linha recebe um voto; preveja a classe mais frequente. Ajuste a escala apenas com estatísticas do treino.',
+    ),
+    'd(x,z) = √Σⱼ(xⱼ−zⱼ)²; ŷ = mode(y among k neighbors)',
+    BilingualText(
+      'For neighbors labeled [0,1,1], k=3 predicts 1. Class-vote ties choose the smallest numeric label; equal-distance boundaries choose the earlier training row. Duplicate locations count separately. The lab compares selected k against 1, shows only A on the grid and supports binary labels; core classes may be any finite numeric label.',
+      'Para vizinhos [0,1,1], k=3 prevê 1. Empates de votos escolhem o menor rótulo numérico; na fronteira de distâncias iguais, vale a primeira linha de treino. Duplicatas contam separadamente. O laboratório compara o k escolhido com 1, mostra só A na grade e aceita classes binárias; o núcleo aceita qualquer rótulo numérico finito.',
+    ),
+    preset: 'knn-classification',
+  ),
+  LearningTopic(
+    BilingualText('KNN regression', 'Regressão KNN'),
+    BilingualText(
+      'Predict the simple mean of the k nearest training targets with uniform weights. Fit stores examples; there is no learning rate, iteration budget or optimization curve. Distances are brute-forced, not indexed by a KD-tree.',
+      'Preveja a média simples dos alvos das k linhas mais próximas com pesos iguais. Fit armazena exemplos; não há taxa de aprendizado, limite de iterações ou curva de otimização. A busca percorre as linhas, sem índice KD-tree.',
+    ),
+    'ŷ(x) = (1/k) Σᵢ∈Nₖ(x) yᵢ',
+    BilingualText(
+      'Neighbor targets [2,4,9] give 5 at k=3. k=1 can follow noise; a large k may smooth away useful structure. Choose k inside validation/CV with k no larger than each training fold. Exact matches and duplicate rows do not bypass uniform averaging. Curves are sampled slices at x₂=0; KNN does not learn an extrapolation trend.',
+      'Alvos vizinhos [2,4,9] resultam em 5 com k=3. k=1 pode seguir ruído; um k alto pode suavizar estruturas úteis. Escolha k na validação/CV sem superar o treino de cada partição. Coincidências exatas e duplicatas não anulam a média uniforme. As curvas são cortes amostrados em x₂=0; KNN não aprende uma tendência de extrapolação.',
+    ),
+    preset: 'knn-regression',
+  ),
+  LearningTopic(
     BilingualText('Binary logistic regression', 'Regressão logística binária'),
     BilingualText(
       'A linear score becomes the probability of class 1 through a stable sigmoid. This implementation supports binary labels 0 and 1 and uses the 0.5 decision threshold.',
@@ -153,10 +179,10 @@ const learningExercises = [
     ),
   ),
   LearningExercise(
-    BilingualText('4. Prevent leakage', '4. Evite vazamento de dados'),
+    BilingualText('4. Choose k without leakage', '4. Escolha k sem vazamento'),
     BilingualText(
-      'Evaluate five fresh StandardScaler/LinearRegression pipelines.',
-      'Avalie cinco pipelines novos de StandardScaler/LinearRegression.',
+      'Compare KNN k=1, 3 and 5 using fresh StandardScaler/KNN pipelines in every validation fold.',
+      'Compare KNN com k=1, 3 e 5 usando pipelines StandardScaler/KNN novos em cada partição de validação.',
     ),
     BilingualText(
       'Every row is held out once; no fold overlaps its training rows or reuses fitted components.',

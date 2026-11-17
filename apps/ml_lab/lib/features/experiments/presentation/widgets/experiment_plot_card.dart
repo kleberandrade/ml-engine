@@ -52,9 +52,11 @@ class ExperimentPlotCard extends StatelessWidget {
           Text(
             s.t(c.experiment.isRegression ? 'axisRegression' : 'axisFeatures'),
           ),
+          if (c.experiment == Experiment.knnClassification)
+            Text(s.t('knnRegions')),
           const SizedBox(height: 12),
           Semantics(
-            label: s.t('plotAria', {
+            label: s.t(c.experiment.isKnn ? 'knnPlotAria' : 'plotAria', {
               'count': c.data.x.length,
               'type': s.t('type-${c.experiment.name}'),
               'iterations': c.history.length,

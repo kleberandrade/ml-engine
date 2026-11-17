@@ -87,3 +87,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 ## Ridge and package delivery
 
 [ADR 0005](adr/0005-ridge-mean-loss-and-equal-budget-lab.md) adds Ridge as another GradientModel specialization, not another training framework. The experiment feature configures equal-rate Ridge/linear runs and exposes immutable coefficient norms. Presentation retains all language/number formatting. The publishable archive contains the Dart core, examples, tests and package metadata; the Flutter app stays in the repository/Pages artifact. CI validates both deliverables and never uploads a package itself.
+
+## Nearest-neighbor evaluation
+
+[ADR 0006](adr/0006-knn-uniform-votes-and-direct-evaluation.md) adds two Estimator implementations that store copied training data and predict through uniform Euclidean neighbors. KNN completes directly in the lab and does not reuse the iterative timer/cost UI. PlotBounds keeps sampled predictions aligned with axes. PredictionSamples contains immutable numeric values cached by LabViewModel until the experiment changes; renderers never query a mutable KNN model. Model selection remains train/validation based, with k checked against the training partition.

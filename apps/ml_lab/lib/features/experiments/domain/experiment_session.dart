@@ -11,12 +11,21 @@ class ExperimentSession {
   final ExperimentSettings settings;
   late final DataSplit split;
   late final Matrix scaled;
+  Estimator? _neighbors, _comparisonNeighbors;
+  bool get hasResults => _neighbors != null || history.isNotEmpty;
   GradientModel? _model, _comparison;
   KMeans? _kmeans, _comparisonKmeans;
 
   ExperimentSession(this.data, this.settings) {
     validateMatrix(data.x, columns: 2);
+    if (settings.experiment.isClassification &&
+        data.y.any((v) => v != 0 && v != 1)) {
+      throw const LabDataException(LabDataError.binaryLabels);
+    }
     split = trainValidationTestSplit(data.x.length, seed: settings.seed);
+    if (settings.experiment.isKnn && settings.neighbors > split.train.length) {
+      throw const LabDataException(LabDataError.neighbors);
+    }
     final scaler = StandardScaler()
       ..fit(split.train.map((i) => data.x[i]).toList());
     scaled = List.unmodifiable(
@@ -44,7 +53,15 @@ class ExperimentSession {
   void start() {
     final train = split.train.map((i) => scaled[i]).toList();
     final targets = split.train.map((i) => data.y[i]).toList();
-    if (settings.experiment == Experiment.clustering) {
+    if (settings.experiment.isKnn) {
+      Estimator create(int k) => settings.experiment.isRegression
+          ? KNNRegressor(k: k)
+          : KNNClassifier(k: k);
+      final a = create(settings.neighbors)..fit(train, targets);
+      final b = create(1)..fit(train, targets);
+      _neighbors = a;
+      _comparisonNeighbors = b;
+    } else if (settings.experiment == Experiment.clustering) {
       if (train.map((row) => row.join(',')).toSet().length <
           settings.clusters) {
         throw LabTrainingException();
@@ -87,6 +104,7 @@ class ExperimentSession {
   }
 
   bool step() {
+    if (_neighbors != null) return false;
     if (_model == null && _kmeans == null) {
       throw StateError('Start the session first.');
     }
@@ -96,13 +114,15 @@ class ExperimentSession {
   }
 
   List<double> predict(Matrix rows, {bool alternate = false}) {
-    final model = alternate ? _comparison : _model;
+    final model = alternate
+        ? (_comparisonNeighbors ?? _comparison)
+        : (_neighbors ?? _model);
     if (model == null) throw StateError('No fitted supervised model.');
     return model.predict(rows);
   }
 
   ExperimentScore? evaluate(List<int> rows, {bool alternate = false}) {
-    if (history.isEmpty) return null;
+    if (!hasResults) return null;
     final x = rows.map((i) => scaled[i]).toList(),
         y = rows.map((i) => data.y[i]).toList();
     if (settings.experiment == Experiment.clustering) {

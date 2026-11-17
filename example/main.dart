@@ -43,6 +43,34 @@ void main() {
       [3],
     ])}',
   );
+  final neighbors = Pipeline(StandardScaler(), KNNClassifier(k: 3))
+    ..fit(
+      [
+        [0],
+        [1],
+        [2],
+      ],
+      [0, 1, 1],
+    );
+  print(
+    'KNN classes: ${neighbors.predict([
+      [1.1],
+    ])}',
+  );
+  final localMean = KNNRegressor(k: 2)
+    ..fit(
+      [
+        [0],
+        [2],
+        [8],
+      ],
+      [0, 10, 30],
+    );
+  print(
+    'KNN regression at x=3: ${localMean.predict([
+      [3],
+    ]).single} (expected 5)',
+  );
   final clusters = KMeans(k: 2, seed: 7)
     ..fit([
       [0, 0],

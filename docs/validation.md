@@ -74,3 +74,9 @@ Lab tests prove identical histories/coefficients/validation scores at lambda=0, 
 
 
 The remote [Ridge CI and Pages run](https://github.com/kleberandrade/ml-engine/actions/runs/44184785601) passed on `423fd82`. Actual desktop/mobile, language, pause, zero-lambda and preset checks plus fresh captures are in [deployment.md](deployment.md). Pub.dev accepted ml_engine 0.2.0; its archive hash and matching core sources were checked, and an independent consumer installed the hosted package and obtained w≈0.5, b=0 for a known lambda=1 fixture. See [pub-v0.2.0.json](pub-v0.2.0.json). These are real upload/consumer checks, not dry-run evidence.
+
+## KNN 0.3.0 validation
+
+The KNN revision passes **39 core tests and 32 Flutter tests (71 total)**. Numerical fixtures verify Euclidean versus Manhattan ranking, uniform means/votes, k=1/k=n, row-order boundary ties, smallest-label class ties, duplicate/exact-match behavior, owned training data, rejected-refit recovery, invalid k/shapes/nonfinite data, distance overflow and a representable large-target mean. A CLI fixture predicts 5 from the two nearest targets 0 and 10.
+
+New session/widget checks verify that held-out labels never vote, both tasks match their k=1 comparison, scaling is train-only, oversized-k and nonbinary CSV errors preserve completed results, and immutable sampled plots are cached/invalidate on changes. The actual slider, direct evaluation with no iterative controls/history, locale/navigation state and Portuguese mobile content at 150% text scale are covered. No new coverage or device-wide timing percentage is claimed. Live/publication evidence is recorded separately after deployment; a local test or dry run is not an upload.

@@ -11,7 +11,7 @@
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
-**Version 0.2.0.** Pure Dart classical ML, including Ridge regression with explicit L2 conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
+**Version 0.3.0.** Pure Dart classical ML, including Ridge and KNN classification/regression with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
@@ -20,6 +20,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 ## Included now
 
 - Multivariate linear/Ridge regression (unpenalized intercept, configurable L2) and binary logistic regression, intercepts, stable logistic loss and full-batch gradient descent with cost history.
+- KNN classification (finite numeric labels) and regression with uniform weights, Euclidean distance, configurable k and deterministic tie rules.
 - Seeded K-means++ initialization and Lloyd updates, inertia, centroids and prediction.
 - StandardScaler (population variance), MinMaxScaler, and a fit/transform/predict pipeline.
 - Seeded train/validation/test splits, shuffled K-fold, stratified K-fold and leakage-safe cross validation through fresh pipeline factories.
@@ -68,13 +69,13 @@ final predictions = pipeline.predict([[4]]); // approximately [9]
 final transformed = pipeline.transform([[4]]); // train-fitted scaling
 ```
 
-The core is published as [`ml_engine 0.2.0`](https://pub.dev/packages/ml_engine/versions/0.2.0):
+The core package is [`ml_engine`](https://pub.dev/packages/ml_engine). Version 0.3.0 adds KNN; the publication record is in the release notes. Install the latest published version with:
 
 ```sh
 dart pub add ml_engine
 ```
 
-Or declare `ml_engine: ^0.2.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
+For version 0.3.0, declare `ml_engine: ^0.3.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
 
 ```dart
 Pipeline create() => Pipeline(StandardScaler(), LinearRegression());
@@ -101,12 +102,27 @@ Ridge minimizes `mean((prediction-y)²)/2 + lambda*sum(w²)/2`. Its gradient add
 
 The Ridge lab compares A (Ridge) with B (linear), shows coefficient norms and supports λ from 0 to 3. Both use the same split, scaler, rate, zero initialization and iteration budget. Their training objectives differ: compare validation RMSE rather than cost-curve heights. The seeded example has correlated features; plotted lines are partial slices holding standardized x₂ at zero.
 
+## K-nearest neighbors
+
+```dart
+final classifier = Pipeline(StandardScaler(), KNNClassifier(k: 3));
+classifier.fit(xTrain, classLabels);
+final classes = classifier.predict(xValidation);
+final regressor = Pipeline(StandardScaler(), KNNRegressor(k: 5));
+regressor.fit(xTrain, continuousTargets);
+final estimates = regressor.predict(xValidation);
+```
+
+Both use Euclidean distance and equal weights. Classification takes the majority vote; tied class counts choose the smallest finite numeric label. Regression takes the mean of the k selected targets. Equal-distance neighbors at the k boundary follow original training row order. Duplicate rows count separately, including zero-distance matches. `k` must be in `1..trainingRows`, including within every CV fold. Fit copies and stores data; rejected refits preserve the previous model. Prediction checks shape, finite values and distance overflow.
+
+The exact brute-force implementation sorts neighbors in `O(n*d + n log n)` time and `O(n)` extra memory per query; it has no KD-tree, inverse-distance weights, calibrated probabilities or learned extrapolation trend. Fit has no epochs, learning rate or objective curve. Use train-only scaling and select k on validation data. The lab compares your k against k=1, supports k up to `min(15, trainingRows)`, shows A only on its classification grid, and displays sampled A/B regression slices at standardized x₂=0. Changing k clears the result until **Evaluate neighbors** is clicked again. The lab stays bounded to 500×2; prolonged or high-dimensional workloads need a worker/isolate.
+
 ## Lab workflow
 
 The navbar opens **Laboratory**, **Learn** and **Examples**, plus the real project documentation/GitHub links. English and Brazilian Portuguese cover controls, feedback, chart descriptions, help and the educational content. Language changes preserve the experiment, curve and CSV draft; the language preference is stored only when browser storage is available. Learn explains the shipped algorithms and formulas, links its sources, opens real seeded/CSV presets and ends with five practical exercises. Opening a preset intentionally replaces the current experiment. The [original rising-seed logo](https://github.com/kleberandrade/ml-engine/blob/main/apps/ml_lab/web/brand-mark.svg) is also the favicon.
 
 
-Choose an experiment, seed, rate (or cluster count), and iteration budget. Train A/B on the same 60/20/20 split and train-fitted standardization. In Ridge mode A is Ridge and B is linear, with identical initialization and learning rate; only A has L2 regularization. Other regression/classification modes compare learning rates, and clustering compares seeds. Validation scores and a train-derived baseline support comparison; final test scores appear after completion. Labels are unused in clustering. Regression lines hold the second standardized feature at zero, so a CSV with two varying features is shown as a partial slice rather than a full 3D fit.
+Choose an experiment and seed. Iterative models use a rate (or cluster count) and iteration budget; KNN uses k and a direct evaluation. Evaluate A/B on the same 60/20/20 split and train-fitted standardization. In Ridge mode A is Ridge and B is linear, with identical initialization and learning rate; only A has L2 regularization. KNN compares k values; other regression/classification modes compare learning rates, and clustering compares seeds. Validation scores and a train-derived baseline support comparison; final test scores appear after completion. Labels are unused in clustering. Regression lines hold the second standardized feature at zero, so a CSV with two varying features is shown as a partial slice rather than a full 3D fit.
 
 CSV uses the exact header `x1,x2,y`, followed by 10–500 finite numeric rows in the lab; no quoted fields, missing values or thousands separators. Binary classification requires y in {0,1}. The lab caps absolute magnitudes at 1,000,000. Bad imports preserve the current experiment. Fix the displayed row error and retry, or restore synthetic data. The core parser accepts 2–500 rows; the lab needs at least 10 to keep its partitions meaningful.
 
@@ -122,7 +138,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 - [Português: guia rápido](https://github.com/kleberandrade/ml-engine/blob/main/docs/quickstart.pt-BR.md)
 - [Action log](https://github.com/kleberandrade/ml-engine/blob/main/docs/work-log.md)
 - [GitHub metadata](https://github.com/kleberandrade/ml-engine/blob/main/docs/github-metadata.json)
-- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.2.0.md)
+- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.3.0.md)
 
 ## License and credits
 

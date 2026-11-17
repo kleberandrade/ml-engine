@@ -57,7 +57,7 @@ class _ExperimentControlsState extends State<ExperimentControls> {
                   },
           ),
           const SizedBox(height: 16),
-          if (c.experiment != Experiment.clustering) ...[
+          if (!c.experiment.isKnn && c.experiment != Experiment.clustering) ...[
             Text(s.t('rate', {'value': s.number(c.learningRate, 2)})),
             Slider(
               semanticFormatterCallback: (v) =>
@@ -68,7 +68,7 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               divisions: 29,
               onChanged: c.active ? null : (v) => c.configure(learningRate: v),
             ),
-          ] else ...[
+          ] else if (c.experiment == Experiment.clustering) ...[
             Text(s.t('clusters', {'count': c.clusters})),
             Slider(
               semanticFormatterCallback: (v) =>
@@ -101,23 +101,42 @@ class _ExperimentControlsState extends State<ExperimentControls> {
             Text(s.t('ridgeControlHelp'), style: const TextStyle(fontSize: 13)),
             const SizedBox(height: 12),
           ],
-          Text(s.t('budget', {'count': c.epochs})),
-          Slider(
-            semanticFormatterCallback: (v) =>
-                s.t('iterations', {'count': v.round()}),
-            value: c.epochs.toDouble(),
-            min: 50,
-            max: 500,
-            divisions: 9,
-            onChanged: c.active ? null : (v) => c.configure(epochs: v.round()),
-          ),
+          if (c.experiment.isKnn) ...[
+            Text(s.t('neighbors', {'count': c.neighbors})),
+            Slider(
+              key: const ValueKey('knn-neighbors'),
+              semanticFormatterCallback: (v) =>
+                  s.t('neighbors', {'count': v.round()}),
+              value: c.neighbors.toDouble(),
+              min: 1,
+              max: c.maxNeighbors.toDouble(),
+              divisions: c.maxNeighbors - 1,
+              onChanged: (v) => c.configure(neighbors: v.round()),
+            ),
+            Text(s.t('knnControlHelp'), style: const TextStyle(fontSize: 13)),
+          ] else ...[
+            Text(s.t('budget', {'count': c.epochs})),
+            Slider(
+              semanticFormatterCallback: (v) =>
+                  s.t('iterations', {'count': v.round()}),
+              value: c.epochs.toDouble(),
+              min: 50,
+              max: 500,
+              divisions: 9,
+              onChanged: c.active
+                  ? null
+                  : (v) => c.configure(epochs: v.round()),
+            ),
+          ],
           const SizedBox(height: 8),
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
               onPressed: c.active ? null : c.start,
               icon: const Icon(Icons.play_arrow),
-              label: Text(s.t('train')),
+              label: Text(
+                s.t(c.experiment.isKnn ? 'evaluateNeighbors' : 'train'),
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -125,16 +144,18 @@ class _ExperimentControlsState extends State<ExperimentControls> {
             spacing: 6,
             runSpacing: 6,
             children: [
-              OutlinedButton(
-                onPressed: c.active ? c.pauseResume : null,
-                child: Text(
-                  s.t(c.status == RunStatus.paused ? 'resume' : 'pause'),
+              if (!c.experiment.isKnn)
+                OutlinedButton(
+                  onPressed: c.active ? c.pauseResume : null,
+                  child: Text(
+                    s.t(c.status == RunStatus.paused ? 'resume' : 'pause'),
+                  ),
                 ),
-              ),
-              OutlinedButton(
-                onPressed: c.active ? c.cancel : null,
-                child: Text(s.t('cancel')),
-              ),
+              if (!c.experiment.isKnn)
+                OutlinedButton(
+                  onPressed: c.active ? c.cancel : null,
+                  child: Text(s.t('cancel')),
+                ),
               TextButton(onPressed: c.reset, child: Text(s.t('restart'))),
             ],
           ),

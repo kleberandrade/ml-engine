@@ -18,6 +18,14 @@ Splits floor train and validation counts and assign the remainder to test; empty
 
 R² returns 1 for perfect predictions on constant targets and 0 otherwise. Undefined binary precision/recall/F1 denominators return 0. Binary confusion counts are exposed as truePositive, trueNegative, falsePositive, falseNegative. Multiclass metrics and probability calibration are outside v0.2.0.
 
+## KNN conventions
+
+`KNNClassifier(k: 5)` and `KNNRegressor(k: 5)` implement Estimator and work with Pipeline/CV. Both store a validated deep copy of training data. k is positive and no larger than that fit's training row count. A rejected fit preserves the previous dataset. Prediction ranks squared Euclidean distances (equivalent to Euclidean ranking), breaking equal distances by training row index. Nonfinite distance arithmetic throws an explicit ArgumentError.
+
+Classification accepts finite numeric class labels and chooses the most frequent label in the k selected rows. Equal vote counts choose the smallest label. Regression averages those k target values with equal weights; it divides before summing to avoid avoidable sum overflow. Duplicate coordinates remain separate rows, including exact matches. No inverse-distance weighting, radius search, KD-tree, class probabilities or gradient training is supplied. Prediction costs O(n*d + n log n) time and O(n) temporary memory per query. The lab restricts classification to labels 0/1 because its plot and metrics are binary.
+
+Fit/scaling see training rows only. Each validation fold must fit a fresh pipeline and satisfy k<=fold.train.length. Small k can follow noise; large k may oversmooth. KNN stores examples instead of learning an extrapolation function. Select k using validation and leave the final test untouched.
+
 ## Add an estimator
 
 Implement `Estimator.fit(Matrix, List<double>)` and `Estimator.predict(Matrix)`. Validate the boundary, own any stored rows, reject prediction before fitting, and preserve the training feature count. Add an independent numerical fixture before implementing the algorithm. Plug it into `Pipeline` without importing Flutter. Models with iterative UI use should expose an explicit start/step state machine as GradientModel and KMeans do. Move genuinely large training work to an isolate/worker; do not call synchronous fit in a widget callback.

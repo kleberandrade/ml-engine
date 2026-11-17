@@ -9,6 +9,7 @@ String formatFailure(AppStrings s, Object error) {
       LabDataError.tooFewRows => s.t('errorFewRows'),
       LabDataError.binaryLabels => s.t('errorBinary'),
       LabDataError.magnitude => s.t('errorMagnitude'),
+      LabDataError.neighbors => s.t('errorNeighbors'),
     };
   }
   if (error is LabTrainingException) return s.t('errorClusters');

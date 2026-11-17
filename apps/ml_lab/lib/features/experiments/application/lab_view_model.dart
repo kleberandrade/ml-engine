@@ -18,12 +18,15 @@ class LabViewModel extends ChangeNotifier {
   Object? _error;
   bool _imported = false;
   Timer? _timer;
+  PlotSnapshot? _knnPlot;
   LabViewModel() {
     _session = ExperimentSession(generateDataset(_settings), _settings);
   }
   Experiment get experiment => _settings.experiment;
   int get seed => _settings.seed;
   int get epochs => _settings.epochs;
+  int get neighbors => _settings.neighbors;
+  int get maxNeighbors => split.train.length < 15 ? split.train.length : 15;
   int get clusters => _settings.clusters;
   double get regularization => _settings.regularization;
   double coefficientNorm({bool alternate = false}) =>
@@ -38,7 +41,9 @@ class LabViewModel extends ChangeNotifier {
   List<double> get comparisonHistory => _session.comparisonHistory;
   bool get active =>
       _status == RunStatus.running || _status == RunStatus.paused;
-  PlotSnapshot get plot => PlotSnapshot.fromSession(_session);
+  PlotSnapshot get plot => experiment.isKnn
+      ? (_knnPlot ??= PlotSnapshot.fromSession(_session))
+      : PlotSnapshot.fromSession(_session);
   ExperimentScore? score(List<int> rows, {bool alternate = false}) =>
       _session.evaluate(rows, alternate: alternate);
   ExperimentScore? get baseline => _session.baseline;
@@ -46,6 +51,7 @@ class LabViewModel extends ChangeNotifier {
     int? seed,
     int? epochs,
     int? clusters,
+    int? neighbors,
     double? learningRate,
     double? regularization,
   }) {
@@ -56,6 +62,7 @@ class LabViewModel extends ChangeNotifier {
       seed: seed,
       epochs: epochs,
       clusters: clusters,
+      neighbors: neighbors,
       learningRate: learningRate,
       regularization: regularization,
     );
@@ -85,6 +92,7 @@ class LabViewModel extends ChangeNotifier {
   void _replace(ExperimentSession session, {required bool imported}) {
     _timer?.cancel();
     _session = session;
+    _knnPlot = null;
     _imported = imported;
     _status = RunStatus.ready;
     _error = null;
@@ -99,8 +107,13 @@ class LabViewModel extends ChangeNotifier {
     try {
       final next = ExperimentSession(data, _settings)..start();
       _session = next;
-      _status = RunStatus.running;
-      _schedule();
+      _knnPlot = null;
+      if (experiment.isKnn) {
+        _status = RunStatus.complete;
+      } else {
+        _status = RunStatus.running;
+        _schedule();
+      }
     } catch (error) {
       _status = RunStatus.failed;
       _error = error;

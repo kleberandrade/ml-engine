@@ -16,12 +16,16 @@ class ComparisonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = context.l10n;
     final ridge = c.experiment == Experiment.ridge;
-    final labelA = ridge
+    final labelA = c.experiment.isKnn
+        ? s.t('knnShort', {'count': c.neighbors})
+        : ridge
         ? s.t('ridgeShort', {'value': s.number(c.regularization, 1)})
         : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed})
         : s.t('rateShort', {'value': s.number(c.learningRate, 2)});
-    final labelB = ridge
+    final labelB = c.experiment.isKnn
+        ? s.t('knnShort', {'count': 1})
+        : ridge
         ? s.t('linearShort')
         : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed + 1})
@@ -80,31 +84,36 @@ class ComparisonCard extends StatelessWidget {
               formatFailure(s, c.error!),
               style: const TextStyle(color: Color(0xFFB00020)),
             ),
-          const SizedBox(height: 20),
-          Text(
-            s.t('objective', {'count': c.history.length}),
-            style: const TextStyle(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 8),
-          Semantics(
-            label: s.t('costAria', {
-              'cost': c.history.isEmpty
-                  ? s.t('noTraining')
-                  : s.t('latestCost', {'value': s.number(c.history.last, 4)}),
-            }),
-            image: true,
-            child: SizedBox(
-              height: 120,
-              width: double.infinity,
-              child: CustomPaint(
-                painter: CostPainter(c.history, c.comparisonHistory, s),
+          if (c.experiment.isKnn) ...[
+            const SizedBox(height: 20),
+            Text(s.t('knnNoObjective')),
+          ] else ...[
+            const SizedBox(height: 20),
+            Text(
+              s.t('objective', {'count': c.history.length}),
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            Semantics(
+              label: s.t('costAria', {
+                'cost': c.history.isEmpty
+                    ? s.t('noTraining')
+                    : s.t('latestCost', {'value': s.number(c.history.last, 4)}),
+              }),
+              image: true,
+              child: SizedBox(
+                height: 120,
+                width: double.infinity,
+                child: CustomPaint(
+                  painter: CostPainter(c.history, c.comparisonHistory, s),
+                ),
               ),
             ),
-          ),
-          Text(
-            s.t(ridge ? 'ridgeObjectiveLegend' : 'objectiveLegend'),
-            style: const TextStyle(fontSize: 12),
-          ),
+            Text(
+              s.t(ridge ? 'ridgeObjectiveLegend' : 'objectiveLegend'),
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
         ],
       ),
     );

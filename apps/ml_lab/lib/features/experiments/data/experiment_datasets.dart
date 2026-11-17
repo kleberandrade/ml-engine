@@ -17,6 +17,12 @@ Dataset generateDataset(ExperimentSettings settings) {
         b * .3 + [-1, -1, 2][c],
       ]);
       y.add(c.toDouble());
+    } else if (settings.experiment == Experiment.knnRegression) {
+      x.add([a, 0]);
+      y.add(2 * sin(a) + 1 + (random.nextDouble() - .5) * .8);
+    } else if (settings.experiment == Experiment.knnClassification) {
+      x.add([a, b]);
+      y.add(a * a + b * b + (random.nextDouble() - .5) * .8 < 4 ? 1 : 0);
     } else {
       x.add([
         a,
@@ -49,8 +55,7 @@ Dataset parseLabCsv(String value, Experiment experiment) {
   if (parsed.x.length < 10) {
     throw const LabDataException(LabDataError.tooFewRows);
   }
-  if (experiment == Experiment.classification &&
-      parsed.y.any((v) => v != 0 && v != 1)) {
+  if (experiment.isClassification && parsed.y.any((v) => v != 0 && v != 1)) {
     throw const LabDataException(LabDataError.binaryLabels);
   }
   if (parsed.x.any((r) => r.any((v) => v.abs() > 1e6)) ||

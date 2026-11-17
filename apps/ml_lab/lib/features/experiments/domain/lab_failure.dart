@@ -1,4 +1,11 @@
-enum LabDataError { structure, numericRow, tooFewRows, binaryLabels, magnitude }
+enum LabDataError {
+  structure,
+  numericRow,
+  tooFewRows,
+  binaryLabels,
+  magnitude,
+  neighbors,
+}
 
 class LabDataException extends FormatException {
   final LabDataError code;

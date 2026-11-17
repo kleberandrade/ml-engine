@@ -8,6 +8,10 @@ Open **Ridge vs linear**. A uses Ridge and B linear, with the same zero initiali
 
 Switch to logistic classification. A linear score becomes a probability through the sigmoid; a 0.5 threshold separates the two classes. The colored regions show model A's decisions. Compare both models' validation accuracy and learning curves with the majority-class baseline. A high accuracy on imbalanced data can conceal missed positive cases; inspect the core's precision, recall, F1 and confusion counts as well.
 
+Open **KNN classification** or **KNN regression**, set k and click **Evaluate neighbors**. Classification uses a curved binary boundary and reports accuracy; regression uses y≈2 sin(x₁)+1 and reports RMSE. Both compare A at your k with B at k=1 using the same training split and train-fitted scaler. Change k to see the trade-off between following noise and smoothing structure; at k=1 both models match. There is no optimizer, so no epochs, learning rate, pause control or cost history is shown. The classification grid depicts A only; regression curves connect sampled predictions at x₂=0.
+
+KNN votes uniformly for classification and averages targets for regression. Class-vote ties choose the smallest numeric label; equal distances at the neighbor boundary follow training row order. Duplicate locations each count once as a row, including exact matches. A new CSV with fewer training rows than k is rejected without replacing the previous result; lower k before retrying. Choose k within validation/CV and ensure k fits each training fold.
+
 Switch to clustering. K-means++ samples seeds using squared distance, then alternates assignment and centroid updates. A seed can change the local solution. Cluster IDs have no semantic class meaning. The curves show training inertia, while validation reports mean squared distance to the learned centers. Compare equal k values before attributing a lower score to better initialization.
 
 Paste CSV only after selecting the task. The strict numeric header is `x1,x2,y`; the lab accepts 10–500 rows, rejects invalid values and preserves existing data on errors. Classification targets must be 0 or 1; clustering ignores the target. Regression lines show a slice at the training mean of x2, so two-feature CSV relationships need that interpretation.
@@ -18,12 +22,12 @@ Validation chooses settings. The test score appears only at the end, but repeate
 
 ## References and credits
 
-The implementation's numerical conventions are documented in [design.md](design.md); [example/main.dart](../example/main.dart) is executable. The original algorithms are ordinary least squares and Ridge via gradient descent, binary logistic regression and k-means++/Lloyd iteration. For the k-means++ method, see Arthur and Vassilvitskii, “k-means++: The Advantages of Careful Seeding” (SODA 2007). Flutter and Dart dependencies retain their own licenses. Screenshots depict the real local Web build, not a conceptual rendering.
+The implementation's numerical conventions are documented in [design.md](design.md); [example/main.dart](../example/main.dart) is executable. The original algorithms are ordinary least squares and Ridge via gradient descent, binary logistic regression, uniform Euclidean KNN and k-means++/Lloyd iteration. For the k-means++ method, see Arthur and Vassilvitskii, “k-means++: The Advantages of Careful Seeding” (SODA 2007). Flutter and Dart dependencies retain their own licenses. Screenshots depict the real local Web build, not a conceptual rendering.
 
 ## Five practical exercises
 
 1. **Recover known coefficients.** Generate y=4x−2, fit a standardized pipeline, and predict three unseen values. Completion: absolute prediction error below 0.001 for every value.
 2. **Observe regularization.** Compare Ridge λ=0, 1 and 3 with linear on the same seed, split, rate and budget. Completion: record validation RMSE and coefficient norms, verify identical histories at λ=0, and show that pausing does not add iterations.
 3. **Inspect classification errors.** Build an imbalanced binary fixture and compare the model with a train-majority baseline. Completion: report TP, TN, FP, FN, precision, recall and F1, including a zero-denominator case.
-4. **Prevent leakage in cross validation.** Evaluate a fresh StandardScaler/LinearRegression pipeline in five folds. Completion: every row appears in one held-out fold, no fold overlaps its training rows, and no fitted component is reused.
+4. **Choose k without leakage.** Compare k=1, 3 and 5 using fresh StandardScaler/KNN pipelines in five folds, with enough training rows for every k. Completion: report validation scores, verify every row is held out once without overlap/component reuse, and choose k without consulting the final test.
 5. **Investigate clustering stability.** Fit K-means++ on the same dataset with three seeds and the same k/budget. Completion: record inertia and centroid locations, explain arbitrary cluster IDs, and verify that all-identical input with k>1 is rejected.

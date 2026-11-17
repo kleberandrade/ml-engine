@@ -5,7 +5,6 @@ import '../../../../app/l10n/app_strings.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../application/plot_snapshot.dart';
-import '../../domain/experiment.dart';
 import 'plot_style.dart';
 
 class DataPainter extends CustomPainter {
@@ -24,21 +23,17 @@ class DataPainter extends CustomPainter {
         ? c.targets
         : c.scaled.map((r) => r[1]).toList();
     final xs = c.scaled.map((r) => r[0]).toList();
-    var xmin = xs.reduce(min),
-        xmax = xs.reduce(max),
-        ymin = ys.reduce(min),
-        ymax = ys.reduce(max);
-    final dx = max(.5, (xmax - xmin) * .1), dy = max(.5, (ymax - ymin) * .1);
-    xmin -= dx;
-    xmax += dx;
-    ymin -= dy;
-    ymax += dy;
+    final xmin = c.bounds.xmin,
+        xmax = c.bounds.xmax,
+        ymin = c.bounds.ymin,
+        ymax = c.bounds.ymax;
     Offset point(double x, double y) => Offset(
       rect.left + (x - xmin) / (xmax - xmin) * rect.width,
       rect.bottom - (y - ymin) / (ymax - ymin) * rect.height,
     );
-    if (c.experiment == Experiment.classification && c.modelA != null) {
-      const nx = 30, ny = 20;
+    if (c.experiment.isClassification &&
+        (c.modelA != null || c.neighbors != null)) {
+      final nx = c.neighbors?.columns ?? 30, ny = c.neighbors?.gridRows ?? 20;
       final rows = [
         for (var j = 0; j < ny; j++)
           for (var i = 0; i < nx; i++)
@@ -47,9 +42,11 @@ class DataPainter extends CustomPainter {
               ymin + (j + .5) / ny * (ymax - ymin),
             ],
       ];
-      final decisions = rows
-          .map((row) => c.modelA!.value(row[0], row[1]) >= 0 ? 1.0 : 0.0)
-          .toList();
+      final decisions =
+          c.neighbors?.a ??
+          rows
+              .map((row) => c.modelA!.value(row[0], row[1]) >= 0 ? 1.0 : 0.0)
+              .toList();
       for (var j = 0; j < ny; j++) {
         for (var i = 0; i < nx; i++) {
           canvas.drawRect(
@@ -92,18 +89,24 @@ class DataPainter extends CustomPainter {
     }
     canvas.save();
     canvas.clipRect(rect);
-    if (c.experiment.isRegression && c.modelA != null) {
+    if (c.experiment.isRegression &&
+        (c.modelA != null || c.neighbors != null)) {
       for (final alternate in [false, true]) {
-        final rows = List.generate(
-          60,
-          (i) => [xmin + i / 59 * (xmax - xmin), 0.0],
-        );
-        final predictions = rows
-                .map(
-                  (row) =>
-                      (alternate ? c.modelB : c.modelA)!.value(row[0], row[1]),
-                )
-                .toList(),
+        final rows =
+            c.neighbors?.rows ??
+            List.generate(60, (i) => [xmin + i / 59 * (xmax - xmin), 0.0]);
+        final predictions =
+                (c.neighbors == null
+                    ? null
+                    : (alternate ? c.neighbors!.b : c.neighbors!.a)) ??
+                rows
+                    .map(
+                      (row) => (alternate ? c.modelB : c.modelA)!.value(
+                        row[0],
+                        row[1],
+                      ),
+                    )
+                    .toList(),
             path = Path();
         for (var i = 0; i < rows.length; i++) {
           final at = point(rows[i][0], predictions[i]);
@@ -122,7 +125,7 @@ class DataPainter extends CustomPainter {
         );
       }
     }
-    if (c.experiment == Experiment.classification && c.modelA != null) {
+    if (c.experiment.isClassification && c.modelA != null) {
       for (final alternate in [false, true]) {
         final model = (alternate ? c.modelB : c.modelA)!;
         final w = model.coefficients;
@@ -146,16 +149,14 @@ class DataPainter extends CustomPainter {
     for (var i = 0; i < xs.length; i++) {
       final color =
           plotColors[(labels?[i] ??
-                  (c.experiment == Experiment.classification
-                      ? c.targets[i].toInt()
-                      : 0)) %
+                  (c.experiment.isClassification ? c.targets[i].toInt() : 0)) %
               plotColors.length];
       final at = point(xs[i], ys[i]);
       final paint = Paint()
         ..color = color.withValues(alpha: .8)
         ..strokeWidth = 1.5
         ..style = train.contains(i) ? PaintingStyle.fill : PaintingStyle.stroke;
-      if (c.experiment == Experiment.classification && c.targets[i] == 1) {
+      if (c.experiment.isClassification && c.targets[i] == 1) {
         canvas.drawPath(
           Path()
             ..moveTo(at.dx, at.dy - 4)

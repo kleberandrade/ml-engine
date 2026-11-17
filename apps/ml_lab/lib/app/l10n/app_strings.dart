@@ -101,6 +101,62 @@ const messages = <String, List<String>>{
     '150 seeded samples, correlated x₁/x₂ and y ≈ 2x₁+1. Compare Ridge λ=1 with linear at the same rate 0.08 and 250 iterations. Move λ to zero to recover identical curves.',
     '150 amostras reproduzíveis, x₁/x₂ correlacionados e y ≈ 2x₁+1. Compare Ridge λ=1 com linear à mesma taxa 0,08 e 250 iterações. Leve λ a zero para obter curvas idênticas.',
   ],
+  'chip-knnClassification': ['05  KNN classification', '05  Classificação KNN'],
+  'chip-knnRegression': ['06  KNN regression', '06  Regressão KNN'],
+  'plot-knnClassification': [
+    'Classify by neighborhood',
+    'Classifique pela vizinhança',
+  ],
+  'plot-knnRegression': ['Estimate a local average', 'Estime uma média local'],
+  'type-knnClassification': ['KNN classification', 'classificação KNN'],
+  'type-knnRegression': ['KNN regression', 'regressão KNN'],
+  'neighbors': ['Neighbors k  {count}', 'Vizinhos k  {count}'],
+  'knnShort': ['KNN k={count}', 'KNN k={count}'],
+  'evaluateNeighbors': ['Evaluate neighbors', 'Avaliar vizinhos'],
+  'knnControlHelp': [
+    'A uses your k; B uses k=1. Same train rows and train-fitted scaling. After changing k, evaluate again. k cannot exceed the training row count.',
+    'A usa seu k; B usa k=1. Mesmas linhas e escala ajustada no treino. Após mudar k, avalie novamente. k não pode superar a quantidade de linhas de treino.',
+  ],
+  'knnNoObjective': [
+    'KNN stores training examples; it has no epochs, learning rate or optimization curve. Compare validation scores to choose k. Small k can follow noise; large k can oversmooth. The core uses exact Euclidean search with uniform weights.',
+    'KNN armazena exemplos de treino; não tem épocas, taxa de aprendizado ou curva de otimização. Compare a validação para escolher k. Um k pequeno pode seguir ruído; um k grande pode suavizar demais. O núcleo usa busca euclidiana exata e pesos iguais.',
+  ],
+  'knnRegions': [
+    'Colored cells show model A only, on a sampled grid; compare A/B accuracy below.',
+    'As células coloridas mostram apenas o modelo A em uma grade amostrada; compare a acurácia de A/B abaixo.',
+  ],
+  'knnPlotAria': [
+    'Data plot. {count} samples, {type}. No iterative training. Validation scores appear below.',
+    'Gráfico de dados. {count} amostras, {type}. Sem treino iterativo. Métricas de validação abaixo.',
+  ],
+  'explain-knnClassification': [
+    'KNN finds the k nearest training rows in standardized Euclidean distance and predicts their most frequent numeric label. Equal class votes choose the smallest label; equal distances choose earlier training rows. Duplicate points each get one vote. A uses selected k, B uses 1; the grid shows A. This lab accepts binary labels 0/1; the Dart API also accepts other finite numeric classes. No calibrated probabilities are provided.',
+    'KNN encontra as k linhas de treino mais próximas pela distância euclidiana padronizada e prevê o rótulo numérico mais frequente. Empates de votos escolhem o menor rótulo; distâncias iguais favorecem as primeiras linhas de treino. Pontos duplicados recebem um voto cada. A usa o k escolhido e B usa 1; a grade mostra A. O laboratório aceita 0/1; a API Dart também aceita outras classes numéricas finitas. Não há probabilidades calibradas.',
+  ],
+  'explain-knnRegression': [
+    'KNN predicts the uniform mean of the k nearest training targets. Every duplicate row counts separately, including exact matches; it does not use inverse-distance weights. A uses selected k, B uses 1. Curves connect sampled predictions at standardized x₂=0; they are partial slices, not a differentiable fitted equation. KNN does not learn a trend for extrapolation. Choose k on validation data, not test.',
+    'KNN prevê a média simples dos alvos das k linhas de treino mais próximas. Cada duplicata conta separadamente, inclusive em coincidências exatas; não há pesos pelo inverso da distância. A usa o k escolhido e B usa 1. As curvas ligam previsões amostradas em x₂ padronizado=0; são cortes parciais, não uma equação diferenciável ajustada. KNN não aprende uma tendência para extrapolar. Escolha k pela validação, não pelo teste.',
+  ],
+  'errorNeighbors': [
+    'Choose a smaller k before importing: k cannot exceed the number of training rows in the new split.',
+    'Escolha um k menor antes de importar: k não pode superar a quantidade de linhas de treino na nova divisão.',
+  ],
+  'example-knn-classification': [
+    'KNN on a curved boundary',
+    'KNN em uma fronteira curva',
+  ],
+  'example-knn-classification-body': [
+    '150 seeded binary samples around a circular boundary. Compare k=5 and k=1 on the same split and scaler.',
+    '150 amostras binárias reproduzíveis em torno de uma fronteira circular. Compare k=5 e k=1 na mesma divisão e escala.',
+  ],
+  'example-knn-regression': [
+    'KNN on a nonlinear signal',
+    'KNN em um sinal não linear',
+  ],
+  'example-knn-regression-body': [
+    '150 seeded samples with y ≈ 2 sin(x₁)+1. Compare local averages with k=5 versus k=1; no gradient iterations are needed.',
+    '150 amostras reproduzíveis com y ≈ 2 sen(x₁)+1. Compare médias locais com k=5 e k=1; não há iterações de gradiente.',
+  ],
   "footer": [
     "PURE DART CORE / REPRODUCIBLE SEEDS / TRAIN-ONLY PREPROCESSING",
     "NÚCLEO DART PURO / SEMENTES REPRODUZÍVEIS / PRÉ-PROCESSAMENTO SÓ NO TREINO",
@@ -261,8 +317,8 @@ const messages = <String, List<String>>{
   ],
   "learnTitle": ["Learn by observing the model", "Aprenda observando o modelo"],
   "learnSubtitle": [
-    "A guide to the algorithms actually implemented in ML Engine 0.2.0, based on the project tutorial and numerical conventions.",
-    "Um guia dos algoritmos realmente implementados no ML Engine 0.2.0, baseado no tutorial e nas convenções numéricas do projeto.",
+    "A guide to the algorithms actually implemented in ML Engine 0.3.0, based on the project tutorial and numerical conventions.",
+    "Um guia dos algoritmos realmente implementados no ML Engine 0.3.0, baseado no tutorial e nas convenções numéricas do projeto.",
   ],
   "foundations": ["Foundations before fitting", "Fundamentos antes do ajuste"],
   "openExample": ["Open this experiment", "Abrir este experimento"],
@@ -282,8 +338,8 @@ const messages = <String, List<String>>{
     "Cada exemplo abre o laboratório real com dados reproduzíveis e parâmetros explícitos. Abrir um exemplo substitui o experimento; trocar o idioma ou visitar Aprender preserva o estado.",
   ],
   "sourceVersion": [
-    "Source: project documentation • core 0.2.0 • Flutter 3.50.0",
-    "Fonte: documentação do projeto • núcleo 0.2.0 • Flutter 3.50.0",
+    "Source: project documentation • core 0.3.0 • Flutter 3.50.0",
+    "Fonte: documentação do projeto • núcleo 0.3.0 • Flutter 3.50.0",
   ],
   "tutorialLink": ["Tutorial and exercises", "Tutorial e exercícios"],
   "designLink": [

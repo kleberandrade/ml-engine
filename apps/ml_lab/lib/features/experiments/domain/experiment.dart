@@ -2,9 +2,15 @@ enum Experiment {
   regression,
   classification,
   clustering,
-  ridge;
+  ridge,
+  knnClassification,
+  knnRegression;
 
-  bool get isRegression => this == regression || this == ridge;
+  bool get isRegression =>
+      this == regression || this == ridge || this == knnRegression;
+  bool get isClassification =>
+      this == classification || this == knnClassification;
+  bool get isKnn => this == knnClassification || this == knnRegression;
 }
 
 enum ScoreMetric { rmse, accuracy, meanSquaredDistance }
@@ -18,16 +24,20 @@ class ExperimentScore {
 /// Immutable, validated settings for a bounded teaching experiment.
 class ExperimentSettings {
   final Experiment experiment;
-  final int seed, epochs, clusters;
+  final int seed, epochs, clusters, neighbors;
   final double learningRate, regularization;
   ExperimentSettings({
     this.experiment = Experiment.regression,
     this.seed = 42,
     this.epochs = 250,
     this.clusters = 3,
+    this.neighbors = 5,
     this.learningRate = .08,
     this.regularization = 1,
   }) {
+    if (neighbors < 1 || neighbors > 15) {
+      throw ArgumentError('Lab neighbors must be between 1 and 15.');
+    }
     if (!regularization.isFinite || regularization < 0 || regularization > 3) {
       throw ArgumentError('Lab regularization must be between 0 and 3.');
     }
@@ -48,6 +58,7 @@ class ExperimentSettings {
     int? seed,
     int? epochs,
     int? clusters,
+    int? neighbors,
     double? learningRate,
     double? regularization,
   }) => ExperimentSettings(
@@ -55,6 +66,7 @@ class ExperimentSettings {
     seed: seed ?? this.seed,
     epochs: epochs ?? this.epochs,
     clusters: clusters ?? this.clusters,
+    neighbors: neighbors ?? this.neighbors,
     learningRate: learningRate ?? this.learningRate,
     regularization: regularization ?? this.regularization,
   );

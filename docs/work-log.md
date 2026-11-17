@@ -59,3 +59,13 @@ The requested crapper, dryer and mutator tools were not available in the install
 
 8. Verified the actual final Pages UI on desktop and 390×844: original brand/round flags, localized names, paused count fixed at 73 across locale and Learn navigation, exact draft preservation, Portuguese retained after reload, actual CSV/Learn presets and a Documentation button opening the real GitHub file. Saved fresh captures and reset the viewport. No app warning/error console entries were captured.
 9. Reused the unchanged core's 17-test evidence for the small flag patch, ran ten affected UI tests plus analysis/build sequentially, and verified the complete CI/Pages run succeeded. Published documentation/evidence separately from application code; kept both pub.dev safeguards.
+
+
+## Final architecture and failure-recovery review
+
+1. Reviewed the core facade/dependency boundaries, state ownership, immutable data/snapshots, timer lifecycle, browser storage adapter, numerical validation, tests and Pages permissions. Existing feature/layer separation is appropriate for this bounded offline lab; no speculative service layer was added.
+2. Reproduced four error-recovery failures with tests before fixing them: scaler refits changed statistics before rejecting overflow; K-means++ initialization replaced part of an existing run; divergent gradient updates corrupted usable parameters; pipeline refits could predict with a new scaler and old estimator. Added atomic candidate commits and a successful-fit pipeline guard, documented in ADR 0004. Also checked clustering objective overflow and a later gradient failure.
+3. Investigated a suspected stale seed selector after opening presets. The new real widget interaction test passed on the existing implementation, so no UI fix was needed. The test remains as behavioral coverage. No visual change or new browser screenshot is claimed for this review.
+4. Rechecked the dependency catalog: no core upgrades; lab's two newer transitive catalog versions remain incompatible with the selected Flutter SDK constraints, as already documented. No dependency override or shared SDK edit was made.
+5. Prioritized Ridge, KNN and then a bounded decision tree, with numerical conventions, leakage prevention and concrete implementation criteria. These remain planned techniques, not implemented features. No pub.dev publication is authorized or performed.
+6. Local validation passed: 23 Dart tests, 21 Flutter tests, both analyzers, format, dependency-boundary gate, unchanged CLI fixtures and a sequential release Web build. The artifact gate checked 28 manifest entries. No tests/builds ran concurrently and no new coverage percentage is claimed. Main publication uses the existing verify-then-deploy workflow.

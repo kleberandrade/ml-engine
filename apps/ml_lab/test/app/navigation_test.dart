@@ -80,6 +80,32 @@ void main() {
       }
     },
   );
+  testWidgets('opening a preset resets the visible seed with the experiment', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1440, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final c = LabViewModel();
+    addTearDown(c.dispose);
+    await tester.pumpWidget(MlLab(browser: MemoryBrowser(), controller: c));
+    final seedField = find.byType(DropdownButtonFormField<int>);
+    await tester.ensureVisible(seedField);
+    await tester.tap(seedField);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('123').last);
+    await tester.pumpAndSettle();
+    expect(c.seed, 123);
+    await tester.tap(find.byKey(const ValueKey('nav-examples')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('preset-linear')));
+    await tester.pumpAndSettle();
+    expect(c.seed, 42);
+    expect(tester.state<FormFieldState<int>>(seedField).value, 42);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'mobile navigation supports keyboard and external links have real project targets',
     (tester) async {

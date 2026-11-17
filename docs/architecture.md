@@ -78,3 +78,7 @@ The app shell owns one LabViewModel for its lifetime and retains Laboratory/Lear
 The learning feature adapts the actual `docs/design.md` and `docs/tutorial.md` into EN/PT-BR content, formulas, four real model/data presets and exactly five exercises. It does not embed a GitHub iframe or present roadmap algorithms as implemented. See [ADR 0003](adr/0003-bilingual-learning-shell.md).
 
 The language controls use locally drawn circular Brazil/United Kingdom flags, selected-state rings, localized tooltips/semantics, keyboard operation and 48-pixel touch targets. The original drawings are code-native and make no runtime image requests.
+
+## Numerical failure recovery
+
+[ADR 0004](adr/0004-reject-partial-training-state.md) defines failure behavior at the public core boundary. Scalers, K-means initialization and individual optimizer updates commit only validated candidate state. An exception leaves the previous statistics/iteration intact. This is atomicity per operation, not rollback of a complete multi-iteration `fit`. A failed Pipeline fit invalidates composition-level prediction and transformation until a successful fit, because arbitrary child implementations cannot be rolled back. Avoid mutating pipeline components independently.

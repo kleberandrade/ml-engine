@@ -37,10 +37,12 @@ abstract class GradientModel implements Estimator {
     _history.clear();
   }
 
-  double _score(List<double> row) {
-    var value = _bias;
+  double _score(List<double> row) => _scoreWith(row, _weights, _bias);
+
+  double _scoreWith(List<double> row, List<double> weights, double bias) {
+    var value = bias;
     for (var j = 0; j < row.length; j++) {
-      value += row[j] * _weights[j];
+      value += row[j] * weights[j];
     }
     if (!value.isFinite) {
       throw StateError(
@@ -54,6 +56,7 @@ abstract class GradientModel implements Estimator {
       z >= 0 ? 1 / (1 + exp(-z)) : exp(z) / (1 + exp(z));
 
   /// One full-batch update. Call between event-loop yields for interactive use.
+  /// A rejected update preserves the last finite parameters and history.
   bool step() {
     final x = _x;
     if (x == null) throw StateError('Start training first.');
@@ -68,13 +71,14 @@ abstract class GradientModel implements Estimator {
         gradient[j] += error * x[i][j];
       }
     }
-    for (var j = 0; j < gradient.length; j++) {
-      _weights[j] -= learningRate * gradient[j] / x.length;
-    }
-    _bias -= learningRate * biasGradient / x.length;
+    final weights = List.generate(
+      gradient.length,
+      (j) => _weights[j] - learningRate * gradient[j] / x.length,
+    );
+    final bias = _bias - learningRate * biasGradient / x.length;
     var cost = 0.0;
     for (var i = 0; i < x.length; i++) {
-      final z = _score(x[i]);
+      final z = _scoreWith(x[i], weights, bias);
       // Stable binary cross entropy on logits; linear objective is MSE/2.
       cost += logistic
           ? max(z, 0) - z * _y[i] + log(1 + exp(-z.abs()))
@@ -84,6 +88,8 @@ abstract class GradientModel implements Estimator {
     if (!cost.isFinite) {
       throw StateError('Training diverged. Lower learning rate.');
     }
+    _weights = weights;
+    _bias = bias;
     _history.add(cost);
     return true;
   }

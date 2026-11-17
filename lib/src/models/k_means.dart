@@ -31,29 +31,29 @@ class KMeans {
       throw ArgumentError('Positive k and iterations required.');
     }
   }
-  int _nearest(List<double> row) {
+  int _nearest(List<double> row) => _nearestIn(row, _centroids);
+
+  int _nearestIn(List<double> row, Matrix centers) {
     var best = 0;
-    for (var j = 1; j < _centroids.length; j++) {
-      if (_distance(row, _centroids[j]) < _distance(row, _centroids[best])) {
+    for (var j = 1; j < centers.length; j++) {
+      if (_distance(row, centers[j]) < _distance(row, centers[best])) {
         best = j;
       }
     }
     return best;
   }
 
+  /// Initialize atomically: rejected data preserves the previous run.
   void start(Matrix x) {
     validateMatrix(x);
     if (x.map((r) => r.join(',')).toSet().length < k) {
       throw ArgumentError('k exceeds distinct points.');
     }
-    _x = x.map((r) => List<double>.of(r)).toList();
-    _history.clear();
-    _done = false;
     final random = Random(seed);
-    _centroids = [List.of(x[random.nextInt(x.length)])];
-    while (_centroids.length < k) {
+    final centers = <List<double>>[List.of(x[random.nextInt(x.length)])];
+    while (centers.length < k) {
       final weights = x
-          .map((r) => _centroids.map((c) => _distance(r, c)).reduce(min))
+          .map((r) => centers.map((c) => _distance(r, c)).reduce(min))
           .toList();
       final total = weights.reduce((a, b) => a + b);
       if (!total.isFinite || total <= 0) {
@@ -68,10 +68,15 @@ class KMeans {
           break;
         }
       }
-      _centroids.add(List.of(x[selected]));
+      centers.add(List.of(x[selected]));
     }
+    _x = x.map((r) => List<double>.of(r)).toList();
+    _centroids = centers;
+    _history.clear();
+    _done = false;
   }
 
+  /// Commit centroids and cost together only after a finite update.
   bool step() {
     final x = _x;
     if (x == null) throw StateError('Start first.');
@@ -95,12 +100,12 @@ class KMeans {
       k,
       (c) => _distance(next[c], _centroids[c]),
     ).reduce(max);
-    _centroids = next;
     final cost = x.fold(
       0.0,
-      (s, r) => s + _distance(r, _centroids[_nearest(r)]),
+      (s, r) => s + _distance(r, next[_nearestIn(r, next)]),
     );
     if (!cost.isFinite) throw StateError('Clustering overflow.');
+    _centroids = next;
     _history.add(cost);
     _done = shift <= 1e-16;
     return true;

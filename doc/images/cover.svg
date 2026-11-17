@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="ML Engine conceptual cover: a fitted line, binary boundary and cluster centers">
+<rect width="1200" height="630" fill="#f4f6f3"/>
+<text x="72" y="100" fill="#006b62" font-family="sans-serif" font-size="22" letter-spacing="5">ML / ENGINE</text>
+<text x="72" y="202" fill="#172b36" font-family="sans-serif" font-size="62" font-weight="bold">Make learning visible.</text>
+<text x="72" y="250" fill="#4d626a" font-family="sans-serif" font-size="25">Classical machine learning in pure Dart.</text>
+<g stroke="#dae3dd" fill="white"><rect x="72" y="310" width="320" height="220" rx="18"/><rect x="424" y="310" width="320" height="220" rx="18"/><rect x="776" y="310" width="352" height="220" rx="18"/></g>
+<path d="M105 485 L352 349" stroke="#006b62" stroke-width="5"/>
+<g fill="#006b62"><circle cx="120" cy="470" r="7"/><circle cx="170" cy="460" r="7"/><circle cx="220" cy="410" r="7"/><circle cx="270" cy="410" r="7"/><circle cx="320" cy="368" r="7"/></g>
+<path d="M455 492 L710 345" stroke="#8d451f" stroke-width="4"/>
+<g fill="#006b62"><circle cx="480" cy="380" r="9"/><circle cx="520" cy="370" r="9"/><circle cx="570" cy="350" r="9"/></g>
+<g fill="#8d451f"><path d="M585 451 l9 9 -9 9 -9 -9z"/><path d="M650 441 l9 9 -9 9 -9 -9z"/><path d="M680 391 l9 9 -9 9 -9 -9z"/></g>
+<g fill="#6356a0"><circle cx="840" cy="410" r="7"/><circle cx="855" cy="385" r="7"/><circle cx="875" cy="420" r="7"/></g><g fill="#006b62"><circle cx="1010" cy="375" r="7"/><circle cx="1040" cy="392" r="7"/><circle cx="1035" cy="350" r="7"/></g><g fill="#8d451f"><circle cx="945" cy="460" r="7"/><circle cx="970" cy="480" r="7"/><circle cx="930" cy="480" r="7"/></g>
+<g stroke="#172b36" stroke-width="3"><path d="M848 402h20m-10-10v20M1015 372h20m-10-10v20M938 473h20m-10-10v20"/></g>
+<text x="72" y="580" fill="#4d626a" font-family="sans-serif" font-size="16">REGRESSION / CLASSIFICATION / CLUSTERING · Conceptual vector illustration</text>
+</svg>

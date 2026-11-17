@@ -1,0 +1,8 @@
+{
+  "name": "ml-engine",
+  "owner": "kleberandrade",
+  "description": "Pure Dart classical ML: regression, K-means++, leakage-safe pipelines and an interactive Flutter learning lab.",
+  "topics": ["dart", "flutter", "machine-learning", "linear-regression", "logistic-regression", "kmeans", "data-science", "education"],
+  "visibility": "awaiting explicit user choice",
+  "status": "local-only; no remote created"
+}

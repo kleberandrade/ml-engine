@@ -1,0 +1,27 @@
+name: Verify
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.0'
+          channel: stable
+          cache: true
+      - run: dart pub get
+      - run: dart format --output=none --set-exit-if-changed lib test example tool lab/lib lab/test
+      - run: dart analyze
+      - run: dart test
+      - run: dart run example/main.dart
+      - run: flutter pub get
+        working-directory: lab
+      - run: flutter analyze
+        working-directory: lab
+      - run: flutter test
+        working-directory: lab
+      - run: flutter build web --release --no-wasm-dry-run
+        working-directory: lab

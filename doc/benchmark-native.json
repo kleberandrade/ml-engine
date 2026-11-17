@@ -1,0 +1,1 @@
+{"samples":500,"features":2,"iterations":500,"gridPredictionsPerIteration":600,"warmupIterations":20,"medianMicroseconds":52,"p95Microseconds":75,"maxIncludingWarmupMicroseconds":1302,"scope":"two logistic updates plus probability grid; excludes Flutter layout/painting"}

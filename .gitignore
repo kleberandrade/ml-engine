@@ -3,6 +3,7 @@ build/
 coverage/
 *.log
 .DS_Store
-lab/.flutter-plugins-dependencies
-lab/.idea/
-lab/*.iml
+apps/ml_lab/.flutter-plugins-dependencies
+apps/ml_lab/.idea/
+apps/ml_lab/*.iml
+__pycache__/

@@ -1,5 +1,8 @@
 name: Verify
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -12,16 +15,43 @@ jobs:
           flutter-version: '3.50.0'
           channel: stable
           cache: true
-      - run: dart pub get
-      - run: flutter pub get
-        working-directory: lab
-      - run: dart format --output=none --set-exit-if-changed lib test example tool lab/lib lab/test
+      - run: dart pub get --enforce-lockfile
+      - run: flutter pub get --enforce-lockfile
+        working-directory: apps/ml_lab
+      - run: dart format --output=none --set-exit-if-changed lib test example tool apps/ml_lab/lib apps/ml_lab/test
+      - run: dart run tool/check_architecture.dart
       - run: dart analyze
       - run: dart test
       - run: dart run example/main.dart
       - run: flutter analyze
-        working-directory: lab
+        working-directory: apps/ml_lab
       - run: flutter test
-        working-directory: lab
-      - run: flutter build web --release --no-wasm-dry-run
-        working-directory: lab
+        working-directory: apps/ml_lab
+      - name: Build the Pages release
+        run: flutter build web --release --no-wasm-dry-run --no-web-resources-cdn --web-content-hash --base-href /ml-engine/
+        working-directory: apps/ml_lab
+      - name: Check the repository-path build
+        run: python3 tool/check_web_build.py
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: apps/ml_lab/build/web
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the tested artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

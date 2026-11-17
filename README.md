@@ -6,13 +6,15 @@
 [![Flutter lab](https://img.shields.io/badge/Flutter_lab-3.50.0-02569B)](https://flutter.dev/)
 [![License](https://img.shields.io/github/license/kleberandrade/ml-engine)](LICENSE)
 
-![Conceptual vector cover showing regression, classification and clustering](doc/images/cover.svg)
+![Conceptual vector cover showing regression, classification and clustering](docs/images/cover.svg)
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
-**Version 0.1.0.** Source is public at [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine). The Dart package has not been published to pub.dev, and no hosted demo is claimed. `ml_engine` remains a provisional pub.dev identity; the public catalog returned HTTP 404 on November 17, 2026, which is not a reservation.
+**Version 0.1.0.** Source is public at [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine). The Dart package has not been published to pub.dev, and the Flutter laboratory is available on GitHub Pages. `ml_engine` remains a provisional pub.dev identity; the public catalog returned HTTP 404 on November 17, 2026, which is not a reservation.
 
-![Actual Flutter Web regression lab after 250 iterations](doc/images/regression-desktop.jpg)
+**[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
+
+![Actual Flutter Web regression lab after 250 iterations](docs/images/regression-desktop.jpg)
 
 ## Included now
 
@@ -32,20 +34,22 @@ Validated with **Dart 3.14.0 / Flutter 3.50.0**, framework revision `ab2912035e`
 dart pub get
 dart test
 dart run example/main.dart
-cd lab
+cd apps/ml_lab
 flutter pub get
 flutter test
 flutter analyze
 flutter run -d chrome
 ```
 
-Release build:
+Local release build (served at the root):
 
 ```sh
-cd lab
+cd apps/ml_lab
 flutter build web --release --no-wasm-dry-run
 python3 -m http.server 8769 --bind 127.0.0.1 --directory build/web
 ```
+
+The GitHub Pages workflow builds with `--base-href /ml-engine/ --no-web-resources-cdn --web-content-hash`, verifies the manifest and runtime paths, and deploys the tested artifact only after all checks pass. Pull requests cannot deploy. See [deployment details](docs/deployment.md).
 
 Open http://127.0.0.1:8769 in a browser. The verified build targets JavaScript with CanvasKit, not Wasm. `--no-wasm-dry-run` skips an optional compatibility probe; no Wasm compatibility claim is made. The lab is Web-only in this delivery; no Android/iOS/desktop build has been checked.
 
@@ -84,14 +88,15 @@ CSV uses the exact header `x1,x2,y`, followed by 10–500 finite numeric rows in
 
 ## Documentation
 
-- [Tutorial and five practical exercises](doc/tutorial.md)
-- [Numerical conventions and extensibility](doc/design.md)
-- [Validation record and known limits](doc/validation.md)
-- [Roadmap](doc/roadmap.md)
-- [Português: guia rápido](doc/quickstart.pt-BR.md)
-- [Action log](doc/work-log.md)
-- [GitHub metadata](doc/github-metadata.json)
-- [Release notes](doc/release-v0.1.0.md)
+- [Architecture and project layout](docs/architecture.md)
+- [Tutorial and five practical exercises](docs/tutorial.md)
+- [Numerical conventions and extensibility](docs/design.md)
+- [Validation record and known limits](docs/validation.md)
+- [Roadmap](docs/roadmap.md)
+- [Português: guia rápido](docs/quickstart.pt-BR.md)
+- [Action log](docs/work-log.md)
+- [GitHub metadata](docs/github-metadata.json)
+- [Release notes](docs/release-v0.1.0.md)
 
 ## License and credits
 

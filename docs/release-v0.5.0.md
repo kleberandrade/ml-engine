@@ -9,3 +9,5 @@
 [Live laboratory](https://kleberandrade.github.io/ml-engine/) · [Dart package](https://pub.dev/packages/ml_engine/versions/0.5.0) · [Source](https://github.com/kleberandrade/ml-engine)
 
 Publication: [source CI/Pages 44195689312](https://github.com/kleberandrade/ml-engine/actions/runs/44195689312) succeeded for `edd52e0d270a8af581801419f3b644701575170a`, identified by this source tag. Pub.dev accepted 0.5.0; its 28,770-byte archive matches all 22 validated core sources. See [public archive metadata](pub-v0.5.0.json). Subsequent Pages cache/evidence changes do not alter the published core.
+
+[Pages delivery follow-up 44196728893](https://github.com/kleberandrade/ml-engine/actions/runs/44196728893) and [tag CI 44196273158](https://github.com/kleberandrade/ml-engine/actions/runs/44196273158) passed. The independent hosted-package consumer recovered class 7 and a seven-tree regression mean 5.928571428571428, matching the independently computed bootstrap mean within 1e-12. Live PT/EN, desktop/mobile and both parameter controls were verified; the current guide displays 0.5.0 and five exercises.

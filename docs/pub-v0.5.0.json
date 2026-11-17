@@ -12,5 +12,17 @@
     "docs",
     "tool",
     ".github"
-  ]
+  ],
+  "hosted_consumer": {
+    "dependency": "ml_engine: 0.5.0",
+    "source": "hosted https://pub.dev",
+    "isolated_project": true,
+    "local_path_dependency": false,
+    "n_estimators": 7,
+    "regression": 5.928571428571428,
+    "independent_bootstrap_mean": 5.928571428571429,
+    "absolute_tolerance": 1e-12,
+    "classification": 7.0,
+    "result": "passed after index propagation"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "version": "0.6.1",
-  "scope": "local source validation before publication",
+  "scope": "local validation plus verified public 0.6.1 scorecard",
   "public_baseline": {
     "version": "0.6.0",
     "granted_points": 150,
@@ -58,5 +58,24 @@
     "192/192 indexed API descriptions required (all future indexed symbols too)",
     "zero dartdoc warnings and broken links",
     "three executable developer examples"
-  ]
+  ],
+  "public_result": {
+    "version": "0.6.1",
+    "analysis_timestamp": "2026-11-18T01:11:09.230194",
+    "granted_points": 160,
+    "max_points": 160,
+    "documentation_section": {
+      "id": "documentation",
+      "title": "Provide documentation",
+      "grantedPoints": 20,
+      "maxPoints": 20,
+      "status": "passed",
+      "summary": "### [*] 10/10 points: 20% or more of the public API has dartdoc comments\n\n192 out of 192 API elements (100.0 %) have documentation comments.\n\n### [*] 10/10 points: Package has an example\n"
+    },
+    "verification": [
+      "pub.dev score page in browser",
+      "scorecard.panaReport.result"
+    ],
+    "screenshot": "docs/images/pub-docs-v0.6.1-score.jpg"
+  }
 }

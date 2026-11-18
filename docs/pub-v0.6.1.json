@@ -1,0 +1,51 @@
+{
+  "version": "0.6.1",
+  "published": "2026-11-18T01:07:32.534598Z",
+  "archive_url": "https://pub.dev/api/archives/ml_engine-0.6.1.tar.gz",
+  "archive_sha256": "133ead1e885077246401f6a76eb3977e99541886925cf45f6c005a98fbcfda3a",
+  "archive_bytes": 49966,
+  "archive_files": 62,
+  "matching_core_files": 23,
+  "source_commit": "5de1b223164510d4887a5741cf577fb39fb1614f",
+  "excluded": [
+    "apps",
+    "docs",
+    "tool",
+    ".github"
+  ],
+  "packaged_guides_and_examples_verified": [
+    "doc/usage.md",
+    "doc/usage.pt-BR.md",
+    "example/quickstart.dart",
+    "example/classification.dart",
+    "example/cross_validation.dart"
+  ],
+  "generated_api_excluded": true,
+  "hosted_consumer": {
+    "dependency": "ml_engine: 0.6.1",
+    "source": "hosted https://pub.dev",
+    "local_path_dependency": false,
+    "examples": [
+      "quickstart",
+      "classification",
+      "cross_validation"
+    ],
+    "result": "all passed after index propagation",
+    "quickstart_predictions": [
+      13.999999999999982,
+      16.99999999999998
+    ],
+    "quickstart_rmse": 1.96205025865255e-14,
+    "classification_labels": [
+      0,
+      1
+    ],
+    "classification_probabilities": [
+      0.4378234991142019,
+      0.5621765008857981
+    ],
+    "classification_f1": 1,
+    "cv_folds": 5,
+    "max_cv_rmse": 4.089480552672362e-14
+  }
+}

@@ -4,13 +4,13 @@
 
 O núcleo está em Dart puro (`lib/`); a interface está em Flutter (`apps/ml_lab/`). Execute `dart test` e `dart run example/main.dart` na raiz. Entre em `apps/ml_lab/`, execute `flutter pub get` e `flutter run -d chrome`. Ambiente validado: Dart 3.14.0 e Flutter 3.50.0.
 
-Escolha regressão linear, Ridge, KNN para classificação/regressão, classificação logística, árvores de classificação/regressão ou agrupamento. Compare duas execuções com os mesmos dados e orçamento. Os botões Pause/Resume congelam e retomam o treinamento; Cancel mantém a curva parcial; Restart limpa os modelos. O treino ocorre em pequenos passos para permitir interação.
+Escolha regressão linear, Ridge, KNN para classificação/regressão, classificação logística, árvores de classificação/regressão, Gradient Boosting ou agrupamento. Compare duas execuções com os mesmos dados e orçamento. Os botões Pause/Resume congelam e retomam o treinamento; Cancel mantém a curva parcial; Restart limpa os modelos. O treino ocorre em pequenos passos para permitir interação.
 
 A padronização aprende somente no treino. Use validação para escolher parâmetros e preserve o teste para a avaliação final. Consultar o teste repetidamente também causa vazamento na seleção. Em validação cruzada, crie um pipeline novo por fold. Dados temporais ou de pessoas repetidas exigem uma divisão específica.
 
 CSV: cabeçalho exato `x1,x2,y`, 10–500 linhas numéricas, sem valores ausentes, NaN ou infinito. Na classificação, y precisa ser 0 ou 1. No agrupamento, y é ignorado. Há mensagens de erro sem descartar o conjunto atual.
 
-O núcleo está publicado como [ml_engine 0.5.0 no pub.dev](https://pub.dev/packages/ml_engine/versions/0.5.0). Instale com `dart pub add ml_engine`. O código está público em [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine), com CI e documentação. Gradient Boosting, PCA, importância por permutação e SHAP pertencem ao roadmap; não são recursos implementados.
+O núcleo está publicado como [ml_engine 0.6.0 no pub.dev](https://pub.dev/packages/ml_engine/versions/0.6.0). Instale com `dart pub add ml_engine`. O código está público em [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine), com CI e documentação. PCA, importância por permutação e SHAP pertencem ao roadmap; não são recursos implementados.
 
 A navbar oferece Laboratório, Aprender e Exemplos, além da documentação e do GitHub. O seletor EN/PT-BR traduz controles, mensagens, ajuda e conteúdo educativo; a troca preserva o experimento, a curva e o rascunho CSV. Só a preferência de idioma fica armazenada no navegador, quando permitido. A área Aprender contém fórmulas explicadas e cinco exercícios; os exemplos abrem os algoritmos e dados realmente implementados. Abrir um exemplo substitui o experimento atual.
 
@@ -53,4 +53,17 @@ final floresta = RandomForestRegressor(nEstimators: 15, maxDepth: 3, seed: 42);
 floresta.fit(xTreino, yTreino);
 final previsoes = floresta.predict(xValidacao);
 // RandomForestClassifier usa a mesma configuração para classes numéricas.
+```
+
+Na versão **0.6.0**, Gradient Boosting acrescenta uma árvore de regressão por etapa. Na regressão, inicia na média e ajusta resíduos y−F, somando taxa×árvore. Na classificação binária, inicia no log das chances da classe no treino, ajusta y−sigmoid(F) e converte a soma pela sigmoide. O núcleo aceita somente 0/1 neste classificador; as probabilidades não têm calibração independente.
+
+No laboratório, escolha 1–25 árvores, profundidade 1–6 e taxa 0,01–0,3. A usa sua taxa e B taxa/4, mantendo divisão, previsão inicial, quantidade e profundidade iguais. O exemplo preparado usa 25 árvores, profundidade 3 e taxa 0,2. Cada passo adiciona uma árvore: Pause/Resume preservam a soma e Cancel mantém o resultado parcial. As curvas mostram perda inicial no índice zero e perda após cada árvore: MSE/2 na regressão e entropia cruzada binária média na classificação. Não confunda com RMSE/acurácia de validação. Escolha os três parâmetros pela validação: taxa menor pode precisar de mais árvores e modelos maiores podem ajustar ruído.
+
+Esta implementação de primeira ordem usa todas as linhas/variáveis, sem bootstrap, Newton nas folhas, busca de passo, parada antecipada automática, categorias/ausentes, importância ou poda. **Não é XGBoost.** A curva de regressão mantém x₂ padronizado=0; as duas variáveis do exemplo gerado variam. Ajustes rejeitados preservam o último estado válido.
+
+```dart
+final boosting = GradientBoostingRegressor(nEstimators: 25, maxDepth: 3, learningRate: .2);
+boosting.fit(xTreino, yTreino);
+final previsoes = boosting.predict(xValidacao);
+// GradientBoostingClassifier para classes 0/1; probabilities(x) retorna sigmoid(F).
 ```

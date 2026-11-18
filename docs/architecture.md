@@ -99,3 +99,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 ## Random Forest extension (0.5.0)
 
 Random Forest composes existing numeric trees and adds no package/runtime dependency. Optional tree feature subsampling retains the default all-feature behavior. Complete forests commit atomically, exposing immutable nodes and sampling metadata. The lab reuses the direct-fit session/snapshot/cache path and returns a domain ForestSummary of counts; painters never inspect models. A forest is compared with an all-feature full-training tree at equal depth. See [ADR 0008](adr/0008-seeded-bootstrap-random-forests.md). More trees increase synchronous work; bounded lab controls do not constitute a device-wide frame-time guarantee.
+
+## Gradient Boosting extension (0.6.0)
+
+The core exposes GradientBoostingModel as a shared stage lifecycle for regression and binary classifier wrappers. Each stage composes an immutable residual regression tree. Complete fit uses a private candidate; a step installs only finite complete results. The session owns two models, using the existing view-model timer; snapshots contain only evaluated predictions and domain summaries. Boosting uses live snapshots instead of direct-fit caching. No new runtime dependencies or outward domain imports were introduced. See [ADR 0009](adr/0009-first-order-gradient-boosting.md) for numerical conventions, operational limits and alternatives.

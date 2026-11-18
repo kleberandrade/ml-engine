@@ -8,23 +8,29 @@ enum Experiment {
   treeClassification,
   treeRegression,
   forestClassification,
-  forestRegression;
+  forestRegression,
+  boostClassification,
+  boostRegression;
 
   bool get isRegression =>
       this == regression ||
       this == ridge ||
       this == knnRegression ||
       this == treeRegression ||
-      this == forestRegression;
+      this == forestRegression ||
+      this == boostRegression;
   bool get isClassification =>
       this == classification ||
       this == knnClassification ||
       this == treeClassification ||
-      this == forestClassification;
+      this == forestClassification ||
+      this == boostClassification;
   bool get isTree => this == treeClassification || this == treeRegression;
   bool get isForest => this == forestClassification || this == forestRegression;
-  bool get isTreeBased => isTree || isForest;
-  bool get isDirect => isKnn || isTreeBased;
+  bool get isBoost => this == boostClassification || this == boostRegression;
+  bool get isEnsemble => isForest || isBoost;
+  bool get isTreeBased => isTree || isEnsemble;
+  bool get isDirect => isKnn || isTree || isForest;
   bool get isKnn => this == knnClassification || this == knnRegression;
 }
 
@@ -109,4 +115,10 @@ class ForestSummary {
     this.featuresPerSplit,
     this.samplesPerTree,
   );
+}
+
+/// Immutable aggregate values; no mutable model enters a plot or widget.
+class BoostSummary {
+  final int stages, depth, leaves;
+  const BoostSummary(this.stages, this.depth, this.leaves);
 }

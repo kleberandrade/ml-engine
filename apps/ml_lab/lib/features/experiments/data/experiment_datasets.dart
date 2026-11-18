@@ -17,7 +17,8 @@ Dataset generateDataset(ExperimentSettings settings) {
         b * .3 + [-1, -1, 2][c],
       ]);
       y.add(c.toDouble());
-    } else if (settings.experiment == Experiment.forestRegression) {
+    } else if ((settings.experiment == Experiment.forestRegression ||
+        settings.experiment == Experiment.boostRegression)) {
       x.add([a, b]);
       y.add(2 * sin(a) + .3 * b + 1 + (random.nextDouble() - .5) * .8);
     } else if ((settings.experiment == Experiment.knnRegression ||
@@ -26,7 +27,8 @@ Dataset generateDataset(ExperimentSettings settings) {
       y.add(2 * sin(a) + 1 + (random.nextDouble() - .5) * .8);
     } else if ((settings.experiment == Experiment.knnClassification ||
         settings.experiment == Experiment.treeClassification ||
-        settings.experiment == Experiment.forestClassification)) {
+        settings.experiment == Experiment.forestClassification ||
+        settings.experiment == Experiment.boostClassification)) {
       x.add([a, b]);
       y.add(a * a + b * b + (random.nextDouble() - .5) * .8 < 4 ? 1 : 0);
     } else {

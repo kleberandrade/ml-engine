@@ -17,7 +17,13 @@ class ComparisonCard extends StatelessWidget {
     final s = context.l10n;
     final treeA = c.treeRoot(), treeB = c.treeRoot(alternate: true);
     final ridge = c.experiment == Experiment.ridge;
-    final labelA = c.experiment.isForest
+    final labelA = c.experiment.isBoost
+        ? s.t('boostShort', {
+            'count': c.nEstimators,
+            'depth': c.maxDepth,
+            'rate': s.number(c.learningRate, 2),
+          })
+        : c.experiment.isForest
         ? s.t("forestShort", {"count": c.nEstimators, "depth": c.maxDepth})
         : c.experiment.isTree
         ? s.t('depthShort', {'count': c.maxDepth})
@@ -28,7 +34,13 @@ class ComparisonCard extends StatelessWidget {
         : c.experiment == Experiment.clustering
         ? s.t('seedShort', {'value': c.seed})
         : s.t('rateShort', {'value': s.number(c.learningRate, 2)});
-    final labelB = c.experiment.isForest
+    final labelB = c.experiment.isBoost
+        ? s.t('boostShort', {
+            'count': c.nEstimators,
+            'depth': c.maxDepth,
+            'rate': s.number(c.learningRate / 4, 3),
+          })
+        : c.experiment.isForest
         ? s.t("depthShort", {"count": c.maxDepth})
         : c.experiment.isTree
         ? s.t('depthShort', {'count': 1})
@@ -46,11 +58,18 @@ class ComparisonCard extends StatelessWidget {
           Text(s.t('fair'), style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
-            s.t(c.experiment.isDirect ? 'directSplit' : 'split', {
-              'train': c.split.train.length,
-              'validation': c.split.validation.length,
-              'test': c.split.test.length,
-            }),
+            s.t(
+              c.experiment.isBoost
+                  ? 'boostSplit'
+                  : c.experiment.isDirect
+                  ? 'directSplit'
+                  : 'split',
+              {
+                'train': c.split.train.length,
+                'validation': c.split.validation.length,
+                'test': c.split.test.length,
+              },
+            ),
           ),
           const SizedBox(height: 14),
           Wrap(
@@ -64,6 +83,19 @@ class ComparisonCard extends StatelessWidget {
               ),
             ],
           ),
+          if (c.boostSummary() case final b?) ...[
+            const SizedBox(height: 12),
+            Text(
+              s.t('boostStats', {
+                'stages': b.stages,
+                'count': c.nEstimators,
+                'depth': b.depth,
+                'leaves': b.leaves,
+                'depthB': c.boostSummary(alternate: true)!.depth,
+                'leavesB': c.boostSummary(alternate: true)!.leaves,
+              }),
+            ),
+          ],
           if (c.forestSummary case final f?) ...[
             const SizedBox(height: 12),
             Text(
@@ -143,7 +175,11 @@ class ComparisonCard extends StatelessWidget {
           ] else ...[
             const SizedBox(height: 20),
             Text(
-              s.t('objective', {'count': c.history.length}),
+              s.t(c.experiment.isBoost ? 'boostObjective' : 'objective', {
+                'count': c.experiment.isBoost
+                    ? (c.boostSummary()?.stages ?? 0)
+                    : c.history.length,
+              }),
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
@@ -158,12 +194,23 @@ class ComparisonCard extends StatelessWidget {
                 height: 120,
                 width: double.infinity,
                 child: CustomPaint(
-                  painter: CostPainter(c.history, c.comparisonHistory, s),
+                  painter: CostPainter(
+                    c.history,
+                    c.comparisonHistory,
+                    s,
+                    stages: c.experiment.isBoost,
+                  ),
                 ),
               ),
             ),
             Text(
-              s.t(ridge ? 'ridgeObjectiveLegend' : 'objectiveLegend'),
+              s.t(
+                c.experiment.isBoost
+                    ? 'boostObjectiveLegend'
+                    : ridge
+                    ? 'ridgeObjectiveLegend'
+                    : 'objectiveLegend',
+              ),
               style: const TextStyle(fontSize: 12),
             ),
           ],

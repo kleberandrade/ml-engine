@@ -117,6 +117,38 @@ const learningTopics = [
   ),
 
   LearningTopic(
+    BilingualText(
+      "Gradient Boosting classification",
+      "Classificação Gradient Boosting",
+    ),
+    BilingualText(
+      "Start at the training class log odds (prior clipped to [1e-12, 1−1e-12]). At each stage, a regression tree fits y−sigmoid(F); add rate×tree to F. Convert the sum of logits with sigmoid; probability ≥0.5 predicts 1. Leaves predict numeric gradients, not class votes. All train rows/features are used; there is no bootstrap, Newton leaf update, line search or automatic early stopping. This first-order implementation supports binary 0/1 labels only; probabilities are not independently calibrated. It is not XGBoost.",
+      "Comece no log das chances da classe no treino (proporção limitada a [1e-12, 1−1e-12]). Em cada etapa, uma árvore de regressão ajusta y−sigmoid(F); some taxa×árvore a F. Converta a soma dos logits pela sigmoide; probabilidade ≥0,5 prevê 1. Folhas preveem gradientes numéricos, não votos de classe. Usa todas as linhas e variáveis do treino; sem bootstrap, atualização de Newton nas folhas, busca de passo ou parada antecipada automática. Esta implementação de primeira ordem aceita apenas rótulos 0/1; as probabilidades não têm calibração independente. Não é XGBoost.",
+    ),
+    "F₀ = log(p/(1−p)); r = y−sigmoid(F)\nFₜ = Fₜ₋₁ + η hₜ; P(y=1) = sigmoid(Fₜ)",
+    BilingualText(
+      "Each tick adds one residual tree. A uses your rate; B uses rate/4 with the same tree count, depth, train-only scaler and split. Count and rate work together: a smaller rate may need more trees. Pause/resume retain the current sum. Change settings after stopping.",
+      "Cada passo adiciona uma árvore de resíduos. A usa sua taxa; B usa taxa/4 com as mesmas árvores, profundidade, divisão e escala ajustada só no treino. Quantidade e taxa interagem: uma taxa menor pode exigir mais árvores. Pausar/retomar preserva a soma atual. Altere parâmetros depois de parar.",
+    ),
+    preset: "boost-classification",
+  ),
+  LearningTopic(
+    BilingualText(
+      "Gradient Boosting regression",
+      "Regressão Gradient Boosting",
+    ),
+    BilingualText(
+      "Start at the mean training target. Fit each new regression tree to residuals y−F and add its prediction multiplied by the learning rate. With y=[0,2,10,12], initial F=6, one depth-1 tree predicts residual means −5 and +5; at rate 0.5 the updated predictions are 3.5 and 8.5. More/deeper trees may fit noise; a small rate can underfit at a fixed budget. Choose count, depth and rate on validation. The 60-point plot holds standardized x₂=0; observed points may have other x₂ values. No extrapolation trend, categorical/missing routing, feature importance or pruning is supplied.",
+      "Comece na média dos alvos do treino. Ajuste cada árvore nova aos resíduos y−F e some sua previsão multiplicada pela taxa de aprendizado. Com y=[0,2,10,12], F inicial=6, uma árvore de profundidade 1 prevê médias residuais −5 e +5; com taxa 0,5 as previsões viram 3,5 e 8,5. Mais árvores ou profundidade podem ajustar ruído; taxa pequena pode subajustar com limite fixo. Escolha quantidade, profundidade e taxa na validação. O gráfico de 60 pontos fixa x₂ padronizado=0; pontos observados podem ter outro x₂. Sem extrapolação de tendência, categorias/ausentes, importância de variáveis ou poda.",
+    ),
+    "F₀ = mean(y); r = y−F\nFₜ = Fₜ₋₁ + η hₜ(x)",
+    BilingualText(
+      "Each tick adds one residual tree. A uses your rate; B uses rate/4 with the same tree count, depth, train-only scaler and split. Count and rate work together: a smaller rate may need more trees. Pause/resume retain the current sum. Change settings after stopping.",
+      "Cada passo adiciona uma árvore de resíduos. A usa sua taxa; B usa taxa/4 com as mesmas árvores, profundidade, divisão e escala ajustada só no treino. Quantidade e taxa interagem: uma taxa menor pode exigir mais árvores. Pausar/retomar preserva a soma atual. Altere parâmetros depois de parar.",
+    ),
+    preset: "boost-regression",
+  ),
+  LearningTopic(
     BilingualText('KNN classification', 'Classificação KNN'),
     BilingualText(
       'Store training rows and find the k closest to each query in Euclidean distance. Each row contributes one vote; predict the most frequent class. Features must be scaled using training statistics only.',
@@ -211,16 +243,16 @@ const learningExercises = [
   ),
   LearningExercise(
     BilingualText(
-      '2. Control forest complexity',
-      '2. Controle a complexidade da floresta',
+      '2. Control boosting complexity',
+      '2. Controle a complexidade do boosting',
     ),
     BilingualText(
-      'Compare 1, 15 and 25 forest trees at depths 1, 3 and 6 on the same split. Keep the single-tree baseline at the selected depth; choose by validation.',
-      'Compare 1, 15 e 25 árvores nas profundidades 1, 3 e 6 na mesma divisão. Mantenha a árvore de comparação na profundidade selecionada; escolha pela validação.',
+      'Compare 5, 15 and 25 boosting trees at depths 1 and 3, with rates 0.05 and 0.2 on the same seed/split.',
+      'Compare 5, 15 e 25 árvores de boosting nas profundidades 1 e 3, com taxas 0,05 e 0,2 na mesma semente/divisão.',
     ),
     BilingualText(
-      'Record actual depth, leaf counts and validation scores; choose a depth without inspecting the final test.',
-      'Registre profundidade efetiva, folhas e métricas de validação; escolha o limite sem consultar o teste final.',
+      'Record training loss, validation scores and actual stage/depth/leaf counts; choose count, depth and rate without inspecting the final test.',
+      'Registre perda do treino, validação e etapas/profundidade/folhas efetivas; escolha quantidade, profundidade e taxa sem consultar o teste final.',
     ),
   ),
   LearningExercise(

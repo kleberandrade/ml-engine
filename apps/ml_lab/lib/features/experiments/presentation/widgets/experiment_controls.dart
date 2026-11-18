@@ -61,6 +61,7 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               c.experiment != Experiment.clustering) ...[
             Text(s.t('rate', {'value': s.number(c.learningRate, 2)})),
             Slider(
+              key: const ValueKey('learning-rate'),
               semanticFormatterCallback: (v) =>
                   s.t('rate', {'value': s.number(v, 2)}),
               value: c.learningRate,
@@ -102,17 +103,21 @@ class _ExperimentControlsState extends State<ExperimentControls> {
             Text(s.t('ridgeControlHelp'), style: const TextStyle(fontSize: 13)),
             const SizedBox(height: 12),
           ],
-          if (c.experiment.isForest) ...[
+          if (c.experiment.isEnsemble) ...[
             Text(s.t('forestTrees', {'count': c.nEstimators})),
             Slider(
-              key: const ValueKey('forest-trees'),
+              key: ValueKey(
+                c.experiment.isBoost ? 'boost-trees' : 'forest-trees',
+              ),
               value: c.nEstimators.toDouble(),
               min: 1,
               max: 25,
               divisions: 24,
               semanticFormatterCallback: (v) =>
                   s.t('forestTrees', {'count': v.round()}),
-              onChanged: (v) => c.configure(nEstimators: v.round()),
+              onChanged: c.active
+                  ? null
+                  : (v) => c.configure(nEstimators: v.round()),
             ),
           ],
           if (c.experiment.isKnn) ...[
@@ -138,11 +143,17 @@ class _ExperimentControlsState extends State<ExperimentControls> {
               min: 1,
               max: 6,
               divisions: 5,
-              onChanged: (v) => c.configure(maxDepth: v.round()),
+              onChanged: c.active
+                  ? null
+                  : (v) => c.configure(maxDepth: v.round()),
             ),
             Text(
               s.t(
-                c.experiment.isForest ? 'forestControlHelp' : 'treeControlHelp',
+                c.experiment.isBoost
+                    ? 'boostControlHelp'
+                    : c.experiment.isForest
+                    ? 'forestControlHelp'
+                    : 'treeControlHelp',
               ),
               style: const TextStyle(fontSize: 13),
             ),

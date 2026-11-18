@@ -37,6 +37,84 @@ extension LocalizedContext on BuildContext {
 }
 
 const messages = <String, List<String>>{
+  "chip-boostClassification": [
+    "11  Gradient Boosting classifier",
+    "11  Gradient Boosting classificação",
+  ],
+  "chip-boostRegression": [
+    "12  Gradient Boosting regressor",
+    "12  Gradient Boosting regressão",
+  ],
+  "plot-boostClassification": [
+    "Correct the current probability errors",
+    "Corrija os erros das probabilidades atuais",
+  ],
+  "plot-boostRegression": [
+    "Build a sum of residual trees",
+    "Construa uma soma de árvores de resíduos",
+  ],
+  "type-boostClassification": [
+    "Gradient Boosting classification",
+    "classificação Gradient Boosting",
+  ],
+  "type-boostRegression": [
+    "Gradient Boosting regression",
+    "regressão Gradient Boosting",
+  ],
+  "boostShort": [
+    "Boosting · trees {count} · depth ≤ {depth} · rate {rate}",
+    "Boosting · árvores {count} · profundidade ≤ {depth} · taxa {rate}",
+  ],
+  "boostControlHelp": [
+    "Each tick adds one residual tree. A uses your rate; B uses rate/4 with the same tree count, depth, train-only scaler and split. Count and rate work together: a smaller rate may need more trees. Pause/resume retain the current sum. Change settings after stopping.",
+    "Cada passo adiciona uma árvore de resíduos. A usa sua taxa; B usa taxa/4 com as mesmas árvores, profundidade, divisão e escala ajustada só no treino. Quantidade e taxa interagem: uma taxa menor pode exigir mais árvores. Pausar/retomar preserva a soma atual. Altere parâmetros depois de parar.",
+  ],
+  "boostSplit": [
+    "Train {train} / validation {validation} / test {test}. Same training rows, initial prediction, tree budget, depth and train-fitted scaler for A/B; only the shrinkage rate differs.",
+    "Treino {train} / validação {validation} / teste {test}. Mesmas linhas de treino, previsão inicial, limite de árvores, profundidade e escala de treino em A/B; só a taxa de contribuição difere.",
+  ],
+  "boostStats": [
+    "Fitted stages: {stages}/{count}. Actual depth / total leaves · A: {depth} / {leaves} · B: {depthB} / {leavesB}.",
+    "Etapas ajustadas: {stages}/{count}. Profundidade efetiva / folhas totais · A: {depth} / {leaves} · B: {depthB} / {leavesB}.",
+  ],
+  "boostObjective": [
+    "Training loss · {count} trees added",
+    "Perda do treino · {count} árvores adicionadas",
+  ],
+  "boostStages": ["{count} trees", "{count} árvores"],
+  "boostObjectiveLegend": [
+    "A: green · B: brown. Index 0 is the initial constant prediction; each later point adds one tree. Regression: MSE/2; classification: mean binary cross entropy. This is training loss, not validation RMSE/accuracy.",
+    "A: verde · B: marrom. O índice 0 é a previsão constante inicial; cada ponto seguinte adiciona uma árvore. Regressão: MSE/2; classificação: entropia cruzada binária média. Esta é a perda do treino, não o RMSE ou a acurácia de validação.",
+  ],
+  "boostPlotAria": [
+    "Data plot. {count} samples, {type}. {iterations} residual trees added. Validation scores appear below.",
+    "Gráfico de dados. {count} amostras, {type}. {iterations} árvores de resíduos adicionadas. Métricas de validação abaixo.",
+  ],
+  "explain-boostClassification": [
+    "Start at the training class log odds (prior clipped to [1e-12, 1−1e-12]). At each stage, a regression tree fits y−sigmoid(F); add rate×tree to F. Convert the sum of logits with sigmoid; probability ≥0.5 predicts 1. Leaves predict numeric gradients, not class votes. All train rows/features are used; there is no bootstrap, Newton leaf update, line search or automatic early stopping. This first-order implementation supports binary 0/1 labels only; probabilities are not independently calibrated. It is not XGBoost.",
+    "Comece no log das chances da classe no treino (proporção limitada a [1e-12, 1−1e-12]). Em cada etapa, uma árvore de regressão ajusta y−sigmoid(F); some taxa×árvore a F. Converta a soma dos logits pela sigmoide; probabilidade ≥0,5 prevê 1. Folhas preveem gradientes numéricos, não votos de classe. Usa todas as linhas e variáveis do treino; sem bootstrap, atualização de Newton nas folhas, busca de passo ou parada antecipada automática. Esta implementação de primeira ordem aceita apenas rótulos 0/1; as probabilidades não têm calibração independente. Não é XGBoost.",
+  ],
+  "explain-boostRegression": [
+    "Start at the mean training target. Fit each new regression tree to residuals y−F and add its prediction multiplied by the learning rate. With y=[0,2,10,12], initial F=6, one depth-1 tree predicts residual means −5 and +5; at rate 0.5 the updated predictions are 3.5 and 8.5. More/deeper trees may fit noise; a small rate can underfit at a fixed budget. Choose count, depth and rate on validation. The 60-point plot holds standardized x₂=0; observed points may have other x₂ values. No extrapolation trend, categorical/missing routing, feature importance or pruning is supplied.",
+    "Comece na média dos alvos do treino. Ajuste cada árvore nova aos resíduos y−F e some sua previsão multiplicada pela taxa de aprendizado. Com y=[0,2,10,12], F inicial=6, uma árvore de profundidade 1 prevê médias residuais −5 e +5; com taxa 0,5 as previsões viram 3,5 e 8,5. Mais árvores ou profundidade podem ajustar ruído; taxa pequena pode subajustar com limite fixo. Escolha quantidade, profundidade e taxa na validação. O gráfico de 60 pontos fixa x₂ padronizado=0; pontos observados podem ter outro x₂. Sem extrapolação de tendência, categorias/ausentes, importância de variáveis ou poda.",
+  ],
+  "example-boost-classification": [
+    "Boosting on a curved boundary",
+    "Boosting em uma fronteira curva",
+  ],
+  "example-boost-classification-body": [
+    "Add 25 depth-3 residual trees with rate 0.2 versus 0.05; observe binary cross entropy and held-out accuracy.",
+    "Adicione 25 árvores de resíduos de profundidade 3 com taxa 0,2 versus 0,05; observe entropia cruzada binária e acurácia reservada.",
+  ],
+  "example-boost-regression": [
+    "Boosting on nonlinear residuals",
+    "Boosting em resíduos não lineares",
+  ],
+  "example-boost-regression-body": [
+    "Compare two shrinkage rates on the same two-feature signal. Inspect residual-tree stages, training MSE/2 and validation RMSE.",
+    "Compare duas taxas de contribuição no mesmo sinal com duas variáveis. Observe etapas de árvores residuais, MSE/2 do treino e RMSE de validação.",
+  ],
+
   "chip-forestClassification": [
     "09  Random Forest classifier",
     "09  Random Forest classificação",
@@ -456,8 +534,8 @@ const messages = <String, List<String>>{
   ],
   "learnTitle": ["Learn by observing the model", "Aprenda observando o modelo"],
   "learnSubtitle": [
-    "A guide to the algorithms actually implemented in ML Engine 0.5.0, based on the project tutorial and numerical conventions.",
-    "Um guia dos algoritmos realmente implementados no ML Engine 0.5.0, baseado no tutorial e nas convenções numéricas do projeto.",
+    "A guide to the algorithms actually implemented in ML Engine 0.6.0, based on the project tutorial and numerical conventions.",
+    "Um guia dos algoritmos realmente implementados no ML Engine 0.6.0, baseado no tutorial e nas convenções numéricas do projeto.",
   ],
   "foundations": ["Foundations before fitting", "Fundamentos antes do ajuste"],
   "openExample": ["Open this experiment", "Abrir este experimento"],
@@ -477,8 +555,8 @@ const messages = <String, List<String>>{
     "Cada exemplo abre o laboratório real com dados reproduzíveis e parâmetros explícitos. Abrir um exemplo substitui o experimento; trocar o idioma ou visitar Aprender preserva o estado.",
   ],
   "sourceVersion": [
-    "Source: project documentation • core 0.5.0 • Flutter 3.50.0",
-    "Fonte: documentação do projeto • núcleo 0.5.0 • Flutter 3.50.0",
+    "Source: project documentation • core 0.6.0 • Flutter 3.50.0",
+    "Fonte: documentação do projeto • núcleo 0.6.0 • Flutter 3.50.0",
   ],
   "tutorialLink": ["Tutorial and exercises", "Tutorial e exercícios"],
   "designLink": [

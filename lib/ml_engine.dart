@@ -21,3 +21,4 @@ export 'src/preprocessing/scalers.dart';
 export 'src/pipeline/pipeline.dart';
 export 'src/metrics/regression.dart';
 export 'src/metrics/classification.dart';
+export 'src/models/gradient_boosting.dart';

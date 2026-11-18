@@ -130,6 +130,27 @@ void main() {
   print(
     'Forest: ${forest.trees.length} stumps; mean $prediction (bootstrap mean $expectedMean)',
   );
+  final boost =
+      GradientBoostingRegressor(nEstimators: 1, maxDepth: 1, learningRate: .5)
+        ..fit(
+          [
+            [0],
+            [1],
+            [2],
+            [3],
+          ],
+          [0, 2, 10, 12],
+        );
+  final boosted = boost.predict([
+    [0],
+    [3],
+  ]);
+  if ((boosted[0] - 3.5).abs() > 1e-12 || (boosted[1] - 8.5).abs() > 1e-12) {
+    throw StateError('Independent boosting stage fixture failed.');
+  }
+  print(
+    'Boosting first stage: $boosted (expected [3.5,8.5]); loss ${boost.lossHistory.last} (expected 3.625)',
+  );
   final clusters = KMeans(k: 2, seed: 7)
     ..fit([
       [0, 0],

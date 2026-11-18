@@ -52,15 +52,25 @@ class ExperimentPlotCard extends StatelessWidget {
           Text(
             s.t(c.experiment.isRegression ? 'axisRegression' : 'axisFeatures'),
           ),
-          if (c.experiment.isClassification && c.experiment.isDirect)
+          if (c.experiment.isClassification &&
+              (c.experiment.isDirect || c.experiment.isBoost))
             Text(s.t('directRegions')),
           const SizedBox(height: 12),
           Semantics(
-            label: s.t(c.experiment.isDirect ? 'directPlotAria' : 'plotAria', {
-              'count': c.data.x.length,
-              'type': s.t('type-${c.experiment.name}'),
-              'iterations': c.history.length,
-            }),
+            label: s.t(
+              c.experiment.isBoost
+                  ? 'boostPlotAria'
+                  : c.experiment.isDirect
+                  ? 'directPlotAria'
+                  : 'plotAria',
+              {
+                'count': c.data.x.length,
+                'type': s.t('type-${c.experiment.name}'),
+                'iterations': c.experiment.isBoost
+                    ? (c.boostSummary()?.stages ?? 0)
+                    : c.history.length,
+              },
+            ),
             image: true,
             child: SizedBox(
               height: 310,

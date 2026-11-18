@@ -1,7 +1,7 @@
 {
   "name": "ml-engine",
   "owner": "kleberandrade",
-  "description": "Pure Dart ML: regression, KNN, decision trees, Random Forest, K-means++, pipelines and a bilingual Flutter laboratory.",
+  "description": "Pure Dart ML: regression, KNN, trees, Random Forest, Gradient Boosting, K-means and a bilingual Flutter laboratory.",
   "topics": [
     "dart",
     "data-science",
@@ -16,7 +16,8 @@
     "nearest-neighbors",
     "regularization",
     "ridge-regression",
-    "random-forest"
+    "random-forest",
+    "gradient-boosting"
   ],
   "visibility": "public",
   "status": "created; main pushed",

@@ -48,7 +48,9 @@ class PlotSnapshot {
       regression: regression,
     );
     PredictionSamples? samples;
-    if (session.settings.experiment.isDirect && session.hasResults) {
+    if ((session.settings.experiment.isDirect ||
+            session.settings.experiment.isBoost) &&
+        session.hasResults) {
       if (regression) {
         final rows = List.generate(
           60,

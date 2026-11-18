@@ -1,3 +1,11 @@
+## 0.6.0
+
+- Add GradientBoostingRegressor (mean initialization, residual trees, MSE/2) and binary GradientBoostingClassifier (clipped prior log odds, y−sigmoid(F), logistic loss).
+- Add count/depth/leaf/rate parameters, stagewise start/step, probabilities, immutable roots/loss snapshots and atomic fit/stage recovery.
+- Implement full-row/full-feature first-order boosting with fixed shrinkage; document the absence of Newton leaf updates, line search, subsampling, early stopping and XGBoost compatibility.
+- Add PT/EN lab modes with three controls, rate-only A/B comparison, real loss/stage curves, pause/resume/cancel/restart and nonlinear presets.
+- Add independent numerical, ownership/recovery, pipeline/CV, leakage, lifecycle, controls, bilingual navigation and mobile tests.
+
 ## 0.5.0
 
 - Add RandomForestClassifier/Regressor: seeded n-row bootstrap, fresh per-node feature subsets, uniform hard votes / means, count/depth/leaf controls and immutable roots/bag indices/tree seeds.

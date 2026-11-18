@@ -27,6 +27,8 @@ class LabViewModel extends ChangeNotifier {
   int get epochs => _settings.epochs;
   int get nEstimators => _settings.nEstimators;
   ForestSummary? get forestSummary => _session.forestSummary;
+  BoostSummary? boostSummary({bool alternate = false}) =>
+      _session.boostSummary(alternate: alternate);
   int get maxDepth => _settings.maxDepth;
   DecisionTreeNode? treeRoot({bool alternate = false}) =>
       _session.treeRoot(alternate: alternate);

@@ -11,7 +11,7 @@
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
-**Version 0.5.0.** Pure Dart classical ML, including Ridge, KNN, decision trees and Random Forest with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
+**Version 0.6.0.** Pure Dart classical ML, including Ridge, KNN, decision trees, Random Forest and Gradient Boosting with explicit numerical conventions, paired with the public Flutter laboratory. Source and release history: [kleberandrade/ml-engine](https://github.com/kleberandrade/ml-engine).
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
@@ -23,6 +23,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 - KNN classification (finite numeric labels) and regression with uniform weights, Euclidean distance, configurable k and deterministic tie rules.
 - Decision tree classification (Gini) and regression (squared error), max depth, minimum leaf size, immutable fitted nodes and deterministic greedy splits.
 - Random Forest classification (hard votes) and regression (mean), seeded bootstrap, per-node feature subsets, tree-count/depth controls and immutable fitted metadata.
+- Gradient Boosting regression (MSE/2) and binary classification (logistic loss) with residual regression trees, shrinkage, count/depth controls, stagewise start/step and immutable loss history.
 - Seeded K-means++ initialization and Lloyd updates, inertia, centroids and prediction.
 - StandardScaler (population variance), MinMaxScaler, and a fit/transform/predict pipeline.
 - Seeded train/validation/test splits, shuffled K-fold, stratified K-fold and leakage-safe cross validation through fresh pipeline factories.
@@ -57,6 +58,20 @@ The GitHub Pages workflow builds with `--base-href /ml-engine/ --no-web-resource
 
 Open http://127.0.0.1:8769 in a browser. The verified build targets JavaScript with CanvasKit, not Wasm. `--no-wasm-dry-run` skips an optional compatibility probe; no Wasm compatibility claim is made. The lab is Web-only in this delivery; no Android/iOS/desktop build has been checked.
 
+## Gradient Boosting
+
+```dart
+final boost = GradientBoostingRegressor(
+  nEstimators: 25, maxDepth: 3, learningRate: .2, minSamplesLeaf: 2,
+);
+boost.fit(xTrain, yTrain);
+final predictions = boost.predict(xValidation);
+// GradientBoostingClassifier supports binary 0/1 labels and probabilities(x).
+// For observable stages: start(xTrain, yTrain); while (boost.step()) { ... }
+```
+
+Boosting builds a sum of residual trees, using all training rows/features. Regression starts at mean(y), fits y−F and adds rate×tree. Binary classification starts at clipped prior log odds, fits y−sigmoid(F) with **regression** trees and applies sigmoid to the additive logits. This is first-order boosting, without Newton leaf updates, line search, subsampling or automatic early stopping. It is an independent Dart implementation, **not XGBoost**. `lossHistory` includes the initial constant prediction then one loss per tree. Fit commits atomically; individual failed stages preserve their previous state. Core rate is (0,1]; lab bounds are 1–25 trees, depth 1–6 and rate .01–.3. A/B use the same count/depth/split with B at rate/4. More trees/depth can overfit; choose all three parameters on validation. See [ADR 0009](https://github.com/kleberandrade/ml-engine/blob/main/docs/adr/0009-first-order-gradient-boosting.md).
+
 ## Random Forest
 
 ```dart
@@ -84,13 +99,13 @@ final predictions = pipeline.predict([[4]]); // approximately [9]
 final transformed = pipeline.transform([[4]]); // train-fitted scaling
 ```
 
-The core is published as [`ml_engine 0.5.0`](https://pub.dev/packages/ml_engine/versions/0.5.0), including Random Forest. Install with:
+The core is published as [`ml_engine 0.6.0`](https://pub.dev/packages/ml_engine/versions/0.6.0), including Gradient Boosting. Install with:
 
 ```sh
 dart pub add ml_engine
 ```
 
-For version 0.5.0, declare `ml_engine: ^0.5.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
+For version 0.6.0, declare `ml_engine: ^0.6.0` in dependencies. Local development can use `ml_engine: {path: /absolute/path/to/ml-engine}`. The Flutter lab is a separate application and is not included in the package.
 
 ```dart
 Pipeline create() => Pipeline(StandardScaler(), LinearRegression());
@@ -171,7 +186,7 @@ The language controls use locally drawn circular Brazil/United Kingdom flags, se
 - [Português: guia rápido](https://github.com/kleberandrade/ml-engine/blob/main/docs/quickstart.pt-BR.md)
 - [Action log](https://github.com/kleberandrade/ml-engine/blob/main/docs/work-log.md)
 - [GitHub metadata](https://github.com/kleberandrade/ml-engine/blob/main/docs/github-metadata.json)
-- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.5.0.md)
+- [Release notes](https://github.com/kleberandrade/ml-engine/blob/main/docs/release-v0.6.0.md)
 
 ## License and credits
 

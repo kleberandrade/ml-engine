@@ -9,7 +9,8 @@ import 'plot_style.dart';
 class CostPainter extends CustomPainter {
   final List<double> a, b;
   final AppStrings strings;
-  CostPainter(this.a, this.b, this.strings);
+  final bool stages;
+  CostPainter(this.a, this.b, this.strings, {this.stages = false});
   @override
   void paint(Canvas canvas, Size size) {
     if (a.isEmpty) {
@@ -59,10 +60,18 @@ class CostPainter extends CustomPainter {
           ..style = PaintingStyle.stroke,
       );
     }
-    paintPlotText(canvas, '1', Offset(rect.left, rect.bottom + 4));
     paintPlotText(
       canvas,
-      strings.t('iterations', {'count': max(a.length, b.length)}),
+      stages ? '0' : '1',
+      Offset(rect.left, rect.bottom + 4),
+    );
+    paintPlotText(
+      canvas,
+      strings.t(stages ? 'boostStages' : 'iterations', {
+        'count': stages
+            ? max(0, max(a.length, b.length) - 1)
+            : max(a.length, b.length),
+      }),
       Offset(max(rect.left, rect.right - 90), rect.bottom + 4),
     );
   }

@@ -1,13 +1,13 @@
 # Roadmap (not implemented)
 
-This first delivery includes linear/Ridge/logistic regression, uniform KNN, decision tree and Random Forest classification/regression, K-means++, preprocessing, evaluation and the Flutter teaching lab. The following are future directions, not existing APIs or promised release dates.
+This first delivery includes linear/Ridge/logistic regression, uniform KNN, decision tree, Random Forest and Gradient Boosting classification/regression, K-means++, preprocessing, evaluation and the Flutter teaching lab. The following are future directions, not existing APIs or promised release dates.
 
-1. **Boosting after validated forests:** build an original Gradient Boosting implementation, reusing the tree boundary with deterministic sampling/feature subsets, explicit stopping/regularization rules, independent fixtures and overfitting demonstrations. Random Forest ships in 0.5.0; Gradient Boosting remains unimplemented.
+1. **Ensemble extensions:** add validation-based early stopping, optional stochastic subsampling and separately specified leaf updates after independent numerical tests. First-order Gradient Boosting ships in 0.6.0; these extensions are not implemented.
 2. PCA, feature selection and permutation importance, evaluated inside the training fold. Permutation importance measures score degradation under shuffling; correlated features complicate its interpretation.
 3. Optional integrations with external backends only after versioning, licensing, portability and numerical compatibility are verified.
 4. SHAP explanations as a separate research/integration effort. SHAP means Shapley-value-based feature attribution under specified assumptions; it is not a synonym for permutation importance, tree split gain or coefficients. No SHAP implementation is included.
 
-An original Gradient Boosting implementation would not be the official XGBoost product, would not imply XGBoost model-format compatibility, and would not carry that product's performance or feature claims. A future XGBoost adapter must be explicitly named as such and tested separately.
+The shipped Gradient Boosting implementation is independent Dart code. It is not XGBoost, does not imply XGBoost model-format compatibility, and makes no equivalent performance or feature claims. A future XGBoost adapter must be explicitly named as such and tested separately.
 
 Before adding a technique to Learn/Examples, require an implemented core API, independent numerical/edge-case tests, a bounded interactive preset, EN/PT-BR explanations, and passing Web CI. Keep regularization, feature selection and hyperparameter selection inside the training/validation boundary. These are planned acceptance criteria, not shipped features.
 

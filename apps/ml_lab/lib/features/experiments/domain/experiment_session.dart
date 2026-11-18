@@ -14,6 +14,7 @@ class ExperimentSession {
   Estimator? _directModel, _comparisonDirectModel;
   bool get hasResults => _directModel != null || history.isNotEmpty;
   GradientModel? _model, _comparison;
+  GradientBoostingModel? _boost, _comparisonBoost;
   KMeans? _kmeans, _comparisonKmeans;
 
   ExperimentSession(this.data, this.settings) {
@@ -33,9 +34,15 @@ class ExperimentSession {
     );
   }
   List<double> get history =>
-      _model?.costHistory ?? _kmeans?.costHistory ?? const [];
+      _boost?.lossHistory ??
+      _model?.costHistory ??
+      _kmeans?.costHistory ??
+      const [];
   List<double> get comparisonHistory =>
-      _comparison?.costHistory ?? _comparisonKmeans?.costHistory ?? const [];
+      _comparisonBoost?.lossHistory ??
+      _comparison?.costHistory ??
+      _comparisonKmeans?.costHistory ??
+      const [];
   List<double> get coefficientsA => _model?.coefficients ?? const [];
   List<double> get coefficientsB => _comparison?.coefficients ?? const [];
   double get interceptA => _model?.intercept ?? 0;
@@ -82,10 +89,36 @@ class ExperimentSession {
     return null;
   }
 
+  BoostSummary? boostSummary({bool alternate = false}) {
+    final model = alternate ? _comparisonBoost : _boost;
+    return model == null
+        ? null
+        : BoostSummary(model.trees.length, model.depth, model.leafCount);
+  }
+
   void start() {
     final train = split.train.map((i) => scaled[i]).toList();
     final targets = split.train.map((i) => data.y[i]).toList();
-    if (settings.experiment.isForest) {
+    if (settings.experiment.isBoost) {
+      GradientBoostingModel create(double rate) =>
+          settings.experiment.isRegression
+          ? GradientBoostingRegressor(
+              nEstimators: settings.nEstimators,
+              maxDepth: settings.maxDepth,
+              minSamplesLeaf: 2,
+              learningRate: rate,
+            )
+          : GradientBoostingClassifier(
+              nEstimators: settings.nEstimators,
+              maxDepth: settings.maxDepth,
+              minSamplesLeaf: 2,
+              learningRate: rate,
+            );
+      final a = create(settings.learningRate)..start(train, targets);
+      final b = create(settings.learningRate / 4)..start(train, targets);
+      _boost = a;
+      _comparisonBoost = b;
+    } else if (settings.experiment.isForest) {
       final Estimator a = settings.experiment.isRegression
           ? RandomForestRegressor(
               nEstimators: settings.nEstimators,
@@ -172,6 +205,10 @@ class ExperimentSession {
 
   bool step() {
     if (_directModel != null) return false;
+    if (_boost != null) {
+      final a = _boost!.step(), b = _comparisonBoost!.step();
+      return a || b;
+    }
     if (_model == null && _kmeans == null) {
       throw StateError('Start the session first.');
     }
@@ -182,8 +219,8 @@ class ExperimentSession {
 
   List<double> predict(Matrix rows, {bool alternate = false}) {
     final model = alternate
-        ? (_comparisonDirectModel ?? _comparison)
-        : (_directModel ?? _model);
+        ? (_comparisonBoost ?? _comparisonDirectModel ?? _comparison)
+        : (_boost ?? _directModel ?? _model);
     if (model == null) throw StateError('No fitted supervised model.');
     return model.predict(rows);
   }

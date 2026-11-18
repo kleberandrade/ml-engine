@@ -1,0 +1,38 @@
+{
+  "version": "0.6.0",
+  "published": "2026-11-18T00:26:07.974951Z",
+  "archive_url": "https://pub.dev/api/archives/ml_engine-0.6.0.tar.gz",
+  "archive_sha256": "6354d9826137ca3a7056060cfa9c7f1453689fb370e052b94ec5c68e5ffee6f1",
+  "archive_bytes": 32491,
+  "archive_files": 56,
+  "matching_core_files": 23,
+  "source_commit": "bc411e8321b56ea57596b6767b59959d8b9bb40c",
+  "excluded": [
+    "apps",
+    "docs",
+    "tool",
+    ".github"
+  ],
+  "hosted_consumer": {
+    "dependency": "ml_engine: 0.6.0",
+    "source": "hosted https://pub.dev",
+    "isolated_project": true,
+    "local_path_dependency": false,
+    "n_estimators": 1,
+    "max_depth": 1,
+    "learning_rate": 0.5,
+    "regression": [
+      3.5,
+      8.5
+    ],
+    "regression_loss": 3.625,
+    "classification": [
+      0,
+      1
+    ],
+    "positive_probability": 0.5621765008857981,
+    "independent_positive_probability": "1/(1+exp(-0.25))",
+    "absolute_tolerance": 1e-12,
+    "result": "passed after index propagation"
+  }
+}

@@ -7,7 +7,7 @@
 [![Flutter lab](https://img.shields.io/badge/Flutter_lab-3.50.0-02569B)](https://flutter.dev/)
 [![License](https://img.shields.io/github/license/kleberandrade/ml-engine)](LICENSE)
 
-![Conceptual vector cover showing regression, classification and clustering](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/cover.svg)
+![Conceptual vector cover showing regression, classification, clustering and additive tree ensembles](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/cover.svg)
 
 A small, inspectable **pure Dart classical machine learning toolkit**, paired with a Flutter laboratory. Learn how fitting, preprocessing and evaluation work without mixing UI code into the mathematics. Complements fuzzy-engine, neural-engine, genetic-engine, reinforcement-engine, decision-engine and steering-engine.
 
@@ -15,7 +15,7 @@ A small, inspectable **pure Dart classical machine learning toolkit**, paired wi
 
 **[Open the live Flutter laboratory](https://kleberandrade.github.io/ml-engine/)**
 
-![Actual Random Forest regression on GitHub Pages: 15 depth-3 trees versus one depth-3 reference tree, with controls, leaf counts and validation RMSE](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-forest-regression-pt.jpg)
+![Actual Gradient Boosting regression on GitHub Pages: 25 depth-3 residual trees, rate 0.20 versus 0.05, with the three controls and validation RMSE](https://raw.githubusercontent.com/kleberandrade/ml-engine/main/docs/images/pages-boost-regression-pt.jpg)
 
 ## Included now
 

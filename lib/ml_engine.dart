@@ -1,4 +1,19 @@
-/// Classical ML with explicit training boundaries and reproducible splits.
+/// Pure Dart classical machine learning for application developers.
+///
+/// Import this facade rather than implementation files under `src/`. [Matrix]
+/// uses samples as rows and features as columns. Supervised [Estimator] models
+/// fit aligned finite targets; unsupervised [KMeans] accepts features only.
+/// [Pipeline] fits preprocessing on training rows and reuses it at inference.
+///
+/// ```dart
+/// final model = Pipeline(StandardScaler(), LinearRegression());
+/// model.fit([[0], [1], [2]], [2, 5, 8]);
+/// final predictions = model.predict([[3]]);
+/// ```
+///
+/// Classifiers differ in supported labels and probability APIs; consult their
+/// class documentation. Fitting is synchronous and failure-state guarantees are
+/// model-specific. [crossValidate] requires fresh components for each fold.
 library;
 
 export 'src/data/matrix.dart';

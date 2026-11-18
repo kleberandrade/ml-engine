@@ -14,6 +14,12 @@ import 'estimator.dart';
 /// Duplicate bootstrap entries each count toward minSamplesLeaf. No OOB score,
 /// feature importance, pruning, missing/categorical handling or probabilities.
 class RandomForestClassifier extends _RandomForest {
+  /// Creates an unfitted bootstrap forest.
+  ///
+  /// [nEstimators] and [minSamplesLeaf] must be positive, [maxDepth] nonnegative,
+  /// and an explicit [maxFeatures] positive; invalid settings throw [ArgumentError].
+  /// [fit] checks maxFeatures <= feature width. Null uses max(1,floor(sqrt(width)))
+  /// for both tasks. [seed] controls bootstrap bags and per-tree feature seeds.
   RandomForestClassifier({
     super.nEstimators = 100,
     super.maxDepth = 5,
@@ -33,6 +39,12 @@ class RandomForestClassifier extends _RandomForest {
 /// hyperparameter selection is performed. Seeds reproduce within the same SDK;
 /// the Dart Random algorithm is not promised to remain fixed across versions.
 class RandomForestRegressor extends _RandomForest {
+  /// Creates an unfitted bootstrap forest.
+  ///
+  /// [nEstimators] and [minSamplesLeaf] must be positive, [maxDepth] nonnegative,
+  /// and an explicit [maxFeatures] positive; invalid settings throw [ArgumentError].
+  /// [fit] checks maxFeatures <= feature width. Null uses max(1,floor(sqrt(width)))
+  /// for both tasks. [seed] controls bootstrap bags and per-tree feature seeds.
   RandomForestRegressor({
     super.nEstimators = 100,
     super.maxDepth = 5,
@@ -43,7 +55,20 @@ class RandomForestRegressor extends _RandomForest {
 }
 
 abstract class _RandomForest implements Estimator {
-  final int nEstimators, maxDepth, minSamplesLeaf, seed;
+  /// Positive number of independently bootstrapped trees to build on each fit.
+  final int nEstimators;
+
+  /// Maximum root-to-leaf edges per tree; zero creates constant trees.
+  final int maxDepth;
+
+  /// Minimum bootstrap entries in each split child; duplicates count separately.
+  /// An unsplit root with fewer rows is still allowed.
+  final int minSamplesLeaf;
+
+  /// Seed for bootstrap draws and per-tree feature-subset seeds.
+  final int seed;
+
+  /// Per-split feature count; null resolves to max(1,floor(sqrt(fitted width))).
   final int? maxFeatures;
   final bool _classification;
   List<DecisionTreeNode>? _trees;
@@ -67,26 +92,49 @@ abstract class _RandomForest implements Estimator {
       );
     }
   }
+
+  /// Immutable fitted roots in construction order; throws [StateError] before fit.
   List<DecisionTreeNode> get trees =>
       _trees ?? (throw StateError('Fit the forest first.'));
+
+  /// Deeply immutable bootstrap source-row indices for each fitted tree.
+  ///
+  /// Each inner list has training-row-count entries, with replacement. Indices
+  /// refer to the rows passed to the most recent successful fit. Retaining these
+  /// indices costs O(n*nEstimators) integers. Throws [StateError] before fit.
   List<List<int>> get bootstrapIndices {
     trees;
     return _bootstrapIndices;
   }
 
+  /// Immutable per-tree feature-sampling seeds aligned with [trees].
+  ///
+  /// Together with [bootstrapIndices] and the original training data, these permit
+  /// reconstructing a tree within the same SDK. Throws [StateError] before fit.
   List<int> get treeSeeds {
     trees;
     return _treeSeeds;
   }
 
+  /// Resolved feature subset size of the fitted forest; throws [StateError] before fit.
   int get featuresPerSplit {
     trees;
     return _featuresPerSplit!;
   }
 
+  /// Largest actual depth among fitted trees; throws [StateError] before fit.
   int get depth => trees.map((t) => t.depth).reduce(max);
+
+  /// Sum of terminal leaf counts across fitted trees; throws [StateError] before fit.
   int get leafCount => trees.fold(0, (sum, t) => sum + t.leafCount);
 
+  /// Builds all bootstrap trees before committing roots and sampling metadata.
+  ///
+  /// Requires finite nonempty rectangular [x], aligned finite [y], and any explicit
+  /// maxFeatures <= width. Throws [ArgumentError] for invalid data or overflowing
+  /// tree arithmetic. Class labels may be any finite numeric value. Rejected fits
+  /// preserve every previously fitted field. Raw rows are not retained afterward;
+  /// roots, bag indices and seeds are retained. This operation is synchronous.
   @override
   void fit(Matrix x, List<double> y) {
     final data = Dataset(x, y), width = x.first.length;
@@ -132,6 +180,12 @@ abstract class _RandomForest implements Estimator {
     _featuresPerSplit = m;
   }
 
+  /// Aggregates fitted tree predictions in input row order.
+  ///
+  /// Classification uses equal hard votes with smallest-numeric-label ties;
+  /// regression uses the simple mean. Throws [StateError] before fit or if the
+  /// regression mean overflows, and [ArgumentError] for invalid query shape/values.
+  /// Returns a new list without modifying fitted trees. Votes are not probabilities.
   @override
   List<double> predict(Matrix x) {
     final roots = trees;

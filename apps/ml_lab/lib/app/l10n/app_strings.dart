@@ -534,8 +534,8 @@ const messages = <String, List<String>>{
   ],
   "learnTitle": ["Learn by observing the model", "Aprenda observando o modelo"],
   "learnSubtitle": [
-    "A guide to the algorithms actually implemented in ML Engine 0.6.0, based on the project tutorial and numerical conventions.",
-    "Um guia dos algoritmos realmente implementados no ML Engine 0.6.0, baseado no tutorial e nas convenções numéricas do projeto.",
+    "A guide to the algorithms actually implemented in ML Engine 0.6.1, based on the project tutorial and numerical conventions.",
+    "Um guia dos algoritmos realmente implementados no ML Engine 0.6.1, baseado no tutorial e nas convenções numéricas do projeto.",
   ],
   "foundations": ["Foundations before fitting", "Fundamentos antes do ajuste"],
   "openExample": ["Open this experiment", "Abrir este experimento"],
@@ -555,8 +555,8 @@ const messages = <String, List<String>>{
     "Cada exemplo abre o laboratório real com dados reproduzíveis e parâmetros explícitos. Abrir um exemplo substitui o experimento; trocar o idioma ou visitar Aprender preserva o estado.",
   ],
   "sourceVersion": [
-    "Source: project documentation • core 0.6.0 • Flutter 3.50.0",
-    "Fonte: documentação do projeto • núcleo 0.6.0 • Flutter 3.50.0",
+    "Source: project documentation • core 0.6.1 • Flutter 3.50.0",
+    "Fonte: documentação do projeto • núcleo 0.6.1 • Flutter 3.50.0",
   ],
   "tutorialLink": ["Tutorial and exercises", "Tutorial e exercícios"],
   "designLink": [

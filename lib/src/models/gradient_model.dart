@@ -2,19 +2,48 @@ import 'dart:math';
 import '../data/matrix.dart';
 import 'estimator.dart';
 
+/// Shared full-batch optimizer for linear, Ridge and binary logistic models.
+///
+/// Starts with zero coefficients/intercept. Each successful step commits finite
+/// parameters and one post-update training cost. Use concrete model classes for
+/// normal application code; this base also supports custom subclasses.
 abstract class GradientModel implements Estimator {
+  /// Positive finite multiplier applied to each averaged gradient update.
   final double learningRate;
+
+  /// Nonnegative finite coefficient of ||weights||²/2; the intercept is excluded.
   final double l2Penalty;
+
+  /// Maximum number of full-batch updates after each [start]; must be positive.
   final int iterations;
+
+  /// Whether scores use sigmoid/binary cross entropy instead of linear MSE/2.
   final bool logistic;
   Matrix? _x;
   List<double> _y = [], _weights = [];
   final List<double> _history = [];
   double _bias = 0;
+
+  /// Number of successfully committed updates in the current run; zero before start.
   int get completedIterations => _history.length;
+
+  /// Immutable snapshot of post-update training objectives, initially empty.
+  ///
+  /// Linear/Ridge uses MSE/2 plus the optional L2 penalty; logistic uses mean binary
+  /// cross entropy plus any penalty. The initial zero-parameter loss is not included.
   List<double> get costHistory => List.unmodifiable(_history);
+
+  /// Immutable snapshot of feature weights in column order; empty before [start].
   List<double> get coefficients => List.unmodifiable(_weights);
+
+  /// Current unpenalized intercept; zero before initialization and after [start].
   double get intercept => _bias;
+
+  /// Configures a full-batch optimizer without starting training.
+  ///
+  /// Throws [ArgumentError] unless [learningRate] is finite/positive, [iterations]
+  /// is positive and [l2Penalty] is finite/nonnegative. [logistic] requires binary
+  /// targets when [start] or [fit] is called. Concrete subclasses choose the loss.
   GradientModel({
     this.l2Penalty = 0,
     required this.logistic,
@@ -34,6 +63,13 @@ abstract class GradientModel implements Estimator {
       );
     }
   }
+
+  /// Validates and copies [x]/[y], resetting parameters and cost history to zero.
+  ///
+  /// Requires nonempty finite rectangular rows and one finite target per row;
+  /// logistic targets must be 0/1. Throws [ArgumentError] before replacing state on
+  /// invalid input. A valid start discards the previous run. Querying predictions
+  /// after start but before stepping returns the initialized model's predictions.
   void start(Matrix x, List<double> y) {
     validateTargets(x, y);
     if (logistic && y.any((v) => v != 0 && v != 1)) {
@@ -64,8 +100,12 @@ abstract class GradientModel implements Estimator {
   double _sigmoid(double z) =>
       z >= 0 ? 1 / (1 + exp(-z)) : exp(z) / (1 + exp(z));
 
-  /// One full-batch update. Call between event-loop yields for interactive use.
-  /// A rejected update preserves the last finite parameters and history.
+  /// Performs one full-batch gradient update, returning true when committed.
+  ///
+  /// Returns false after [iterations] updates. Throws [StateError] before [start]
+  /// or on nonfinite score/cost arithmetic. Rejected updates preserve the last
+  /// finite parameters/history, not a previous training run. Scale features or
+  /// lower the rate on divergence. Yield between calls for interactive use.
   bool step() {
     final x = _x;
     if (x == null) throw StateError('Start training first.');
@@ -110,12 +150,24 @@ abstract class GradientModel implements Estimator {
     return true;
   }
 
+  /// Starts a new run and performs up to [iterations] updates synchronously.
+  ///
+  /// Invalid input is rejected before reset. If a later update diverges, throws
+  /// [StateError] and retains the last complete update of this NEW run; this method
+  /// does not restore the model that existed before the call. Train a separate
+  /// candidate instance before replacing an application model when rollback matters.
   @override
   void fit(Matrix x, List<double> y) {
     start(x, y);
     while (step()) {}
   }
 
+  /// Returns continuous estimates for linear models or sigmoid probabilities for logistic.
+  ///
+  /// Despite this method's name, logistic results are probabilities, NOT logits.
+  /// Throws [StateError] before [start]/[fit], [ArgumentError] for invalid query
+  /// shape/values, and [StateError] if numeric score arithmetic overflows.
+  /// Returns a new list in input row order without changing training state.
   List<double> rawPredictions(Matrix x) {
     if (_x == null) throw StateError('Fit the model first.');
     validateMatrix(x, columns: _weights.length);
@@ -125,6 +177,10 @@ abstract class GradientModel implements Estimator {
     }).toList();
   }
 
+  /// Predicts continuous targets or thresholded binary labels, preserving row order.
+  ///
+  /// Logistic probabilities >= .5 become label 1; other probabilities become 0.
+  /// Uses [rawPredictions] validation, initialization and numerical failure rules.
   @override
   List<double> predict(Matrix x) => rawPredictions(
     x,

@@ -10,6 +10,10 @@ import 'estimator.dart';
 /// Fit copies training data; no iterative optimization or probabilities are used.
 /// Scale features on training rows only, ideally with a `Pipeline`.
 class KNNClassifier extends _KNN {
+  /// Creates an unfitted model using exactly [k] uniformly weighted neighbors.
+  ///
+  /// Throws [ArgumentError] when k < 1; [fit] also requires k <= training row count.
+  /// See the class documentation for label/distance ties and weighting conventions.
   KNNClassifier({super.k = 5});
 
   @override
@@ -31,6 +35,10 @@ class KNNClassifier extends _KNN {
 /// sorts neighbors: O(n*d + n*log(n)) time and O(n) extra memory per query.
 /// No KD-tree, distance weighting, extrapolation model or iterative cost exists.
 class KNNRegressor extends _KNN {
+  /// Creates an unfitted model using exactly [k] uniformly weighted neighbors.
+  ///
+  /// Throws [ArgumentError] when k < 1; [fit] also requires k <= training row count.
+  /// See the class documentation for label/distance ties and weighting conventions.
   KNNRegressor({super.k = 5});
 
   @override
@@ -45,12 +53,19 @@ class KNNRegressor extends _KNN {
 }
 
 abstract class _KNN implements Estimator {
+  /// Positive neighbor count; fitting additionally requires k <= training row count.
   final int k;
   Dataset? _training;
   _KNN({required this.k}) {
     if (k < 1) throw ArgumentError.value(k, 'k', 'Must be positive.');
   }
 
+  /// Validates and owns copies of finite rectangular [x] and aligned targets [y].
+  ///
+  /// Throws [ArgumentError] for invalid shapes/values or k greater than row count.
+  /// Classification accepts arbitrary finite numeric labels, not just 0/1.
+  /// Rejected fits preserve the previous training set. Successful fitting replaces
+  /// stored samples; it performs no iterative optimization.
   @override
   void fit(Matrix x, List<double> y) {
     validateTargets(x, y);
@@ -61,6 +76,12 @@ abstract class _KNN implements Estimator {
 
   double _aggregate(List<double> targets);
 
+  /// Returns the uniform label vote or target mean of the k closest stored rows.
+  ///
+  /// Throws [StateError] before fitting, [ArgumentError] for invalid feature
+  /// shape/values or distance overflow, and [StateError] for an overflowing
+  /// regression mean. Equal distances follow training row order; vote ties prefer
+  /// the smallest numeric label. Queries never mutate the stored training set.
   @override
   List<double> predict(Matrix x) {
     final training = _training;

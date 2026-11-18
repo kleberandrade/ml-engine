@@ -2,8 +2,17 @@ import 'dart:math';
 import '../data/matrix.dart';
 import 'transformer.dart';
 
-/// Population standardization. A rejected fit preserves previous statistics.
+/// Standardizes each feature using its training mean and population deviation.
+///
+/// Uses variance divisor n (not n-1). A zero-deviation feature uses scale 1:
+/// its training entries map to 0; different held-out entries map to their
+/// difference from the training constant. Fit stores only statistics and rejects
+/// arithmetic overflow without replacing the previous fit. Transform returns
+/// new rows and never changes fitted statistics. Supply training rows only.
 class StandardScaler implements Transformer {
+  /// Creates an unfitted scaler; call [fit] before [transform].
+  StandardScaler();
+
   List<double>? _center, _scale;
   @override
   void fit(Matrix x) {
@@ -29,8 +38,17 @@ class StandardScaler implements Transformer {
   Matrix transform(Matrix x) => _transform(x, _center, _scale);
 }
 
-/// Unit-range scaling. A rejected fit preserves previous statistics.
+/// Scales each feature using its training minimum and range.
+///
+/// Training minima map to 0 and maxima to 1. Held-out values may fall outside
+/// `[0,1]`; no clipping occurs. A constant training feature uses range 1, so a
+/// different held-out value becomes its difference from that constant. Rejected
+/// fits preserve previous statistics. Transform returns a new matrix and rejects
+/// invalid/nonfinite results. Supply training rows only.
 class MinMaxScaler implements Transformer {
+  /// Creates an unfitted scaler; call [fit] before [transform].
+  MinMaxScaler();
+
   List<double>? _min, _range;
   @override
   void fit(Matrix x) {

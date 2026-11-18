@@ -1,7 +1,17 @@
 import 'dart:math';
 
+/// Immutable row-index lists defining one training/held-out partition.
 class Fold {
-  final List<int> train, test;
+  /// Indices used to fit preprocessing and the estimator.
+  final List<int> train;
+
+  /// Held-out indices passed only to prediction and scoring.
+  final List<int> test;
+
+  /// Copies [train] and [test] into unmodifiable lists.
+  ///
+  /// Does not validate indices or disjointness. `crossValidate` checks nonempty,
+  /// unique, disjoint, in-range rows when using a fold.
   Fold(List<int> train, List<int> test)
     : train = List.unmodifiable(train),
       test = List.unmodifiable(test);
@@ -15,6 +25,12 @@ List<Fold> _folds(List<List<int>> buckets, int n) => buckets.map((test) {
   );
 }).toList();
 
+/// Creates [k] seeded shuffled folds over row indices 0..[n]-1.
+///
+/// Each row is held out exactly once; held-out sizes differ by at most one and
+/// training is the complement. Throws [ArgumentError] unless 2 <= [k] <= [n].
+/// This assumes independent rows, not temporal/grouped data. Seed reproduction is
+/// within the same Dart SDK, not a cross-version random-algorithm guarantee.
 List<Fold> kFold(int n, {int k = 5, int seed = 42}) {
   if (k < 2 || n < k) throw ArgumentError('Require 2 <= k <= rows.');
   final indices = List.generate(n, (i) => i)..shuffle(Random(seed));
@@ -25,7 +41,13 @@ List<Fold> kFold(int n, {int k = 5, int seed = 42}) {
   return _folds(buckets, n);
 }
 
-/// Every class must have at least k examples; no silent invalid folds.
+/// Creates [k] seeded folds preserving per-class proportions where possible.
+///
+/// [labels] contains one integer class identifier per source row; arbitrary
+/// integer classes are supported. Every row is held out once and training is
+/// the complement. Throws [ArgumentError] if [k] < 2, there are fewer than [k]
+/// rows, or any class has fewer than [k] examples. Seed reproduction assumes
+/// the same label order and Dart SDK. Does not handle grouped/time-series data.
 List<Fold> stratifiedKFold(List<int> labels, {int k = 5, int seed = 42}) {
   if (k < 2 || labels.length < k) throw ArgumentError('Invalid k.');
   final groups = <int, List<int>>{};

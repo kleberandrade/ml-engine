@@ -10,3 +10,4 @@ apps/
 .vscode/
 docs/
 tool/
+doc/api/

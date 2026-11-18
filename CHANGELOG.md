@@ -1,3 +1,11 @@
+## 0.6.1
+
+- Document the full public API, including inherited estimator methods, constructors, parameters, defaults, returns, initialization requirements, numerical conventions, errors and failure-state recovery.
+- Make the README engine-first, with complete integration examples, binary/multiclass distinctions, preprocessing contracts, probability/logit semantics and safe model replacement.
+- Ship English/Portuguese developer integration guides and three executable examples for prediction, classification and leakage-safe cross validation.
+- Require public API docs in the analyzer; CI generates the reference, rejects warnings/broken links or undocumented indexed symbols, and executes documentation examples.
+- Explicitly declare documented default scaler constructors and split combined field declarations for individual documentation. No numerical algorithm or public signature changes.
+
 ## 0.6.0
 
 - Add GradientBoostingRegressor (mean initialization, residual trees, MSE/2) and binary GradientBoostingClassifier (clipped prior log odds, y−sigmoid(F), logistic loss).

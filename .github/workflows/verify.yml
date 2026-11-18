@@ -21,6 +21,13 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed lib test example tool apps/ml_lab/lib apps/ml_lab/test
       - run: dart run tool/check_architecture.dart
       - run: dart analyze
+      - name: Generate and validate public API documentation
+        run: python3 tool/check_api_docs.py --output "$RUNNER_TEMP/ml-engine-api"
+      - name: Run developer documentation examples
+        run: |
+          dart run example/quickstart.dart
+          dart run example/classification.dart
+          dart run example/cross_validation.dart
       - run: dart test
       - name: Validate publishable Dart package
         run: dart pub publish --dry-run

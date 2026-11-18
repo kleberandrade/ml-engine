@@ -7,3 +7,4 @@ apps/ml_lab/.flutter-plugins-dependencies
 apps/ml_lab/.idea/
 apps/ml_lab/*.iml
 __pycache__/
+doc/api/

@@ -7,11 +7,27 @@ import 'estimator.dart';
 /// An immutable fitted tree node. Split routing is x[featureIndex] <= threshold.
 /// Impurity is Gini for classification and mean squared error for regression.
 final class DecisionTreeNode {
-  final double prediction, impurity;
+  /// Leaf output or the prediction this node would make without further splits.
+  /// Classification uses majority label; regression uses the target mean.
+  final double prediction;
+
+  /// Gini for classification or mean squared target deviation for regression.
+  final double impurity;
+
+  /// Training entries reaching this node; bootstrap duplicates count separately.
   final int sampleCount;
+
+  /// Zero-based split column, or null for a leaf; use [isLeaf] before routing.
   final int? featureIndex;
+
+  /// Split boundary: values <= it go [left], larger values go [right]; null in a leaf.
   final double? threshold;
-  final DecisionTreeNode? left, right;
+
+  /// Child for values <= [threshold], or null for a leaf.
+  final DecisionTreeNode? left;
+
+  /// Child for values > [threshold], or null for a leaf.
+  final DecisionTreeNode? right;
   const DecisionTreeNode._leaf(this.prediction, this.sampleCount, this.impurity)
     : featureIndex = null,
       threshold = null,
@@ -26,8 +42,14 @@ final class DecisionTreeNode {
     this.left,
     this.right,
   );
+
+  /// Whether this node has no split; both children and split fields are then null.
   bool get isLeaf => featureIndex == null;
+
+  /// Maximum edges from this node to a leaf; a leaf has depth zero.
   int get depth => isLeaf ? 0 : 1 + max(left!.depth, right!.depth);
+
+  /// Number of terminal nodes in this subtree; a leaf counts as one.
   int get leafCount => isLeaf ? 1 : left!.leafCount + right!.leafCount;
 }
 
@@ -42,6 +64,12 @@ final class DecisionTreeNode {
 /// that subset is searched, with no fallback if it cannot improve impurity.
 /// No missing values, categorical splits, pruning or probabilities are provided.
 class DecisionTreeClassifier extends _DecisionTree {
+  /// Creates an unfitted numeric tree.
+  ///
+  /// [maxDepth] >= 0 counts edges from the root; zero creates a constant leaf.
+  /// [minSamplesLeaf] must be positive. Null [maxFeatures] searches all columns;
+  /// otherwise it must be positive and <= fitted width (checked by [fit]). [seed]
+  /// affects feature subsampling only. Invalid settings throw [ArgumentError].
   DecisionTreeClassifier({
     super.maxDepth = 5,
     super.minSamplesLeaf = 1,
@@ -60,6 +88,12 @@ class DecisionTreeClassifier extends _DecisionTree {
 /// need a worker/isolate. Prediction takes O(depth) time per row. No optimization
 /// epochs or extrapolation trend are learned. Scaling is not required.
 class DecisionTreeRegressor extends _DecisionTree {
+  /// Creates an unfitted numeric tree.
+  ///
+  /// [maxDepth] >= 0 counts edges from the root; zero creates a constant leaf.
+  /// [minSamplesLeaf] must be positive. Null [maxFeatures] searches all columns;
+  /// otherwise it must be positive and <= fitted width (checked by [fit]). [seed]
+  /// affects feature subsampling only. Invalid settings throw [ArgumentError].
   DecisionTreeRegressor({
     super.maxDepth = 5,
     super.minSamplesLeaf = 1,
@@ -69,7 +103,16 @@ class DecisionTreeRegressor extends _DecisionTree {
 }
 
 abstract class _DecisionTree implements Estimator {
-  final int maxDepth, minSamplesLeaf, seed;
+  /// Maximum root-to-leaf edge count; zero permits only a constant root.
+  final int maxDepth;
+
+  /// Minimum entries in each proposed split child; an unsplit root may be smaller.
+  final int minSamplesLeaf;
+
+  /// Seed used only when sampling a strict subset of features at each node.
+  final int seed;
+
+  /// Per-node feature subset size; null searches all fitted columns.
   final int? maxFeatures;
   final bool _classification;
   DecisionTreeNode? _root;
@@ -89,11 +132,23 @@ abstract class _DecisionTree implements Estimator {
       );
     }
   }
+
+  /// Immutable fitted root; throws [StateError] until a fit succeeds.
   DecisionTreeNode get root =>
       _root ?? (throw StateError('Fit the model first.'));
+
+  /// Actual fitted depth, possibly below maxDepth; throws [StateError] before fit.
   int get depth => root.depth;
+
+  /// Number of fitted terminal leaves; throws [StateError] before fit.
   int get leafCount => root.leafCount;
 
+  /// Builds an entire tree from owned finite data before replacing fitted state.
+  ///
+  /// Throws [ArgumentError] for invalid shapes/values, maxFeatures above width or
+  /// nonfinite impurity/mean arithmetic. Class labels may be arbitrary finite
+  /// numbers. A rejected fit preserves the previous root. Successful fitting
+  /// retains only immutable nodes, not source rows. Tree search is synchronous.
   @override
   void fit(Matrix x, List<double> y) {
     final data = Dataset(x, y);
@@ -212,6 +267,11 @@ abstract class _DecisionTree implements Estimator {
     );
   }
 
+  /// Routes each query row to a leaf and returns its label or numeric mean.
+  ///
+  /// Throws [StateError] before a successful fit and [ArgumentError] for invalid
+  /// query shape/values. Output is a new list in query order. Threshold equality
+  /// routes left; no missing-value or categorical routing is implemented.
   @override
   List<double> predict(Matrix x) {
     final tree = root;

@@ -1,6 +1,11 @@
 import 'dart:math';
 import 'validation.dart';
 
+/// Mean squared prediction error for actual [y] and [predicted] values.
+///
+/// Lower is better; units are squared target units. Throws [ArgumentError] for
+/// empty, mismatched or nonfinite input vectors. Finite extreme inputs can still
+/// overflow the arithmetic and produce infinity; rescale magnitudes if needed.
 double meanSquaredError(List<double> y, List<double> predicted) {
   validateMetricVectors(y, predicted);
   return List.generate(
@@ -10,8 +15,17 @@ double meanSquaredError(List<double> y, List<double> predicted) {
       y.length;
 }
 
+/// Square root of [meanSquaredError], in the original target units.
+///
+/// Uses the same vector validation and overflow behavior as [meanSquaredError].
+/// Lower is better; zero means every prediction matches its target.
 double rootMeanSquaredError(List<double> y, List<double> predicted) =>
     sqrt(meanSquaredError(y, predicted));
+
+/// Mean absolute difference between actual [y] and [predicted] values.
+///
+/// Throws [ArgumentError] for empty, mismatched or nonfinite vectors. Lower is
+/// better; extreme finite inputs can overflow differences or their sum.
 double meanAbsoluteError(List<double> y, List<double> predicted) {
   validateMetricVectors(y, predicted);
   return List.generate(
@@ -21,7 +35,12 @@ double meanAbsoluteError(List<double> y, List<double> predicted) {
       y.length;
 }
 
-/// Constant targets: 1 for perfect predictions, 0 otherwise.
+/// Coefficient of determination, 1 - residual sum / centered target sum.
+///
+/// A perfect fit scores 1; scores may be negative. For constant [y], returns 1
+/// for exact predictions and 0 otherwise. Throws [ArgumentError] for empty,
+/// mismatched or nonfinite vectors. Extreme finite arithmetic can yield NaN or
+/// infinity; no finite-output guarantee is made for unscaled extreme values.
 double rSquared(List<double> y, List<double> predicted) {
   validateMetricVectors(y, predicted);
   final mean = y.reduce((a, b) => a + b) / y.length;

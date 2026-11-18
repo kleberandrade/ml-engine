@@ -8,12 +8,17 @@ import 'estimator.dart';
 /// First-order binary logistic gradient boosting with numeric regression trees.
 ///
 /// F0=log(p/(1-p)), where the training positive fraction is clipped to
-/// [1e-12, 1-1e-12]. Each stage fits y-sigmoid(F), then F += learningRate*tree.
+/// `[1e-12, 1-1e-12]`. Each stage fits y-sigmoid(F), then F += learningRate*tree.
 /// All rows/features are used, without bootstrap, Newton leaf updates or line
 /// search. These explicit conventions differ from many TreeBoost libraries.
 /// Probabilities are sigmoid scores, not independently calibrated estimates.
 /// Labels must be 0/1; probability >= .5 predicts 1. Not an XGBoost binding.
 class GradientBoostingClassifier extends GradientBoostingModel {
+  /// Creates an unfitted first-order boosting model.
+  ///
+  /// [nEstimators]/[minSamplesLeaf] must be positive, [maxDepth] nonnegative and
+  /// [learningRate] finite in (0,1]; invalid settings throw [ArgumentError].
+  /// No data-dependent work occurs until [start] or [fit].
   GradientBoostingClassifier({
     super.nEstimators = 100,
     super.maxDepth = 3,
@@ -21,6 +26,11 @@ class GradientBoostingClassifier extends GradientBoostingModel {
     super.learningRate = .1,
   }) : super._(true);
 
+  /// Returns sigmoid class-1 scores for each query, without thresholding.
+  ///
+  /// Unlike [rawPredictions], these values are probabilities rather than logits.
+  /// They are not independently calibrated and may saturate to 0 or 1. Uses
+  /// [rawPredictions] initialization, matrix validation and overflow exceptions.
   List<double> probabilities(Matrix x) =>
       rawPredictions(x).map(_sigmoid).toList();
 }
@@ -39,6 +49,11 @@ class GradientBoostingClassifier extends GradientBoostingModel {
 /// Prediction costs O(nEstimators*depth) per row. There is no subsampling,
 /// missing/categorical routing, feature importance, pruning or histogram fitting.
 class GradientBoostingRegressor extends GradientBoostingModel {
+  /// Creates an unfitted first-order boosting model.
+  ///
+  /// [nEstimators]/[minSamplesLeaf] must be positive, [maxDepth] nonnegative and
+  /// [learningRate] finite in (0,1]; invalid settings throw [ArgumentError].
+  /// No data-dependent work occurs until [start] or [fit].
   GradientBoostingRegressor({
     super.nEstimators = 100,
     super.maxDepth = 3,
@@ -51,7 +66,16 @@ double _sigmoid(double z) => z >= 0 ? 1 / (1 + exp(-z)) : exp(z) / (1 + exp(z));
 
 /// Shared stagewise lifecycle for the two gradient boosting estimators.
 abstract class GradientBoostingModel implements Estimator {
-  final int nEstimators, maxDepth, minSamplesLeaf;
+  /// Positive stage budget; each successful step adds one residual tree.
+  final int nEstimators;
+
+  /// Maximum residual-tree depth in edges; zero gives a constant correction.
+  final int maxDepth;
+
+  /// Minimum rows in each proposed tree split child; an unsplit root may be smaller.
+  final int minSamplesLeaf;
+
+  /// Finite shrinkage in (0,1], multiplying every residual-tree prediction.
   final double learningRate;
   final bool _classification;
   Dataset? _data;
@@ -78,24 +102,49 @@ abstract class GradientBoostingModel implements Estimator {
   }
   Dataset get _training =>
       _data ?? (throw StateError('Start or fit the model first.'));
+
+  /// Immutable snapshot of residual trees in stage order.
+  ///
+  /// Empty immediately after [start]; throws [StateError] before initialization.
+  /// Trees predict numeric residuals even in the classifier, never class votes.
   List<DecisionTreeNode> get trees {
     _training;
     return _trees;
   }
 
+  /// Immutable snapshot of training loss, including the initial loss at index zero.
+  ///
+  /// After t successful stages, length is t+1. Regression uses MSE/2;
+  /// classification uses mean binary cross entropy. Throws [StateError] before
+  /// initialization. Previously returned snapshots do not change after stepping.
   List<double> get lossHistory {
     _training;
     return _history;
   }
 
+  /// Initial mean target for regression or clipped prior log odds for classification.
+  ///
+  /// Does not change during stepping. Throws [StateError] before initialization.
+  /// For classification, the training positive fraction is clipped to
+  /// `[1e-12, 1-1e-12]` before applying natural-log odds.
   double get initialPrediction {
     _training;
     return _initial!;
   }
 
+  /// Largest current residual-tree depth, zero with no trees; requires initialization.
   int get depth => trees.fold(0, (d, t) => max(d, t.depth));
+
+  /// Total current residual-tree leaves, zero with no trees; requires initialization.
   int get leafCount => trees.fold(0, (n, t) => n + t.leafCount);
 
+  /// Owns validated [x]/[y] and initializes a constant model and baseline loss.
+  ///
+  /// Requires a finite nonempty rectangular matrix and one finite target per row;
+  /// classification additionally requires 0/1 targets. Throws [ArgumentError] on
+  /// invalid input or nonfinite initialization/loss arithmetic, preserving the
+  /// old model. Success clears trees and retains copied data for later steps.
+  /// Predictions and history are immediately available before the first tree.
   void start(Matrix x, List<double> y) {
     final data = Dataset(x, y);
     if (_classification && data.y.any((v) => v != 0 && v != 1)) {
@@ -133,6 +182,13 @@ abstract class GradientBoostingModel implements Estimator {
     return total;
   }
 
+  /// Fits one residual regression tree and commits a finite new score/loss state.
+  ///
+  /// Returns true after adding a tree, false when [nEstimators] is reached. Throws
+  /// [StateError] before [start]/[fit] and [ArgumentError] for invalid/nonfinite
+  /// residual-tree or score/loss arithmetic. Failure preserves the previous stage.
+  /// Uses all training rows/features with fixed shrinkage; no early stopping or
+  /// Newton leaf correction is performed, including when a correction is zero.
   bool step() {
     final data = _training;
     if (_trees.length >= nEstimators) return false;
@@ -159,6 +215,12 @@ abstract class GradientBoostingModel implements Estimator {
     return true;
   }
 
+  /// Fits a separate complete candidate, then atomically replaces this model.
+  ///
+  /// Uses [start] and [step] validation and exceptions. Any rejected fit preserves
+  /// the previously fitted model, unlike the partial-new-run behavior of the linear
+  /// optimizer. A successful fit has nEstimators trees and nEstimators+1 losses.
+  /// Synchronous: use a worker/isolate for large workloads.
   @override
   void fit(Matrix x, List<double> y) {
     final GradientBoostingModel candidate = _classification
@@ -183,7 +245,14 @@ abstract class GradientBoostingModel implements Estimator {
     _history = candidate._history;
   }
 
-  /// Additive numeric predictions for regression, logits for classification.
+  /// Returns additive target estimates for regression or logits for classification.
+  ///
+  /// Computes initialPrediction + learningRate * sum(tree outputs) without
+  /// thresholding. Throws [StateError] before initialization and [ArgumentError]
+  /// for invalid/wrong-width query rows or nonfinite additive score arithmetic.
+  /// Use `GradientBoostingClassifier.probabilities` to convert logits to sigmoid
+  /// scores. This differs from `GradientModel.rawPredictions`, whose logistic
+  /// output is already a probability. Returns a new list in query row order.
   List<double> rawPredictions(Matrix x) {
     final data = _training;
     validateMatrix(x, columns: data.x.first.length);
@@ -205,6 +274,11 @@ abstract class GradientBoostingModel implements Estimator {
     }).toList();
   }
 
+  /// Returns target estimates or binary labels in query row order.
+  ///
+  /// The classifier thresholds sigmoid probabilities at .5 (ties become 1).
+  /// Uses [rawPredictions] input, lifecycle and overflow rules; queries do not
+  /// advance training or modify fitted state.
   @override
   List<double> predict(Matrix x) => rawPredictions(
     x,

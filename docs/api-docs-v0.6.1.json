@@ -1,0 +1,62 @@
+{
+  "version": "0.6.1",
+  "scope": "local source validation before publication",
+  "public_baseline": {
+    "version": "0.6.0",
+    "granted_points": 150,
+    "max_points": 160,
+    "documented_elements": 24,
+    "total_elements": 192,
+    "documentation_percent": 12.5
+  },
+  "dartdoc": {
+    "documented_elements": 192,
+    "total_elements": 192,
+    "documentation_percent": 100,
+    "warnings": 0,
+    "errors": 0,
+    "broken_links": 0
+  },
+  "pana": {
+    "runtime": {
+      "panaVersion": "0.23.19",
+      "sdkVersion": "3.14.0"
+    },
+    "scores": {
+      "grantedPoints": 160,
+      "maxPoints": 160
+    },
+    "documentation_section": {
+      "id": "documentation",
+      "title": "Provide documentation",
+      "grantedPoints": 20,
+      "maxPoints": 20,
+      "status": "passed",
+      "summary": "### [*] 10/10 points: 20% or more of the public API has dartdoc comments\n\n192 out of 192 API elements (100.0 %) have documentation comments.\n\n### [*] 10/10 points: Package has an example\n"
+    }
+  },
+  "examples": {
+    "quickstart_held_out_rmse": 1.96205025865255e-14,
+    "classification_labels": [
+      0,
+      1
+    ],
+    "classification_probabilities": [
+      0.4378234991142019,
+      0.5621765008857981
+    ],
+    "classification_f1": 1,
+    "cross_validation_folds": 5,
+    "maximum_fold_rmse": 4.089480552672362e-14
+  },
+  "tests": {
+    "dart": 69,
+    "flutter": 50
+  },
+  "ci_guards": [
+    "public_member_api_docs analyzer error",
+    "192/192 indexed API descriptions required (all future indexed symbols too)",
+    "zero dartdoc warnings and broken links",
+    "three executable developer examples"
+  ]
+}
